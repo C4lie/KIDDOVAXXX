@@ -1,0 +1,254 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Kiddovax :: Vaccine Booking</title>
+  <!-- google fonts -->
+  <link href="//fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{% static 'patients/css/style-starter.css' %}">
+</head>
+
+<body>
+  <!--header-->
+  <header id="site-header" class="fixed-top">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark stroke">
+        <h1>
+          <a class="navbar-brand" href="{% url 'patient:homepage' %}">
+            Kidd<i class="fab fa-keycdn"></i>Vax</a>
+        </h1>
+        <!-- if logo is image enable this   
+          <a class="navbar-brand" href="#index.html">
+              <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
+          </a> -->
+        <button class="navbar-toggler  collapsed bg-gradient" type="button" data-toggle="collapse"
+          data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon fa icon-expand fa-bars"></span>
+          <span class="navbar-toggler-icon fa icon-close fa-times"></span>
+          </span>
+        </button>
+        {% include 'patientapp/menu.html' %}
+      
+        <!-- toggle switch for light and dark theme -->
+        <div class="mobile-position">
+          <nav class="navigation">
+            <div class="theme-switch-wrapper">
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox">
+                <div class="mode-container py-1">
+                  <i class="gg-sun"></i>
+                  <i class="gg-moon"></i>
+                </div>
+              </label>
+            </div>
+          </nav>
+        </div>
+        <!-- //toggle switch for light and dark theme -->
+      </nav>
+
+    </div>
+  </header>
+  <!--/header-->
+<!-- breadcrumb -->
+<section class="w3l-about-breadcrumb text-center">
+  <div class="breadcrumb-bg breadcrumb-bg-about py-5">
+      <div class="container py-lg-5 py-md-4">
+        <div class="w3breadcrumb-gids">
+          <div class="w3breadcrumb-left text-left">
+                    <h2 class="title AboutPageBanner">
+                Vaccine Booking   </h2>
+                              <p class="inner-page-para mt-2">
+                                Prevent the Spread
+                                Stay at Home, Stay Safe             </p>
+          </div>
+          <div class="w3breadcrumb-right">
+                <ul class="breadcrumbs-custom-path">
+                  <li><a href="{% url 'patient:homepage' %}">Home</a></li>
+                  <li class="active"><span class="fas fa-angle-double-right mx-2"></span> Vaccine Booking</li>
+                </ul>
+          </div>
+    </div>
+      </div>
+      <div class="hero-overlay"></div>
+  </div>
+</section>
+<!--//breadcrumb-->
+ <!-- contact-form 2 -->
+ <section class="w3l-contact-2 py-5" id="contact">
+  <div class="container py-lg-4 py-md-3 py-2">
+    <div class="title-content text-center">
+      <span class="title-subw3hny">Appointment Booking</span>
+      <!-- <h3 class="title-w3l mb-lg-4">Contact with our support <br>
+        during emergency!</h3> -->
+
+    </div>
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+           
+       
+    {% endfor %}
+ 
+      
+        <div class="mx-lg-5">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Child Name</label>
+                    <input type="text"  class="form-control" id="childname"  name="childname" placeholder="Child Name">
+                </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Hospital</label>
+                <select id="hospitalid" name="hospitalid" size="1" class="form-control" required>
+                        
+                    <option value="">--Select Hospital--</option>
+                    {% for item in hospitalData %}    
+                    <option value="{{item.id}}">    
+                        {{item.title}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Vaccine</label>
+                <select id="vaccineid" name="vaccineid" size="1" class="form-control" required>
+                        
+                    <option value="">--Select Vaccine--</option>
+                    
+                    <option value="{{item.id}}">
+                        
+                        {{item.vaccineName}}
+                    </option>
+                
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Date</label>
+                <input type="date"  class="form-control" id="aptdate"  name="aptdate" placeholder="Select Date">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+            <table class="table mt-5" >
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Hospital</th>
+                    <th scope="col">Vaccine</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bookingitem in bindData %}
+                  <tr>
+                    <td>{{bookingitem.id}}</td>
+                    <td>{{bookingitem.aptdate|date:"d-m-Y"}}</td>
+                    <td>{{bookingitem.childname}}</td>
+                    <td>{{bookingitem.hospitalid.title}}</td>
+                    <td>{{bookingitem.vaccineid.vaccineName}}</td>
+                    <td>{% if bookingitem.active == 0 %}
+                      <span class="badge badge-warning">Pending</span>
+                      {% elif bookingitem.active == 1 %} 
+                      <span class="badge badge-secondary">Waiting</span>
+                      {% elif bookingitem.active == 2 %} 
+                      <span class="badge badge-success">Success</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if bookingitem.active == 0  %}
+                        <a href="{% url 'patient:deleteappointment' bookingitem.id %}"><button type="submit" class="btn btn-danger">Cancel</button></a>
+                      {% else %}
+                      <span class="badge badge-success">No Action</span>
+                        {% endif %}
+
+                      </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                </table>
+        </div>
+
+ 
+</section>
+<!-- /contact-form-2 -->
+
+  <!-- /contact1 -->
+  {% include 'patientapp/footer.html' %}
+<!-- Template JavaScript -->
+
+<script src="{% static 'patients/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'patients/js/theme-change.js' %}"></script>
+<!-- disable body scroll which navbar is in active -->
+<script>
+  $(function () {
+    $('.navbar-toggler').click(function () {
+      $('body').toggleClass('noscroll');
+    })
+  });
+</script>
+<!-- disable body scroll which navbar is in active -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$(document).ready(
+$("#hospitalid").change(function () {
+    var hid = $(this).val();  
+    $("#vaccineid").empty();
+    $.ajax({                       
+    url: "{% url 'patient:load_vaccines' %}",       
+    data: {
+        'h_id': hid      
+    },
+    success: function (data) {   
+        $("#vaccineid").html(data);  
+
+    }
+    });  
+
+})
+);
+</script> 
+<!--/MENU-JS-->
+<script>
+  $(window).on("scroll", function () {
+    var scroll = $(window).scrollTop();
+
+    if (scroll >= 80) {
+      $("#site-header").addClass("nav-fixed");
+    } else {
+      $("#site-header").removeClass("nav-fixed");
+    }
+  });
+
+  //Main navigation Active Class Add Remove
+  $(".navbar-toggler").on("click", function () {
+    $("header").toggleClass("active");
+  });
+  $(document).on("ready", function () {
+    if ($(window).width() > 991) {
+      $("header").removeClass("active");
+    }
+    $(window).on("resize", function () {
+      if ($(window).width() > 991) {
+        $("header").removeClass("active");
+      }
+    });
+  });
+</script>
+<!--//MENU-JS-->
+<script src="{% static 'patients/js/bootstrap.min.js' %}"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</body>
+
+</html>

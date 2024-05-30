@@ -1,0 +1,52 @@
+{% extends 'receptionistapp/base.html' %}
+{% block contents %}
+<h1>View Appointment Details</h1>
+<hr/>
+<form method="POST">
+    {% csrf_token%}
+    <!-- <div class="mx-auto" style="width: 400px;"> -->
+       {% for item in  data %}
+       <div class="form-group">
+        <label for="exampleInputEmail1">Select RFID : </label>
+         {{form.rfidno}}
+        </div>
+       <div class="form-group">
+        <label for="exampleInputEmail1">Appointment Date : </label>
+         {{item.aptdate|date:"d-m-Y"}}
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Child Name : </label>
+             {{item.childname}}
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Vaccine Name : </label>
+             {{item.vaccineid.vaccineName}}
+        </div>
+        {% endfor %}
+         
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      
+       
+     
+    
+    <!-- </div> -->
+</form>
+
+{% endblock contents %}
+<script>
+    const inputfield = document.getElementsByTagName('input')
+    for(let i in inputfield)
+    {
+          inputfield[i].className += 'form-control'
+    }
+</script>
+
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+          
+           

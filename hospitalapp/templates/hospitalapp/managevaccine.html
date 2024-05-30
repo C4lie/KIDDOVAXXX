@@ -1,0 +1,119 @@
+{% extends 'hospitalapp/base.html' %}
+{% block contents %}
+
+
+    <h2 class="title1">Manage Vaccine</h2>
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+           
+       
+    {% endfor %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- <div class="mx-auto" style="width: 400px;"> -->
+           
+            <div class="form-group">
+              <label for="exampleInputEmail1">{{form.vaccineName.label}}</label>
+               {{form.vaccineName}}
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">{{form.vaccineDescr.label}}</label>
+               {{form.vaccineDescr}}
+            </div>
+        
+            <div class="form-group">
+              <label for="exampleInputEmail1">{{form.price.label}}</label>
+               {{form.price}}
+            </div>
+         
+         
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" value="Reset" name="btnreset" class="btn btn-warning">Reset</button>
+           
+            <script language="Javascript" type="text/javascript">
+              function isNumberKey(evt) {
+                  var charCode = (evt.which) ? evt.which : event.keyCode
+                  if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
+      
+                      return true;
+                  }
+         
+                  return false;
+      
+              }
+          </script>
+        
+        <!-- </div> -->
+    </form>
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Price</th>
+         
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in vaccinedata %}
+          <tr>
+            <td>{{item.id}}</td>
+          
+            <td>{{item.vaccineName}}</td>
+            <td>{{item.vaccineDescr}}</td>
+            
+            <td>{{item.price}}</td>
+             <td>
+                <a href="{% url 'hospitalapp:editvaccine' item.id %}"><button type="submit" class="btn btn-info">Edit</button></a>
+                <a href="{% url 'hospitalapp:deletevaccine' item.id %}"><button type="submit" class="btn btn-danger">Delete</button></a>
+            </td> 
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+    </div>     
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+       
+{% endblock contents %}
+<script>
+    const inputfield = document.getElementsByTagName('input')
+    for(let i in inputfield)
+    {
+          inputfield[i].className += 'form-control'
+    }
+</script>
+
+
+
+<script language="Javascript" type="text/javascript">
+  function isNumberKey(evt) {
+      var charCode = (evt.which) ? evt.which : event.keyCode
+      if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
+
+          return true;
+      }
+
+      return false;
+
+  }
+  
+</script>
+
+<script type="text/javascript">
+
+    function restrictAlphabets(evt) {
+        var x = (evt.which) ? evt.which : event.keyCode
+        if ((x >= 48 && x <= 57) || x == 8 )
+            return true;
+        else
+            return false;
+    }
+</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+          
+           

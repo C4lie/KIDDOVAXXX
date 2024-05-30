@@ -1,0 +1,119 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'clientlogin/fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'clientlogin/css/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'clientlogin/css/bootstrap.min.css' %}">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'clientlogin/css/style.css' %}">
+
+    <title>Login</title>
+    <style>
+      body{
+        background:url('{% static "clientlogin/images/home1.jpg" %}');
+        height:100%;
+        width:100%;	
+        /* Center and scale the image nicely */
+        background-color: transparent 
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+  
+
+  
+  <div class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 order-md-2">
+       
+        </div>
+        <div class="col-md-6 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="mb-4">
+              <h4>SignIn <strong>KiddoVAX :: Patient Login</strong></h4>
+              <p class="mb-4" style="color:black">KiddoVAX at your doorstep.</p>
+            </div>
+            <div style="background-color: transparent;">
+            <form action="#" method="post">
+                {% csrf_token %}
+              <div class="form-group first">
+                <label for="contactno"  style=" font-weight:bold; color:black"><b><h2>ContactNo.</h2></b></label>
+                <input type="text"   class="form-control" onkeypress="return restrictAlphabets(event)" pattern="^\d{10}$" maxlength="10" id="contactno" name="contactno">
+
+              </div>
+              <div class="form-group last mb-4">
+                <label for="password" style="color:black"><b><h2>Password</h2></b></label>
+                <input type="password"   class="form-control" id="password" name="password">
+                
+              </div>
+              
+             
+              <span class="d-block text-left my-4 text-muted">
+                {% for msg in messages %}
+                <div class="alert alert-success" style="margin-top: 5px">
+                  <strong>{{msg}}</strong>  
+                </div>
+                {% endfor %}
+              </span>
+              <input type="submit" id="btnsubmit" value="Log In" class="btn text-white btn-block btn-primary">
+              <div class="d-flex mb-5 align-items-center">
+               
+                <span class="ml-auto"><a href="{% url 'patient:registerpage' %}" style="color:crimson" class="forgot-pass"><b><h3>New Register</h3></b></a></span> 
+              </div>
+              <script type="text/javascript">
+                
+                function restrictAlphabets(evt) {
+                    var x = (evt.which) ? evt.which : event.keyCode
+                    if ((x >= 48 && x <= 57) || x == 8 )
+                        return true;
+                    else
+                        return false;
+                }
+            </script>
+             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+             <script>
+              $(document).ready(function() {
+                  $('#contactno').on('input change blur', function() {
+                      if($(this).val() != '' && $("#contactno").val().length == 10) {
+                          $('#btnsubmit').prop('disabled', false);
+                      } else {
+                          $('#btnsubmit').prop('disabled', true);
+                      }
+                  });
+              });
+              </script>
+              
+             
+            </form>
+           </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  
+    <script src="{% static 'clientlogin/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'clientlogin/js/popper.min.js' %}"></script>
+    <script src="{% static 'clientlogin/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'clientlogin/js/main.js' %}"></script>
+  </body>
+</html>

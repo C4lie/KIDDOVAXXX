@@ -1,0 +1,108 @@
+{% extends 'receptionistapp/base.html' %}
+{% block contents %}
+<h1>Appointment Details</h1>
+<hr/>
+<table class="table mt-5" >
+    <thead>
+      <tr>
+        <!-- <th scope="col">#</th> -->
+        <th scope="col">Date</th>
+        <th scope="col">Name</th>
+        <th scope="col">Vaccine</th>
+        <th scope="col">TimeIn</th>
+        <th scope="col">TimeOut</th>
+        <th scope="col">Status</th>
+        <th scope="col">View</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for bookingitem in bindData %}
+      <tr>
+        <!-- <td>{{bookingitem.id}}</td> -->
+        <td>{{bookingitem.aptdate|date:"d-m-Y"}}</td>
+        <td>{{bookingitem.childname}}</td>
+    
+        <td>{{bookingitem.vaccineid.vaccineName}}</td>
+        <td>
+            {% if bookingitem.active == 1 or bookingitem.active == 2 %}
+                {{bookingitem.indt }}
+            {% else %}    
+                <span>Pending</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if bookingitem.active == 2 %}
+                {{bookingitem.outdt}}
+            {% else %}    
+                <span>Pending</span>
+            {% endif %}
+        </td>
+        <td>{% if bookingitem.active == 0 %}
+            <span class="badge badge-warning">Pending</span>
+            {% elif bookingitem.active == 1 %} 
+            <span class="badge badge-secondary">Waiting</span>
+            {% elif bookingitem.active == 2 %} 
+            <span class="badge badge-success">Success</span>
+            {% endif %}
+        </td>
+       
+
+        </td>
+        <td>
+            <a href="{% url 'receptionist:showappointment' bookingitem.id %}"><button type="submit" class="btn btn-primary">View</button></a>
+           
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    </table>
+{% endblock contents %}
+<script>
+    const inputfield = document.getElementsByTagName('input')
+    for(let i in inputfield)
+    {
+          inputfield[i].className += 'form-control'
+    }
+</script>
+
+<script>
+ $(document).ready(function() {
+     $('#id_contactNo').on('input change blur', function() {
+         if($(this).val() != '' && $("#id_contactNo").val().length == 10) {
+             $('#btnsubmit').prop('disabled', false);
+         } else {
+             $('#btnsubmit').prop('disabled', true);
+         }
+     });
+ });
+</script>
+
+<script language="Javascript" type="text/javascript">
+  function isNumberKey(evt) {
+      var charCode = (evt.which) ? evt.which : event.keyCode
+      if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
+
+          return true;
+      }
+
+      return false;
+
+  }
+  
+</script>
+
+<script type="text/javascript">
+
+    function restrictAlphabets(evt) {
+        var x = (evt.which) ? evt.which : event.keyCode
+        if ((x >= 48 && x <= 57) || x == 8 )
+            return true;
+        else
+            return false;
+    }
+</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+          
+           

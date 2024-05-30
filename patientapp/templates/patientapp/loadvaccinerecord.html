@@ -1,0 +1,26 @@
+<table class="table mt-5" id="vaccineid" >
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">HospitalName</th>
+        <th scope="col">VaccineName</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+    
+      </tr>
+    </thead>
+    <tbody>
+       
+      {% for bookingitem in bindData %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{bookingitem.hospitalId.title}}</td>
+        <td>{{bookingitem.vaccineName}}</td>
+        <td>{{bookingitem.vaccineDescr}}</td>
+        <td>{{bookingitem.price}}</td>
+        
+      </tr>
+     
+      {% endfor %}
+    </tbody>
+    </table>

@@ -1,0 +1,4 @@
+<option value="">---Select Vaccine---</option>
+{% for v in vaccinelist %}
+	<option value="{{ v.pk }}">{{ v.vaccineName }}</option>
+{% endfor %}
