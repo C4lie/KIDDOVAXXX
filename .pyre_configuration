@@ -1,0 +1,16 @@
+{
+  "site_package_search_strategy": "all",
+  "source_directories": [
+    {
+      "import_root": "d:\\TeamKiddoVax\\KIDDOVAXXX",
+      "source": "."
+    }
+  ],
+  "search_path": [
+    "venv/Lib/site-packages"
+  ],
+  "exclude_checks": [
+    "MissingModuleAttribute",
+    "UndefinedAttribute"
+  ]
+}

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiddoVax | Modern Patient Dashboard</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#006a6a",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#e6fffe",
+              "on-error": "#ffffff",
+              "on-surface": "#002020",
+              "primary-container": "#008080",
+              "on-secondary-container": "#09657f",
+              "on-primary-fixed-variant": "#004f4f",
+              "surface-variant": "#c6e9e9",
+              "secondary-fixed-dim": "#89d0ed",
+              "on-tertiary-fixed": "#002020",
+              "on-primary-fixed": "#002020",
+              "surface-container": "#d2f5f4",
+              "on-primary": "#ffffff",
+              "outline-variant": "#bdc9c8",
+              "secondary-container": "#9ae1ff",
+              "primary": "#006565",
+              "on-primary-container": "#e3fffe",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#c6e9e9",
+              "background": "#e2fffe",
+              "surface-container-low": "#d7fafa",
+              "tertiary-container": "#587979",
+              "on-surface-variant": "#3e4949",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#ccefee",
+              "surface": "#e2fffe",
+              "tertiary-fixed-dim": "#abcdcd",
+              "on-tertiary-fixed-variant": "#2c4c4c",
+              "secondary": "#0c6780",
+              "secondary-fixed": "#baeaff",
+              "surface-bright": "#e2fffe",
+              "tertiary": "#406060",
+              "on-background": "#002020",
+              "primary-fixed": "#93f2f2",
+              "surface-dim": "#bee1e0",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#d4f8f7",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#76d6d5",
+              "tertiary-fixed": "#c6e9e9",
+              "outline": "#6e7979",
+              "on-secondary-fixed-variant": "#004d62",
+              "inverse-surface": "#143535",
+              "primary-fixed-dim": "#76d6d5",
+              "on-secondary-fixed": "#001f29"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+      }
+      .custom-shadow {
+        box-shadow: 0px 4px 20px rgba(0, 32, 32, 0.04), 0px 12px 40px rgba(0, 32, 32, 0.08);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 glass-nav bg-white/80 transition-all duration-300 shadow-[0px_4px_20px_rgba(0,32,32,0.04)]">
+<div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+<!-- Brand Logo -->
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-headline font-black text-2xl tracking-tight italic text-teal-800">KiddoVax</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-10">
+<a class="font-headline font-bold text-lg text-teal-700 border-b-2 border-teal-600 transition-all duration-300" href="#">Home</a>
+<a class="font-headline font-medium text-lg text-teal-600/70 hover:text-teal-900 transition-all duration-300" href="#">About</a>
+<a class="font-headline font-medium text-lg text-teal-600/70 hover:text-teal-900 transition-all duration-300" href="#">Contact</a>
+</nav>
+<!-- Profile Dropdown -->
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 p-1.5 rounded-full hover:bg-teal-50/50 transition-all duration-300 active:scale-95 group">
+<img alt="User Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10 group-hover:ring-primary/30" data-alt="close-up portrait of a professional man with a friendly expression in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL2wgODvf1aMMp8ZD7G3ETUc0Il7vxpIyx-U7LBwvUHSiDBDlry-JERI2r3FSrbRoLbBGw5l9MqWN7Cww98E4Fj6BTQfXnO1EW6xIC370KRbgdwpBtr2IHAK33KUmEZ7C8-1jvdT4ws_NwI_OQYINAuH9RpDGSQlOX2NeCN2TLx0a8tgFaHvVEXgnw90lwnjNb2U35HLKo2m4nBctbjUp6h4hHuomrDRYJKnkjrvbkvlcYBQ5jNYKbeIVm9le6MPBteC9wt0Rjx0Y"/>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-20 max-w-7xl mx-auto px-8 space-y-12">
+<!-- Hero Section -->
+<section class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary-container p-12 md:p-20 text-on-primary">
+<div class="relative z-10 max-w-2xl space-y-6">
+<div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30">
+<span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-sm font-semibold tracking-wide uppercase">New Guidelines 2024</span>
+</div>
+<h1 class="font-headline font-extrabold text-5xl md:text-6xl leading-[1.1] tracking-tight">
+                    Prevent the Spread, <br/><span class="text-primary-fixed">Stay Safe</span>
+</h1>
+<p class="text-lg md:text-xl text-primary-fixed/90 max-w-lg font-medium leading-relaxed">
+                    Personalized vaccination tracking and scheduling for your little ones. Modern care, delivered with clinical precision and concierge warmth.
+                </p>
+<div class="pt-4 flex flex-wrap gap-4">
+<button class="bg-surface-container-lowest text-primary px-8 py-4 rounded-xl font-headline font-bold text-lg hover:shadow-lg transition-all duration-300 active:scale-95">
+                        Get Started Now
+                    </button>
+<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-headline font-bold text-lg hover:bg-white/20 transition-all duration-300 active:scale-95">
+                        Learn More
+                    </button>
+</div>
+</div>
+<!-- Decorative Image Element -->
+<div class="absolute top-0 right-0 w-1/3 h-full hidden lg:block opacity-20 transform translate-x-10">
+<img alt="Medical background" class="object-cover h-full w-full" data-alt="abstract artistic visualization of cellular medical patterns in soft teal and white tones with gentle lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGPEvnlIPBce7RqB208EkZne-a1ZEhUkmqZ8Ymt79SaamhGqX6WKRvqV7-hrkTOEnPFs3ObrSYCo20Y1H3jWnwpKtsucWmfqB_--awFTDNRBOrfoX9dM-lIXKdM1GRWmtfI6-yFB-Y33eGcqS-UvzTzPIYWOUJanISmYGQ8zLiwBPry_-EwN8izQc035EGigV7Dw5UYLHon4R28V-df6Q7zsbCqme-dgoFV5iAO74PZ2XYDD2CF1ZW_MrLMGHKM7uo9--JoG2ZfAA"/>
+</div>
+</section>
+<!-- Bento Grid: Actions -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Book Appointment Card -->
+<div class="md:col-span-7 group relative bg-surface-container-lowest rounded-xl p-10 custom-shadow transition-all duration-500 hover:-translate-y-1 overflow-hidden">
+<div class="relative z-10 h-full flex flex-col justify-between">
+<div class="space-y-4">
+<div class="w-14 h-14 bg-secondary-container rounded-xl flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-3xl" data-icon="calendar_month">calendar_month</span>
+</div>
+<h3 class="font-headline font-bold text-3xl text-on-surface">Book Appointment</h3>
+<p class="text-on-surface-variant max-w-md text-lg leading-relaxed">
+                            Schedule your next pediatric visit with our top-rated clinicians in just a few clicks. Instant confirmation and reminders.
+                        </p>
+</div>
+<div class="mt-12">
+<button class="flex items-center gap-2 font-headline font-bold text-primary group-hover:gap-4 transition-all">
+                            Check Availability 
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="absolute -bottom-10 -right-10 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+<span class="material-symbols-outlined text-[200px]" data-icon="event">event</span>
+</div>
+</div>
+<!-- View Vaccines Card -->
+<div class="md:col-span-5 flex flex-col gap-8">
+<div class="flex-1 bg-secondary rounded-xl p-10 text-on-secondary custom-shadow group cursor-pointer hover:bg-secondary/90 transition-all duration-300">
+<div class="flex justify-between items-start">
+<div class="space-y-4">
+<span class="material-symbols-outlined text-4xl text-secondary-fixed" data-icon="vaccines">vaccines</span>
+<h3 class="font-headline font-bold text-2xl">View Vaccines</h3>
+<p class="text-secondary-fixed/80 leading-snug">
+                                Full immunization history and upcoming requirements.
+                            </p>
+</div>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-variant rounded-xl p-8 custom-shadow flex items-center gap-6">
+<div class="p-4 bg-surface-container-lowest rounded-full">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface text-xl">Clinical Verification</h4>
+<p class="text-on-surface-variant text-sm">All records are encrypted and HIPAA compliant.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Section: Prevention Tips -->
+<section class="space-y-8">
+<div class="flex items-end justify-between">
+<div class="space-y-2">
+<h2 class="font-headline font-bold text-3xl text-primary">Prevention Tips</h2>
+<p class="text-on-surface-variant font-medium">Expert-curated health advice for your family's safety.</p>
+</div>
+<a class="text-primary font-bold hover:underline underline-offset-4" href="#">See All Insights</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Tip Card 1 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-white/50 space-y-6 hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined" data-icon="clean_hands">clean_hands</span>
+</div>
+<h4 class="font-headline font-bold text-xl">Hygiene First</h4>
+<p class="text-on-surface-variant leading-relaxed">
+                        Teach your children the 20-second hand washing rule. It's the simplest defense against seasonal viruses.
+                    </p>
+</div>
+<!-- Tip Card 2 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-white/50 space-y-6 hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<h4 class="font-headline font-bold text-xl">Immune Boosting</h4>
+<p class="text-on-surface-variant leading-relaxed">
+                        A diet rich in Vitamin C and colorful vegetables helps build a robust immune system for the growing body.
+                    </p>
+</div>
+<!-- Tip Card 3 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-white/50 space-y-6 hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined" data-icon="bedtime">bedtime</span>
+</div>
+<h4 class="font-headline font-bold text-xl">Restful Recovery</h4>
+<p class="text-on-surface-variant leading-relaxed">
+                        Consistent sleep schedules allow the body to repair and strengthen its natural defenses during the night.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Health Status Tracker (Asymmetric Component) -->
+<section class="bg-surface-container-highest rounded-xl p-1 md:p-12">
+<div class="flex flex-col lg:flex-row gap-12 items-center">
+<div class="w-full lg:w-1/2 rounded-xl overflow-hidden custom-shadow aspect-video">
+<img alt="Doctor consultation" class="w-full h-full object-cover" data-alt="female pediatrician in white coat talking kindly to a young child and parent in a modern sunlit clinic office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD69y46DeW5m6T7Pq2JjAKVNzc6hbG8bge6KqRCpYo7xM6ZqAVd4vv4IBM8aDZS7m4uLzhQdJ_w_UqOqC8t0fZyDM7ocFOOLBOtoxMq0hY-SUk2zP9zhwXT4VOk2OZh-GCKuSY-_5XhN7tIv2rszWdUdvi5tGTZa0HuzLN17hFs_r2T59TFW4b-kufbgC0r3nZcKLbfv4oUHrIBQTRFgE8BFyRr3eowaNY2bPUt4mF7u7I_jlJJGvkNjwaB3S8oYtG8aCbBlGLvmhg"/>
+</div>
+<div class="w-full lg:w-1/2 space-y-8">
+<h2 class="font-headline font-extrabold text-4xl text-on-surface leading-tight">Your Child's Health Narrative, <span class="text-secondary italic">Simplified.</span></h2>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="mt-1 p-2 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h5 class="font-headline font-bold text-lg">Automated Reminders</h5>
+<p class="text-on-surface-variant">Never miss a booster with our smart notification engine.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="mt-1 p-2 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h5 class="font-headline font-bold text-lg">Direct Messaging</h5>
+<p class="text-on-surface-variant">Secure, direct channel to your pediatrician for non-emergencies.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="mt-1 p-2 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h5 class="font-headline font-bold text-lg">Growth Tracking</h5>
+<p class="text-on-surface-variant">Visualize physical and developmental milestones in real-time.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-teal-50 dark:bg-teal-950 w-full rounded-t-[2.5rem] mt-20">
+<div class="max-w-7xl mx-auto px-12 py-16 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-teal-800" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-manrope font-extrabold text-teal-900 dark:text-white text-xl">KiddoVax Concierge</span>
+</div>
+<p class="font-inter text-sm tracking-wide text-teal-800 dark:text-teal-200 opacity-60">© 2024 KiddoVax Concierge Care. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-inter text-sm tracking-wide text-teal-800 dark:text-teal-200 opacity-60 hover:opacity-100 transition-opacity hover:text-teal-600 dark:hover:text-teal-400" href="#">Privacy Policy</a>
+<a class="font-inter text-sm tracking-wide text-teal-800 dark:text-teal-200 opacity-60 hover:opacity-100 transition-opacity hover:text-teal-600 dark:hover:text-teal-400" href="#">Terms of Service</a>
+<a class="font-inter text-sm tracking-wide text-teal-800 dark:text-teal-200 opacity-60 hover:opacity-100 transition-opacity hover:text-teal-600 dark:hover:text-teal-400" href="#">Support</a>
+<a class="font-inter text-sm tracking-wide text-teal-800 dark:text-teal-200 opacity-60 hover:opacity-100 transition-opacity hover:text-teal-600 dark:hover:text-teal-400" href="#">Emergency Contact</a>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-teal-800 shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-teal-800 shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+</button>
+</div>
+</div>
+</footer>
+<!-- FAB (Floating Action Button) - Appears on Mobile/Tablet Dashboard -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center group active:scale-90 transition-transform z-40 md:hidden">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</body></html>

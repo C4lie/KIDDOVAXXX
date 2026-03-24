@@ -5,7 +5,7 @@ from django.views import  View
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 from patientapp.forms import AppointmentForm
-from patientapp.models import Appointmenttbl
+from patientapp.models import Appointmenttbl, VaccinationRecord
 import datetime
 # Create your views here.
 
@@ -24,7 +24,22 @@ def Home(request):
         message = None
     if request.session.get('CName') is None:
         return redirect('receptionist:receptionistlogin') 
-    return render(request,'receptionistapp/home.html')
+        
+    waiting_count = 0
+    today_apps = 0
+    try:
+        gethId = Receptionisttbl.objects.filter(id=request.session.get('Cid')).values('hospitalid_id').first()
+        if gethId:
+            h_id = gethId['hospitalid_id']
+            waiting_count = Appointmenttbl.objects.filter(hospitalid=h_id, active=0).count()
+            today_apps = Appointmenttbl.objects.filter(hospitalid=h_id, aptdate=datetime.date.today()).count()
+    except Exception as e:
+        pass
+        
+    return render(request,'receptionistapp/home.html', {
+        'waiting_count': waiting_count,
+        'today_apps': today_apps
+    })
 
 class ManagePatient(View):
     def get(self, request, id=None):
@@ -69,7 +84,16 @@ class ManagePatient(View):
         elif int(Status[0]['active']) == 1:
             UpdateData.outdt =  datetime.datetime.now()
             UpdateData.active = 2
-            UpdateData.save(update_fields= ['outdt','active'])  
+            UpdateData.save(update_fields= ['outdt','active'])
+            # Auto-create VaccinationRecord when appointment is completed (only if child FK is set)
+            if UpdateData.child_id:
+                VaccinationRecord.objects.get_or_create(
+                    appointment=UpdateData,
+                    defaults={
+                        'child_id': UpdateData.child_id,
+                        'vaccine_id': UpdateData.vaccineid_id,
+                    }
+                )
 
         #return render(request,'receptionistapp/booking.html')
         return redirect('receptionist:managepatients')

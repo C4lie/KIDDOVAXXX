@@ -1,350 +1,523 @@
 {% load static %}
-
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax : Patient</title>
-    <!-- google fonts -->
-    <link href="//fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="{% static 'patients/css/style-starter.css' %}">
+    <title>KiddoVax | Modern Patient Dashboard</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- FontAwesome for the Logo -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Animate.css for smooth entrance animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#006a6a", "on-surface": "#002020", "primary-container": "#008080", 
+              "on-secondary-container": "#09657f", "surface-variant": "#c6e9e9", "secondary-fixed-dim": "#89d0ed", 
+              "surface-container": "#d2f5f4", "on-primary": "#ffffff", "secondary-container": "#9ae1ff", 
+              "primary": "#006565", "surface-container-highest": "#c6e9e9", "background": "#f8fafc", 
+              "surface-container-low": "#d7fafa", "surface-container-lowest": "#ffffff", "secondary": "#0c6780", 
+              "secondary-fixed": "#baeaff", "surface-bright": "#e2fffe", "on-background": "#002020", 
+              "primary-fixed": "#93f2f2",
+              "modern-cyan": "#06b6d4",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'float-delayed': 'float 8s ease-in-out infinite 2s',
+              'pulse-glow': 'pulseGlow 3s infinite',
+              'blob': 'blob 7s infinite',
+              'gradient-bg': 'gradientBG 15s ease infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              pulseGlow: {
+                '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
+                '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              gradientBG: {
+                '0%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+                '100%': { backgroundPosition: '0% 50%' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
+      
+      /* Modern Glassmorphism */
+      .glass-nav { 
+          background: rgba(255, 255, 255, 0.75); 
+          backdrop-filter: blur(20px); 
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      .glass-card {
+          background: rgba(255, 255, 255, 0.6);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      /* Animated Gradient Hero matching "Modern Tech/Medical" vibe */
+      .hero-gradient {
+          background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop');
+          background-size: 400% 400%, cover;
+          background-position: 0% 50%, center;
+          position: relative;
+      }
+      
+      .bento-hover {
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .bento-hover:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 30px 60px rgba(0, 101, 101, 0.12);
+      }
+
+      /* Animated shiny border effect for cards */
+      .shiny-border {
+          position: relative;
+      }
+      .shiny-border::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 2px;
+          background: linear-gradient(45deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+      }
+
+      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
+      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
+      
+      /* Subtle mesh pattern */
+      .mesh-bg {
+          background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+                            radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%),
+                            radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+      }
+    </style>
 </head>
+<body class="text-on-surface font-body mesh-bg">
 
-<body>
-    <!--header-->
-    <header id="site-header" class="fixed-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark stroke">
-                <h1>
-                    <a class="navbar-brand" href="{% url 'patient:homepage' %}">
-                      Kidd<i class="fab fa-keycdn"></i>Vax</a>
-                </h1>
-                <!-- if logo is image enable this   
-          <a class="navbar-brand" href="#index.html">
-              <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-          </a> -->
-                <button class="navbar-toggler  collapsed bg-gradient zoom-in-button" type="button" data-toggle="collapse"
-                    data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon fa icon-expand fa-bars"></span>
-                    <span class="navbar-toggler-icon fa icon-close fa-times"></span>
-                    </span>
-                </button>
-                {% include 'patientapp/menu.html' %}
-               
-
-                <!-- toggle switch for light and dark theme -->
-                <div class="mobile-position">
-                    <nav class="navigation">
-                        <div class="theme-switch-wrapper">
-                            <label class="theme-switch" for="checkbox">
-                                <input type="checkbox" id="checkbox">
-                                <div class="mode-container py-1">
-                                    <i class="gg-sun"></i>
-                                    <i class="gg-moon"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </nav>
-                </div>
-                <!-- //toggle switch for light and dark theme -->
+    <!-- Standalone Tailwind Navbar -->
+    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <!-- Brand Logo with original FontAwesome Icon -->
+            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
+                </span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-10">
+                <a class="font-headline font-bold text-lg text-primary border-b-2 border-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
             </nav>
 
+            <!-- Authentication / Profile Dropdown -->
+            <div class="flex items-center gap-4">
+                {% if request.session.CName is None %} 
+                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
+                {% else %}
+                    <!-- Notification Bell -->
+                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4 mr-2">
+                        <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+                            <span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">notifications</span>
+                            <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center hidden border-2 border-white transform translate-x-1 -translate-y-1">0</span>
+                        </button>
+                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden z-50 overflow-hidden">
+                            <div class="p-4 border-b border-gray-100/80 flex items-center justify-between bg-teal-50/30">
+                                <h4 class="font-headline font-bold text-gray-800 text-sm">Notifications</h4>
+                                <button id="mark-read-btn" class="text-[10px] font-bold text-modern-cyan hover:text-primary uppercase tracking-widest hidden">Mark All Read</button>
+                            </div>
+                            <div id="notif-list" class="max-h-[300px] overflow-y-auto">
+                                <div class="p-6 text-center text-gray-400 font-medium text-xs">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
+                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
+                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> Appointments
+                            </a>
+                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
+                            </a>
+                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </header>
-    <!--/header-->
 
-    <!-- hero slider Start -->
-    <div class="banner-wrap">
-        <div class="banner-slider">
-            <!-- hero slide start -->
-            <div class="banner-slide bg1">
-                <div class="container">
-                    <div class="hero-content">
-                        <h1 data-animation="flipInX" data-delay="0.8s" data-color="#fff">
-                            Prevent the Spread
-                            Stay at Home, Stay Safe</h1>
-                        <p data-animation="fadeInDown" class="mt-4">A vaccine is a biological preparation that stimulates immunity to a particular pathogen. A vaccine typically contains an agent that resembles a disease-causing microorganism and is often made from weakened or killed forms of the microbe or its toxins.
-                            <!-- <span class="dis-none">Ut enim ad minim veniam, quis nisi ut ea.</span> </p>
-                        <div class="cta-btn" data-animation="fadeInUp" data-delay="1s">
-                            <a href="#url" class="btn btn-style btn-primary">Read More</a>
-                        </div> -->
-                    </div>
+    <!-- Main Content -->
+    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
+        
+        <!-- Animated Modern Hero Section -->
+        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
+            
+            <!-- Floating Animated Blobs behind the text inside the hero container -->
+            <div class="absolute top-0 -left-4 w-72 h-72 bg-modern-cyan rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+            <div class="absolute top-0 -right-4 w-72 h-72 bg-modern-indigo rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+            <div class="absolute -bottom-8 left-20 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+
+            <div class="relative z-10 max-w-3xl space-y-8">
+                <!-- Glowing Badge -->
+                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 animate__animated animate__fadeInDown child:animation-delay-500">
+                    <span class="flex h-3 w-3 relative">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span class="text-sm font-bold tracking-wider uppercase letter-spacing-1">Next Gen Immunization</span>
                 </div>
-                <div class="hero-overlay"></div>
-            </div>
-            <!-- hero slide end -->
-           
-        </div>
-    </div>
-    <!-- hero slider end -->
-    <!--/home-stats-->
-    <!-- <section class="w3l-stats-main py-5">
-        <div class="container py-lg-5 py-2">
-            <div class="row stats-con">
-                <div class="col-lg-3 col-6 stats_info counter_grid text-left mt-lg-0 mt-5">
-                    <div class="icon stat-icon">
-                        <i class="fab fa-keycdn"></i>
-                    </div>
-                    <p class="counter">1233100</p>
-                    <h4>Active Cases</h4>
-                </div>
-                <div class="col-lg-3 col-6 stats_info counter_grid1 text-left mt-lg-0 mt-5">
-                    <div class="icon stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <p class="counter">182020</p>
-                    <h4>Recovered Cases</h4>
-                </div>
-                <div class="col-lg-3 col-6 stats_info counter_grid text-left mt-lg-0 mt-5">
-                    <div class="icon stat-icon">
-                        <i class="fas fa-skull-crossbones"></i>
-                    </div>
-                    <p class="counter">71912</p>
-                    <h4>Total Deaths</h4>
-                </div>
-                <div class="col-lg-3 col-6 stats_info counter_grid text-left mt-lg-0 mt-5">
-                    <div class="icon stat-icon">
-                        <i class="fas fa-crutch"></i>
-                    </div>
-                    <p class="counter">11912</p>
-                    <h4>Vaccination</h4>
+                
+                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white animate__animated animate__fadeInLeft">
+                    Secure Their Future.<br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">Modernize Their Care.</span>
+                </h1>
+                
+                <p class="text-xl text-cyan-50 max-w-xl font-medium leading-relaxed animate__animated animate__fadeInLeft animate__delay-1s opacity-90">
+                    Experience the smartest way to track, schedule, and verify your child's vaccinations. State-of-the-art medical security meets seamless design.
+                </p>
+                
+                <div class="pt-6 flex flex-wrap gap-5 animate__animated animate__fadeInUp animate__delay-1s">
+                    <a href="{% url 'patient:vaccinebooking' %}" class="bg-white text-primary px-10 py-4 rounded-2xl font-headline font-extrabold text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-1.5 transition-all duration-300 decoration-transparent flex items-center gap-3 group">
+                        Book Appointment 
+                        <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+                    </a>
+                    <a href="{% url 'patient:aboutpage' %}" class="glass-card text-white border border-white/30 px-10 py-4 rounded-2xl font-headline font-bold text-lg hover:bg-white/20 hover:-translate-y-1 transition-all duration-300 decoration-transparent">
+                        Discover More
+                    </a>
                 </div>
             </div>
-        </div>
-    </section> -->
-    <!--//home-stats-->
-    <!-- home page about section -->
-    <!-- <section class="w3l-homeblock1" id="about">
-        <div class="midd-w3 py-5">
-            <div class="container py-lg-5 py-md-3">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <span class="title-subw3hny">About the disease</span>
-                        <h3 class="title-w3l">Coronavirus Disease 
-                            Outbreak Situation</h3>
-                        <p class="mt-md-4 mt-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            ullamco laboris nisi ut ex ea. </p>
-                        <ul class="service-list pt-lg-2 mt-4">
-                            <li class="service-link"><a href="#url"><span class="fas fa-check"></span> Avoid touching your face.</a></li>
-                            <li class="service-link"><a href="#url"><span class="fas fa-check"></span> Cover your mouth and nose when coughing.</a></li>
-                            <li class="service-link"><a href="#url"><span class="fas fa-check"></span> Stay home if you feel unwell.</a></li>
-                        </ul>
-                    </div>
-                    <div class="HomeAboutImages col-lg-6 mt-lg-0 mt-5 pl-lg-5">
-                        <div class="row position-relative">
-                            <div class="col-6">
-                                <img src="{% static 'admin/assets/images/1.jpg' %}" alt="" class="radius-image img-fluid">
-                            </div>
-                            <div class="col-6">
-                                <img src="{% static 'admin/assets/images/2.jpg' %}" alt="" class="radius-image img-fluid">
-                            </div>
+            
+            <!-- Modern 3D Floating Elements -->
+            <div class="absolute right-10 top-1/2 -translate-y-1/2 hidden lg:block perspective-1000">
+                <div class="animate-float">
+                    <div class="w-64 h-80 glass-card rounded-3xl border border-white/40 shadow-2xl p-6 flex flex-col gap-4 transform rotate-y-[-15deg] rotate-x-[10deg]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg"><span class="material-symbols-outlined text-white">shield_person</span></div>
+                            <div class="h-4 w-24 bg-white/50 rounded-full"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <!-- //home page about section -->
-    <!-- features-section -->
-    <section class="w3l-features py-5" id="work">
-        <div class="container py-lg-5 py-md-4 py-2">
-            <div class="row main-cont-wthree-2 align-items-center">
-                <div class="col-lg-6 feature-grid-left pr-lg-5">
-                    <h5 class="title-subw3hny">How to Protect Yourself?</h5>
-                    <h3 class="title-w3l mb-4">Prevention & advice</h3>
-                    <p class="text-para">Immunization is a global health and development success story, saving millions of lives every year. Vaccines reduce risks of getting a disease by working with your body’s natural defences to build protection. When you get a vaccine, your immune system responds.
-                    </p>
-                    <a href="#" class="btn btn-style btn-primary mt-lg-5 mt-4">Read More</a>
-                </div>
-                <div class="col-lg-6 feature-grid-right mt-lg-0 mt-5 pl-lg-5">
-                    <div class="call-grids-w3 d-grid">
-                        <div class="grids-1 box-wrap">
-                            <div class="icon">
-                                <i class="fas fa-hands-wash"></i>
-                            </div>
-                            <h4><a href="{% url 'patient:aboutpage' %}" class="title-head">Wash your hands frequently</a></h4>
-                        </div>
-                        <div class="grids-1 box-wrap">
-                            <div class="icon">
-                                <i class="fas fa-people-arrows"></i>
-                            </div>
-                            <h4><a href="{% url 'patient:aboutpage' %}" class="title-head">Maintain social distancing</a></h4>
-                        </div>
-                        <div class="grids-1 box-wrap">
-                            <div class="icon">
-                                <i class="fas fa-surprise"></i>
-                            </div>
-                            <h4><a href="{% url 'patient:aboutpage' %}" class="title-head">Avoid touching on your face</a></h4>
-                        </div>
-                        <div class="grids-1 box-wrap">
-                            <div class="icon">
-                                <i class="fas fa-temperature-high"></i>
-                            </div>
-                            <h4><a href="{% url 'patient:aboutpage' %}" class="title-head">Practice respiratory hygiene</a></h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- features section -->
-    <!--  services section -->
-    <div class="w3l-servicesblock2" id="services">
-        <section id="grids5-block" class="py-5">
-            <div class="container py-lg-5 py-md-4 py-2">
-                <h5 class="title-subw3hny text-center">Protect Yourself?</h5>
-                <h3 class="title-w3l text-center">Take Steps To Protect
-                    Yourself</h3>
-                <div class="row mt-lg-5 mt-4 text-center">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="grids5-info">
-                            <a href="#service" class="d-block zoom"><img src="{% static 'patients/images/s1.jpg' %}" alt=""
-                                    class="img-fluid" /></a>
-                            <div class="blog-info">
-                                <a href="#service" class="title">Wear A Face Mask</a>
-                                <!-- <p class="text-para"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. </p> -->
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mt-md-0 mt-5">
-                        <div class="grids5-info">
-                            <a href="#service" class="d-block zoom"><img src="{% static 'patients/images/s2.jpg' %}" alt=""
-                                    class="img-fluid" /></a>
-                            <div class="blog-info">
-                                <a href="#service" class="title">Wash Your Hands</a>
-                                <!-- <p class="text-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. </p> -->
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mt-lg-0 mt-5">
-                        <div class="grids5-info">
-                            <a href="#service" class="d-block zoom"><img src="{% static 'patients/images/s3.jpg' %}" alt=""
-                                    class="img-fluid" /></a>
-                            <div class="blog-info">
-                                <a href="#service" class="title">Avoid Close Contact</a>
-                                <!-- <p class="text-para"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. </p> -->
-                            </div>
-                           
-                        </div>
+                        <div class="h-2 w-full bg-white/30 rounded-full mt-4"></div>
+                        <div class="h-2 w-3/4 bg-white/30 rounded-full"></div>
+                        <div class="flex-1"></div>
+                        <div class="w-full h-12 rounded-xl bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center text-white font-bold tracking-widest text-sm">VERIFIED</div>
                     </div>
                 </div>
             </div>
         </section>
-    </div>
-    <!--//services-section-->
-    <!--/testimonials-->
-    <!-- <section class="w3l-testimonials" id="testimonials">
-     
-        <div class="cusrtomer-layout py-5">
-            <div class="container py-lg-4 py-md-3 py-2 pb-lg-0">
-                <h5 class="title-subw3hny text-center mb-1">Happy Clients</h5>
-                <h3 class="title-w3l two text-center mb-sm-5 mb-4">Reviews and Testimonials</h3>
-               
-                <div class="testimonial-width">
-                    <div id="owl-demo1" class="owl-two owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="testimonial-content">
-                                <div class="testimonial">
-                                    <i class="fas fa-quote-right"></i>
-                                    <blockquote>
-                                        <q>Lorem ipsum dolor sit amet elit. Velit beatae
-                                            laudantium voluptate rem ullam dolore nisi voluptatibus esse quasi,
-                                            doloribus tempora.
-                                            Dolores molestias adipisci dolo amet!. Lorem ipsum dolor sit amet
-                                            consectetur
-                                            adipisicing elit. Esse architecto est ea sunt eligendi cum?</q>
-                                    </blockquote>
-                                    <div class="testi-des">
-                                        <div class="test-img"><img src="{% static 'admin/assets/images/team1.jpg' %}" class="img-fluid"
-                                                alt="client-img">
-                                        </div>
-                                        <div class="peopl align-self">
-                                            <h3>John wilson</h3>
-                                            <p class="indentity">Example City</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
+        <!-- Dynamic Bento Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-12 gap-8 my-16">
+            
+            <!-- Book Appointment Card (Main Highlight) -->
+            <a href="{% url 'patient:vaccinebooking' %}" class="md:col-span-7 group bento-hover bg-white rounded-[2rem] p-10 shiny-border border border-gray-100 block decoration-transparent relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-bl-[100%] z-0 transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div class="relative z-10 h-full flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 shadow-sm animate-pulse-glow" style="background: linear-gradient(135deg, #0ea5e9, #006565); color: white;">
+                            <span class="material-symbols-outlined text-3xl">edit_calendar</span>
+                        </div>
+                        <h3 class="font-headline font-black text-4xl text-gray-900 tracking-tight">Schedule Visit</h3>
+                        <p class="text-gray-500 max-w-md text-lg leading-relaxed font-medium">
+                                AI-assisted pediatric scheduling with our top-rated clinicians. Fast, secure, and tailored for you.
+                        </p>
+                    </div>
+                    <div class="mt-12">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 group-hover:bg-primary group-hover:text-white transition-colors duration-300 text-gray-400">
+                             <span class="material-symbols-outlined">north_east</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Stacked Action Cards -->
+            <div class="md:col-span-5 flex flex-col gap-8">
+                <!-- View Vaccines (Vibrant) -->
+                <a href="{% url 'patient:showdata' %}" class="flex-1 rounded-[2rem] p-10 text-white bento-hover group block decoration-transparent relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                    <!-- Decor -->
+                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-modern-blue/20 rounded-full blur-2xl group-hover:bg-modern-cyan/30 transition-colors duration-500"></div>
+                    
+                    <div class="relative z-10 flex justify-between items-start h-full flex-col">
+                        <div class="space-y-4">
+                            <span class="material-symbols-outlined text-4xl text-modern-cyan transition-transform group-hover:scale-110 group-hover:rotate-12 duration-300">science</span>
+                            <h3 class="font-headline font-bold text-3xl text-white tracking-tight">Vaccine Records</h3>
+                            <p class="text-gray-400 font-medium leading-relaxed">
+                                Complete immunization history, digitized and encrypted.
+                            </p>
+                        </div>
+                        <div class="mt-8 flex items-center gap-2 text-modern-cyan font-bold uppercase tracking-wider text-sm">
+                            Access Now <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">east</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- Clinical Verification Card -->
+                <div class="rounded-[2rem] p-8 bg-white border border-gray-100 flex items-center gap-6 bento-hover">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-green-400 blur-md opacity-40 rounded-full animate-pulse"></div>
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100 relative z-10">
+                            <span class="material-symbols-outlined text-green-600 text-3xl">gpp_good</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-bold text-gray-900 text-xl m-0 tracking-tight">Clinically Verified</h4>
+                        <p class="text-gray-500 text-sm m-0 mt-1 font-medium">HIPAA compliant hospital data.</p>
                     </div>
                 </div>
             </div>
-          
-        </div>
-       
-    </section> -->
+        </section>
 
-            <!-- <section class="w3l-project py-5" id="subscribe">
-                <div class="container py-md-5 py-sm-4 py-2">
-                    <div class="bottom-info">
-                        <div class="header-section text-center">
-                            <h5 class="title-subw3hny text-center mb-1">Join With Us</h5>
-                            <h3 class="title-w3l">Subscribe to our Newsletter</h3>
-                            <p class="mt-3 pr-lg-5">Lorem ipsum dolor sit amet elit. Velit beatae
-                                rem ullam dolore nisi esse quasi, sit amet. Lorem ipsum dolor sit
-                                amet elit.</p>
-                        </div>
-                        <form action="#" class="subscribe mt-5" method="post">
-                            <input type="email" name="email" placeholder="Your Email Address" required="">
-                            <button class="btn btn-style btn-primary"><i class="fas fa-paper-plane"></i></button>
-                        </form>
+        <!-- Sleek Prevention Tips (Editorial Layout) -->
+        <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+            <div class="text-center max-w-2xl mx-auto space-y-4">
+                <h2 class="font-headline font-black text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-modern-blue tracking-tighter">Essential Prevention</h2>
+                <p class="text-gray-500 font-medium text-lg">Curated health insights from our lead pediatricians to keep your family protected all year round.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tip Card 1 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-cyan-50 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">sanitizer</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-3 tracking-tight">Hygiene First</h4>
+                    <p class="text-gray-500 leading-relaxed font-medium">
+                        The 20-second hand washing rule remains the absolute most effective defense against seasonal and aggressive viral transmissions.
+                    </p>
+                </div>
+                <!-- Tip Card 2 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-orange-50 text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">nutrition</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-3 tracking-tight">Immune Boosting</h4>
+                    <p class="text-gray-500 leading-relaxed font-medium">
+                        A dynamic diet rich in Vitamin C, zinc, and colorful vegetables constructs a robust natural immune system for growing bodies.
+                    </p>
+                </div>
+                <!-- Tip Card 3 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">routine</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-3 tracking-tight">Restful Recovery</h4>
+                    <p class="text-gray-500 leading-relaxed font-medium">
+                        Deep REM sleep cycles allow the infant body to repair cells and radically strengthen its natural defenses during the night.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Popup Alert Modal (shown on page load if there are unread critical alerts) -->
+    {% if request.session.CName %}
+    <div id="alert-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-6 overflow-hidden animate__animated animate__zoomIn">
+            <div class="bg-gradient-to-r from-primary to-modern-cyan p-6 text-white relative">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined">notifications_active</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline font-bold text-lg leading-tight">Health Alerts</h3>
+                        <p class="text-cyan-100 text-xs font-medium">Important updates for your family</p>
                     </div>
                 </div>
-            </section> -->
+                <button id="close-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+            <div id="modal-notif-list" class="p-5 space-y-3 max-h-64 overflow-y-auto"></div>
+            <div class="p-5 pt-0 flex gap-3">
+                <a href="{% url 'patient:vaccinebooking' %}" class="flex-1 bg-primary text-white text-center py-3 rounded-2xl font-headline font-bold text-sm hover:bg-opacity-90 transition decoration-transparent">Book Now</a>
+                <button id="dismiss-modal" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-2xl font-headline font-bold text-sm hover:bg-gray-200 transition">Dismiss</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
-    {% include 'patientapp/footer.html' %}
-    <!-- Template JavaScript -->
-    <script src="{% static 'patients/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'patients/js/theme-change.js' %}"></script>
-    
-    <!-- disable body scroll which navbar is in active -->
+    <!-- Ultra-Modern Dark Footer -->
+    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
+        <!-- Abstract gradient blob in footer background -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
+            <div class="flex flex-col items-center md:items-start gap-6">
+                <!-- Footer Logo -->
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
+                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
+                </div>
+                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
+                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
+                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
+            </div>
+            
+            <div class="flex gap-4">
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">public</span>
+                </button>
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">mail</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
+            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        $(function () {
-            $('.navbar-toggler').click(function () {
-                $('body').toggleClass('noscroll');
-            })
-        });
-    </script>
-    <!-- disable body scroll which navbar is in active -->
+    $(document).ready(function() {
+        // Only run notification logic when bell is present (i.e., user is logged in)
+        if ($('#notif-badge').length === 0) return;
 
-    <!--/MENU-JS-->
-    <script>
-        $(window).on("scroll", function () {
-            var scroll = $(window).scrollTop();
+        // ---- Fetch Notifications ----
+        function loadNotifications() {
+            $.ajax({
+                url: "{% url 'patient:get_notifications' %}",
+                success: function(res) {
+                    var notifs = res.notifications || [];
+                    var count = res.unread_count || 0;
 
-            if (scroll >= 80) {
-                $("#site-header").addClass("nav-fixed");
-            } else {
-                $("#site-header").removeClass("nav-fixed");
-            }
-        });
+                    // Bell badge
+                    if (count > 0) {
+                        $('#notif-badge').text(count).removeClass('hidden');
+                        $('#mark-read-btn').removeClass('hidden');
+                    } else {
+                        $('#notif-badge').addClass('hidden');
+                        $('#mark-read-btn').addClass('hidden');
+                    }
 
-        //Main navigation Active Class Add Remove
-        $(".navbar-toggler").on("click", function () {
-            $("header").toggleClass("active");
-        });
-        $(document).on("ready", function () {
-            if ($(window).width() > 991) {
-                $("header").removeClass("active");
-            }
-            $(window).on("resize", function () {
-                if ($(window).width() > 991) {
-                    $("header").removeClass("active");
+                    // Bell dropdown list
+                    var $list = $('#notif-list');
+                    if (notifs.length === 0) {
+                        $list.html('<div class="p-8 text-center flex flex-col items-center gap-2"><span class="material-symbols-outlined text-gray-300 text-3xl">notifications_paused</span><span class="text-gray-400 font-medium text-xs">All caught up!</span></div>');
+                    } else {
+                        var items = notifs.map(function(n) {
+                            var icon = n.type === 'vaccine' ? 'vaccines' : 'calendar_month';
+                            var iconCls = n.type === 'vaccine' ? 'text-orange-500 bg-orange-100' : 'text-blue-500 bg-blue-100';
+                            var bg = n.is_read ? 'bg-white' : 'bg-teal-50/60';
+                            var dot = n.is_read ? '' : '<span class="w-2 h-2 rounded-full bg-modern-cyan flex-shrink-0 mt-1.5"></span>';
+                            return '<div class="p-4 border-b border-gray-50 flex items-start gap-3 hover:bg-slate-50 transition-colors ' + bg + '">' +
+                                '<div class="w-8 h-8 rounded-full ' + iconCls + ' flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[16px]">' + icon + '</span></div>' +
+                                '<div class="flex-1"><p class="text-[11px] text-gray-700 leading-snug font-medium">' + n.message + '</p>' +
+                                '<span class="text-[9px] font-bold text-gray-400 uppercase mt-1 block">' + n.date + '</span></div>' + dot + '</div>';
+                        }).join('');
+                        $list.html(items);
+                    }
+
+                    // Popup modal: show only if unread AND not dismissed this session
+                    if (count > 0 && !sessionStorage.getItem('kiddovax_modal_dismissed')) {
+                        var unread = notifs.filter(function(n) { return !n.is_read; });
+                        var modalItems = unread.slice(0, 3).map(function(n) {
+                            var icon = n.type === 'vaccine' ? 'vaccines' : 'calendar_month';
+                            var iconCls = n.type === 'vaccine' ? 'text-orange-500 bg-orange-50' : 'text-blue-500 bg-blue-50';
+                            return '<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-2xl">' +
+                                '<div class="w-8 h-8 rounded-full ' + iconCls + ' flex items-center justify-center flex-shrink-0 mt-0.5"><span class="material-symbols-outlined text-[16px]">' + icon + '</span></div>' +
+                                '<p class="text-xs text-gray-700 leading-relaxed font-medium">' + n.message + '</p></div>';
+                        }).join('');
+                        $('#modal-notif-list').html(modalItems);
+                        $('#alert-modal').removeClass('hidden');
+                    }
                 }
             });
+        }
+
+        loadNotifications();
+
+        // Mark all read
+        $('#mark-read-btn').on('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            $.post("{% url 'patient:mark_notifications_read' %}", { csrfmiddlewaretoken: '{{ csrf_token }}' }, function() {
+                loadNotifications();
+            });
         });
+
+        // Close modal
+        $('#close-modal, #dismiss-modal').on('click', function() {
+            sessionStorage.setItem('kiddovax_modal_dismissed', '1');
+            $('#alert-modal').addClass('hidden');
+        });
+    });
     </script>
-    <!--//MENU-JS-->
-    <script src="{% static 'patients/js/bootstrap.min.js' %}"></script>
-
 </body>
-
 </html>

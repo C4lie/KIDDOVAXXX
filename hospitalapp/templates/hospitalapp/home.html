@@ -1,4 +1,237 @@
-{% extends 'hospitalapp/base.html' %}
-{% block contents %}
-    <h1>KiddoVAX :: Hospital Dashboard</h1>
-{% endblock contents %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Hospital Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
+              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner">
+                        <span class="material-symbols-outlined">local_hospital</span>
+                    </div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-xl">logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <!-- Welcome Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Hospital Insights</h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">Metrics for <strong class="text-primary">{{ current_month_name }}</strong></p>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-xl shadow-sm animate__animated animate__fadeInDown" role="alert">
+                    <p class="font-bold">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Metric 1 -->
+            <div class="glass-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-transform duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-blue-50 text-modern-blue rounded-2xl flex items-center justify-center shadow-inner">
+                        <span class="material-symbols-outlined text-3xl">inventory_2</span>
+                    </div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Active</span>
+                </div>
+                <h3 class="font-headline font-black text-5xl text-gray-800 tracking-tighter">{{ total_vaccines_registered }}</h3>
+                <p class="text-gray-500 font-medium mt-2">Registered Vaccines</p>
+            </div>
+            
+            <!-- Metric 2 -->
+            <div class="glass-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-transform duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-teal-50 text-primary rounded-2xl flex items-center justify-center shadow-inner">
+                        <span class="material-symbols-outlined text-3xl">vaccines</span>
+                    </div>
+                    <span class="text-xs font-bold text-primary uppercase tracking-widest bg-teal-100 px-3 py-1 rounded-full">{{ current_month_name }}</span>
+                </div>
+                <h3 class="font-headline font-black text-5xl text-gray-800 tracking-tighter">{{ total_vaccines_this_month }}</h3>
+                <p class="text-gray-500 font-medium mt-2">Vaccines Given</p>
+            </div>
+
+            <!-- Metric 3 -->
+            <div class="glass-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-orange-50 rounded-full mix-blend-multiply opacity-50 blur-2xl"></div>
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center shadow-inner">
+                        <span class="material-symbols-outlined text-3xl">child_care</span>
+                    </div>
+                    <span class="text-xs font-bold text-orange-600 uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">{{ current_month_name }}</span>
+                </div>
+                <h3 class="font-headline font-black text-5xl text-gray-800 tracking-tighter relative z-10">{{ unique_children_this_month }}</h3>
+                <p class="text-gray-500 font-medium mt-2 relative z-10">Children Vaccinated</p>
+            </div>
+        </div>
+
+        <!-- Lower Section (Chart + Profile) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
+            
+            <!-- Chart Container -->
+            <div class="lg:col-span-2 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)]">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="font-headline font-bold text-2xl text-gray-800"><span class="material-symbols-outlined align-bottom text-primary mr-2">bar_chart</span>Monthly Overview</h2>
+                </div>
+                <div class="relative h-[300px] w-full">
+                    <canvas id="insightsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Hospital Profile Update -->
+            <div class="glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] flex flex-col justify-between">
+                <div>
+                    <h2 class="font-headline font-bold text-2xl text-gray-800 mb-2"><span class="material-symbols-outlined align-bottom text-modern-blue mr-2">manage_accounts</span>Hospital Profile</h2>
+                    <p class="text-gray-500 text-sm font-medium mb-8">Update your administrative credentials.</p>
+                    
+                    <form method="POST" action="{% url 'hospitalapp:hospitalhome' %}" class="space-y-5">
+                        {% csrf_token %}
+                        <div class="space-y-1">
+                            <label for="dcrname" class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Hospital Username</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-lg">domain</span>
+                                <input type="text" id="dcrname" name="dcrname" value="{{ hospital.dcrname }}" required class="w-full bg-slate-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-gray-800 font-bold focus:ring-2 focus:ring-modern-blue/50 focus:border-modern-blue transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label for="password" class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-lg">lock</span>
+                                <input type="password" id="password" name="password" value="{{ hospital.password }}" required class="w-full bg-slate-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-gray-800 font-mono focus:ring-2 focus:ring-modern-blue/50 focus:border-modern-blue transition-all">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full mt-4 bg-gradient-to-r from-modern-blue to-indigo-500 hover:from-indigo-500 hover:to-modern-blue text-white font-headline font-bold py-3.5 px-4 rounded-xl shadow-[0_8px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_8px_25px_rgba(59,130,246,0.5)] transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-lg">save</span> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Chart.js Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('insightsChart').getContext('2d');
+            
+            // Extract the actual data passed from the view
+            const vaccinesGiven = Number("{{ total_vaccines_this_month|default:0 }}");
+            const childrenVaccinated = Number("{{ unique_children_this_month|default:0 }}");
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vaccines Administered', 'Children Vaccinated'],
+                    datasets: [{
+                        label: '{{ current_month_name }} Metrics',
+                        data: [vaccinesGiven, childrenVaccinated],
+                        backgroundColor: [
+                            'rgba(0, 101, 101, 0.8)', // Primary Teal
+                            'rgba(249, 115, 22, 0.8)' // Orange 500
+                        ],
+                        borderColor: [
+                            'rgb(0, 101, 101)',
+                            'rgb(234, 88, 12)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 32, 32, 0.9)',
+                            titleFont: { family: 'Manrope', size: 14, weight: 'bold' },
+                            bodyFont: { family: 'Inter', size: 14 },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0, font: { family: 'Inter', weight: '500' } },
+                            grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Manrope', weight: 'bold', size: 13 }, color: '#4b5563' },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

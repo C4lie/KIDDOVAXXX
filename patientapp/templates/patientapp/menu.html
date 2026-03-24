@@ -12,38 +12,42 @@
         <li class="nav-item mr-lg-1">
             <a class="nav-link zoom-in-button" href="{% url 'patient:contactpage' %}">Contact</a>
         </li>
-        {% if request.session.CName is None %} 
-        <li class="nav-item mr-lg-1">
-            <a class="nav-link zoom-in-button" href="{% url 'patient:loginpage' %}">Login</a>
-        </li>
-        {% endif %}
-         <!--/search-right-->
-        {% if request.session.CName is not None %} 
-        <li class="header-search mr-lg-2 mt-lg-0 mt-4 position-relative">
-            <a class="nav-link zoom-in-button" href="{% url 'patient:vaccinebooking' %}">Appointment</a>
-            
-       </li>
-       <li class="header-search mr-lg-2 mt-lg-0 mt-4 position-relative">
-        <a class="nav-link zoom-in-button" href="{% url 'patient:changeauth' %}">ChangePassword</a>
-        
-   </li>
-   <li class="header-search mr-lg-2 mt-lg-0 mt-4 position-relative">
-    <a class="nav-link zoom-in-button" href="{% url 'patient:showdata' %}">VaccineList</a>
-    
-</li>
-            <li class="header-search mr-lg-2 mt-lg-0 mt-4 position-relative">
-                 <a class="nav-link" href="#">Welcome, {{request.session.CName }}</a>
-                 
-            </li>
+            {% if request.session.CName is None %} 
             <li class="nav-item mr-lg-1">
-                <a class="nav-link zoom-in-button" href="{% url 'patient:patientlogout' %}">Logout</a>
-            </li>
-        {% else %}
-            <li class="header-search mr-lg-2 mt-lg-0 mt-4 position-relative">
                 <a class="nav-link " href="#">Welcome, Guest!</a>
             </li>
-        {% endif %}
-      
-            <!--//search-right-->
-    </ul>
-</div>
+            <li class="nav-item">
+                <a class="btn btn-primary btn-sm px-4 rounded-pill" style="color:white; margin-top: 5px;" href="{% url 'patient:loginpage' %}">Login</a>
+            </li>
+            {% else %}
+            <!-- Modern Dropdown for Logged In User -->
+            <li class="nav-item dropdown px-3 mt-lg-0 mt-3">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="user-avatar text-white bg-primary rounded-circle text-center d-flex align-items-center justify-content-center mr-2" style="width: 35px; height: 35px; font-weight: bold;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    Hello, {{ request.session.CName }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow border-0 mt-2" aria-labelledby="userDropdown">
+                    <a class="dropdown-item py-2" href="{% url 'patient:vaccinebooking' %}">
+                        <i class="fas fa-calendar-alt mr-2 text-primary"></i> My Appointments
+                    </a>
+                    <a class="dropdown-item py-2" href="{% url 'patient:showdata' %}">
+                        <i class="fas fa-syringe mr-2 text-primary"></i> Vaccine List
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item py-2" href="{% url 'patient:profilepage' %}">
+                        <i class="fas fa-id-card mr-2 text-info"></i> My Profile
+                    </a>
+                    <a class="dropdown-item py-2" href="{% url 'patient:changeauth' %}">
+                        <i class="fas fa-key mr-2 text-warning"></i> Change Password
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item py-2 text-danger" href="{% url 'patient:patientlogout' %}">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+    </div>

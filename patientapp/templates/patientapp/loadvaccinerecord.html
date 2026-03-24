@@ -1,26 +1,38 @@
-<table class="table mt-5" id="vaccineid" >
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">HospitalName</th>
-        <th scope="col">VaccineName</th>
-        <th scope="col">Description</th>
-        <th scope="col">Price</th>
-    
-      </tr>
-    </thead>
-    <tbody>
-       
-      {% for bookingitem in bindData %}
-      <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{bookingitem.hospitalId.title}}</td>
-        <td>{{bookingitem.vaccineName}}</td>
-        <td>{{bookingitem.vaccineDescr}}</td>
-        <td>{{bookingitem.price}}</td>
-        
-      </tr>
-     
-      {% endfor %}
-    </tbody>
+<div class="overflow-auto max-h-[500px] rounded-[1.5rem] border border-gray-100 shadow-xl bg-white animate__animated animate__fadeIn">
+    <table class="w-full text-left border-collapse whitespace-nowrap relative">
+        <thead class="sticky top-0 z-10 bg-slate-50 shadow-sm border-b border-teal-100/50">
+            <tr>
+                <th class="py-4 px-5 font-bold text-gray-500 text-[11px] uppercase tracking-widest"># ID</th>
+                <th class="py-4 px-5 font-bold text-gray-500 text-[11px] uppercase tracking-widest">Hospital Clinic</th>
+                <th class="py-4 px-5 font-bold text-gray-500 text-[11px] uppercase tracking-widest">Vaccine Name</th>
+                <th class="py-4 px-5 font-bold text-gray-500 text-[11px] uppercase tracking-widest">Description</th>
+                <th class="py-4 px-5 font-bold text-gray-500 text-[11px] uppercase tracking-widest text-right">Price</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100/50">
+            {% for bookingitem in bindData %}
+            <tr class="hover:bg-cyan-50/40 transition-colors group/row">
+                <td class="py-5 px-5 text-sm font-bold text-cyan-200 group-hover/row:text-cyan-400 align-middle">#{{ forloop.counter }}</td>
+                <td class="py-5 px-5 text-gray-600 text-sm font-semibold align-middle truncate max-w-[12rem]">{{bookingitem.hospitalId.title}}</td>
+                <td class="py-5 px-5 font-bold text-primary align-middle truncate max-w-[14rem]"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-modern-cyan"></span>{{bookingitem.vaccineName}}</span></td>
+                <td class="py-5 px-5 text-gray-500 text-sm align-middle whitespace-normal break-words max-w-sm leading-relaxed" title="{{bookingitem.vaccineDescr}}">{{bookingitem.vaccineDescr|truncatechars:100}}</td>
+                <td class="py-5 px-5 font-mono font-bold text-emerald-600 text-right align-middle text-lg tracking-tight bg-emerald-50/30 group-hover/row:bg-emerald-50 transition-colors rounded-r-xl">₹{{bookingitem.price}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="py-20 text-center text-gray-400 font-medium bg-gray-50/50">
+                    <div class="flex flex-col items-center justify-center gap-4 animate__animated animate__fadeIn">
+                        <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-gray-300 shadow-sm border border-gray-100">
+                            <span class="material-symbols-outlined text-[2.5rem]">inbox</span>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-gray-900 font-bold text-lg font-headline">No vaccines found</p>
+                            <span class="text-sm">There are no vaccines available for this selection.</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+</div>
