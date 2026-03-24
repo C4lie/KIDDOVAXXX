@@ -1,108 +1,177 @@
-{% extends 'receptionistapp/base.html' %}
-{% block contents %}
-<h1>Appointment Details</h1>
-<hr/>
-<table class="table mt-5" >
-    <thead>
-      <tr>
-        <!-- <th scope="col">#</th> -->
-        <th scope="col">Date</th>
-        <th scope="col">Name</th>
-        <th scope="col">Vaccine</th>
-        <th scope="col">TimeIn</th>
-        <th scope="col">TimeOut</th>
-        <th scope="col">Status</th>
-        <th scope="col">View</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for bookingitem in bindData %}
-      <tr>
-        <!-- <td>{{bookingitem.id}}</td> -->
-        <td>{{bookingitem.aptdate|date:"d-m-Y"}}</td>
-        <td>{{bookingitem.childname}}</td>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Bookings Table</title>
     
-        <td>{{bookingitem.vaccineid.vaccineName}}</td>
-        <td>
-            {% if bookingitem.active == 1 or bookingitem.active == 2 %}
-                {{bookingitem.indt }}
-            {% else %}    
-                <span>Pending</span>
-            {% endif %}
-        </td>
-        <td>
-            {% if bookingitem.active == 2 %}
-                {{bookingitem.outdt}}
-            {% else %}    
-                <span>Pending</span>
-            {% endif %}
-        </td>
-        <td>{% if bookingitem.active == 0 %}
-            <span class="badge badge-warning">Pending</span>
-            {% elif bookingitem.active == 1 %} 
-            <span class="badge badge-secondary">Waiting</span>
-            {% elif bookingitem.active == 2 %} 
-            <span class="badge badge-success">Success</span>
-            {% endif %}
-        </td>
-       
-
-        </td>
-        <td>
-            <a href="{% url 'receptionist:showappointment' bookingitem.id %}"><button type="submit" class="btn btn-primary">View</button></a>
-           
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-    </table>
-{% endblock contents %}
-<script>
-    const inputfield = document.getElementsByTagName('input')
-    for(let i in inputfield)
-    {
-          inputfield[i].className += 'form-control'
-    }
-</script>
-
-<script>
- $(document).ready(function() {
-     $('#id_contactNo').on('input change blur', function() {
-         if($(this).val() != '' && $("#id_contactNo").val().length == 10) {
-             $('#btnsubmit').prop('disabled', false);
-         } else {
-             $('#btnsubmit').prop('disabled', true);
-         }
-     });
- });
-</script>
-
-<script language="Javascript" type="text/javascript">
-  function isNumberKey(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode
-      if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-
-          return true;
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "admin-primary": "#4f46e5",    /* Indigo 600 */
+              "admin-secondary": "#4338ca",  /* Indigo 700 */
+              "background": "#f8fafc",
+              "on-surface": "#0f172a",       /* Slate 900 */
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"]
+            },
+          }
+        }
       }
+    </script>
+    <style>
+      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
+      
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(79, 70, 229, 0.1);
+      }
+      
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      
+      .mesh-bg {
+        background-image: 
+          radial-gradient(at 10% 20%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
+          radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+          radial-gradient(at 50% 50%, rgba(255, 255, 255, 1) 0px, transparent 100%);
+      }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
 
-      return false;
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm animate__animated animate__fadeInDown">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <!-- Brand -->
+            <a href="{% url 'receptionist:receptionisthome' %}" class="flex items-center decoration-transparent group">
+                <div class="flex items-center font-headline font-black text-3xl tracking-tighter text-[#006a6a]">
+                    Kidd<img src="{% static 'patients/images/logo-icon.png' %}" alt="o" class="h-8 mx-0.5 object-contain">Vax
+                </div>
+                <span class="text-admin-primary/80 font-bold text-lg ml-3 tracking-widest uppercase border-l-2 border-slate-200 pl-3 flex items-center h-8">Receptionist</span>
+            </a>
+            
+            <!-- Context Links -->
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'receptionist:receptionisthome' %}">Dashboard Hub</a>
+                <a class="font-headline font-bold text-sm text-admin-primary bg-admin-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'receptionist:managepatients' %}">Bookings</a>
+            </nav>
 
-  }
-  
-</script>
+            <!-- User Status & Logout -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-indigo-50">
+                    <div class="w-10 h-10 bg-gradient-to-br from-admin-primary to-admin-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner text-sm">
+                        {{ request.session.CName|make_list|first|upper }}
+                    </div>
+                    <span class="font-headline font-bold text-slate-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'receptionist:logout' %}" title="Logout" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                    <svg class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                </a>
+            </div>
+        </div>
+    </header>
 
-<script type="text/javascript">
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200/60 pb-6 mb-8">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-slate-800 tracking-tight">Patient Check-In Table</h1>
+                <p class="text-slate-500 mt-2 font-medium">Manage daily patient flows, verify RFID tags, and monitor appointment statuses.</p>
+            </div>
+        </div>
 
-    function restrictAlphabets(evt) {
-        var x = (evt.which) ? evt.which : event.keyCode
-        if ((x >= 48 && x <= 57) || x == 8 )
-            return true;
-        else
-            return false;
-    }
-</script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    
-          
-           
+        {% if messages %}
+        <div class="bg-green-50 text-green-700 border border-green-200 rounded-2xl p-4 mb-8 text-sm font-bold flex items-center gap-3 shadow-sm animate__animated animate__headShake">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+            <ul class="list-none p-0 m-0">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] overflow-hidden">
+            {% if bindData %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead>
+                        <tr class="border-b border-slate-200">
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Date</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Name</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Vaccine</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Time In</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Time Out</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Status</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider text-right">View</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100/60">
+                        {% for bookingitem in bindData %}
+                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="py-4 px-4 text-sm font-medium text-slate-500">{{bookingitem.aptdate|date:"d-m-Y"}}</td>
+                            <td class="py-4 px-4 font-bold text-slate-800">{{bookingitem.childname}}</td>
+                            <td class="py-4 px-4 font-medium text-slate-600">{{bookingitem.vaccineid.vaccineName}}</td>
+                            <td class="py-4 px-4 text-sm text-slate-500">
+                                {% if bookingitem.active == 1 or bookingitem.active == 2 %}
+                                    {{bookingitem.indt}}
+                                {% else %}    
+                                    <span class="text-slate-400 italic">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-4 text-sm text-slate-500">
+                                {% if bookingitem.active == 2 %}
+                                    {{bookingitem.outdt}}
+                                {% else %}    
+                                    <span class="text-slate-400 italic">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-4">
+                                {% if bookingitem.active == 0 %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Pending</span>
+                                {% elif bookingitem.active == 1 %} 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">Waiting</span>
+                                {% elif bookingitem.active == 2 %} 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Success</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-4 text-right">
+                                <a href="{% url 'receptionist:showappointment' bookingitem.id %}" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-admin-primary/10 text-admin-primary hover:bg-admin-primary hover:text-white transition-all font-bold text-sm shadow-sm" title="View Patient Details">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                </div>
+                <h3 class="font-headline font-bold text-slate-800 text-xl">No Appointments Found</h3>
+                <p class="text-slate-500 text-sm mt-2 max-w-sm mx-auto">There are currently no patient bookings listed for this hospital.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

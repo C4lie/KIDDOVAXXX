@@ -1,325 +1,270 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>KiddoVax : Patient </title>
-  <!-- google fonts -->
-  <link href="//fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <!-- Template CSS -->
-  <link rel="stylesheet" href="{% static 'patients/css/style-starter.css' %}">
-</head>
-
-<body>
-  <!--header-->
-  <header id="site-header" class="fixed-top">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-dark stroke">
-        <h1>
-          <a class="navbar-brand" href="{% url 'patient:homepage'%}">
-            Kidd<i class="fab fa-keycdn"></i>Vax</a>
-        </h1>
-        <!-- if logo is image enable this   
-          <a class="navbar-brand" href="#index.html">
-              <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-          </a> -->
-        <button class="navbar-toggler  collapsed bg-gradient" type="button" data-toggle="collapse"
-          data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-          aria-label="Toggle navigation">my button
-          <span class="navbar-toggler-icon fa icon-expand fa-bars"></span>
-          <span class="navbar-toggler-icon fa icon-close fa-times"></span>
-          </span>
-        </button>
-        {% include 'patientapp/menu.html' %}
-        <!-- toggle switch for light and dark theme -->
-        <div class="mobile-position">
-          <nav class="navigation">
-            <div class="theme-switch-wrapper">
-              <label class="theme-switch" for="checkbox">
-                <input type="checkbox" id="checkbox">
-                <div class="mode-container py-1">
-                  <i class="gg-sun"></i>
-                  <i class="gg-moon"></i>
-                </div>
-              </label>
-            </div>
-          </nav>
-        </div>
-        <!-- //toggle switch for light and dark theme -->
-      </nav>
-
-    </div>
-  </header>
-  <!--/header-->
-  <!-- breadcrumb -->
-<section class="w3l-about-breadcrumb text-center">
-  <div class="breadcrumb-bg breadcrumb-bg-about py-5">
-      <div class="container py-lg-5 py-md-4">
-        <div class="w3breadcrumb-gids">
-          <div class="w3breadcrumb-left text-left">
-                    <h2 class="title AboutPageBanner">
-                  About Us   </h2>
-                              <p class="inner-page-para mt-2">
-                                Prevent the Spread
-                                Stay at Home, Stay Safe             </p>
-          </div>
-          <div class="w3breadcrumb-right">
-                <ul class="breadcrumbs-custom-path">
-                  <li><a href="index.html">Home</a></li>
-                  <li class="active"><span class="fas fa-angle-double-right mx-2"></span> About Us</li>
-                </ul>
-          </div>
-    </div>
-      </div>
-      <div class="hero-overlay"></div>
-  </div>
-</section>
-<!--//breadcrumb-->
-<!--/w3l-aboutblock1-->
-  <section class="w3l-aboutblock1" id="about">
-    <div class="midd-w3 py-5">
-      <div class="container py-lg-5 py-md-4 py-2">
-        <div class="row">
-          <div class="col-lg-6 left-wthree-img pr-lg-5">
-            <div class="position-relative">
-              <img src="{% static 'patients/images/banner5.jpg' %}"
-                alt="" class="img-fluid radius-image">
-              </div>
-            </div>
-          <div class="col-lg-6 mt-lg-0 mt-5 about-right-faq align-self">
-            <h5 class="title-subw3hny mb-1">About Us</h5>
-            <p>The KiddoVAX involves creating a user-friendly website with the goal of efficiently managing immunizations for youngsters up to the age of 18. The use of RFID technology for accurate data capture during visits will allow parents to easily plan, monitor, and organize immunization sessions. Parents will be able to view their child's immunization record while the system protects the confidentiality and privacy of their personal information. The website will further give clinic locators, educational resources, contacts with medical specialists, and telemedicine services. The initiative seeks to improve child health in general and vaccine adherence through these extensive functions</p>
-            <!-- <a class="btn btn-primary btn-style mt-md-5 mt-4 mr-md-4 mr-3" href="#url">
-              Read More </a> -->
-          </div>
-        </div>
-        <!--/Features-->
-        <div class="row justify-content-center mt-5 pt-lg-5 AboutFeatures">
-          <div class="col-lg-4 col-md-6 grids-feature">
-            <div class="area-box">
-              <i class="fas fa-theater-masks" aria-hidden="true"></i>
-              <div class="area-box-info">
-                <h4><a href="#url" class="title-head">
-                  Wear A Face Mask</a></h4>
-                    <p>Safe for waer a face mask</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 grids-feature mt-md-0 mt-4">
-            <div class="area-box">
-              <i class="fas fa-hands-wash" aria-hidden="true"></i>
-              <div class="area-box-info">
-                <h4><a href="#url" class="title-head">
-                  Wash Your Hands</a></h4>
-                    <p>Regularly wash your hands</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 grids-feature mt-lg-0 mt-4">
-            <div class="area-box">
-              <i class="fas fa-people-arrows" aria-hidden="true"></i>
-              <div class="area-box-info">
-                <h4><a href="#url" class="title-head">
-                  Avoid Close Contact</a></h4>
-                    <p>To prevent infection</p>
-              </div>
-            </div>
-          </div>
-        </div>
-         <!--//Features-->
-      </div>
-    </div>
-  </section>
-  <!--//w3l-aboutblock1-->
-   <!--/team-sec-->
-   <!-- <section class="w3l-team-main team py-5" id="team">
-    <div class="container py-lg-5">
-      <h5 class="title-subw3hny mb-1 text-center">Our Team</h5>
-      <h3 class="title-w3l text-center">Amazing Team</h3>
-      <div class="row team-row mt-md-5 mt-4">
-        <div class="col-lg-4 col-6 team-wrap">
-          <div class="team-member text-center">
-            <div class="team-img">
-              <img src="{% static 'admin/assets/images/team1.jpg' %}" alt="" class="radius-image">
-              <div class="overlay-team">
-                <div class="team-details text-center">
-                  <div class="socials mt-20">
-                    <a href="#url">
-                      <span class="fab fa-facebook-f"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-twitter"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-linkedin-in"></span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a href="#url" class="team-title">Luke jacobs</a>
-            <p>Doctor</p>
-          </div>
-        </div>
-       
-        <div class="col-lg-4 col-6 team-wrap">
-          <div class="team-member text-center">
-            <div class="team-img">
-              <img src="{% static 'admin/assets/images/team3.jpg' %}" alt="" class="radius-image">
-              <div class="overlay-team">
-                <div class="team-details text-center">
-                  <div class="socials mt-20">
-                    <a href="#url">
-                      <span class="fab fa-facebook-f"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-twitter"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-linkedin-in"></span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a href="#url" class="team-title">Claire olson</a>
-            <p>Doctor</p>
-          </div>
-        </div>
-     
-        <div class="col-lg-4 col-6 team-wrap mt-lg-0 mt-5">
-          <div class="team-member last text-center">
-            <div class="team-img">
-              <img src="{% static 'admin/assets/images/team2.jpg' %}" alt="" class="radius-image">
-              <div class="overlay-team">
-                <div class="team-details text-center">
-                  <div class="socials mt-20">
-                    <a href="#url">
-                      <span class="fab fa-facebook-f"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-twitter"></span>
-                    </a>
-                    <a href="#url">
-                      <span class="fab fa-linkedin-in"></span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a href="#url" class="team-title">Phillip hunt</a>
-            <p>Doctor</p>
-          </div>
-        </div>
-      </div>
-  </section> -->
-  <!--//team-sec-->
-  <!--/w3l-about2-->
-  <section class="w3l-about2 py-5">
-    <div class="container py-lg-5 py-md-4 py-2 AboutPageStats">
-      <div class="row cwp23-content align-items-center">
-        <div class="col-lg-6 pr-lg-5">
-          <h5 class="title-subw3hny mb-3">Why Choose Us</h5>
-          <h3 class="title-w3l">Safety brings first aid to the uninjured.</h3>
-          <div class="cwp23-text-cols mt-lg-5 mt-4">
-            <div class="column">
-              <div class="icon mb-4">
-                  <span class="fas fa-crutch"></span>
-               </div>
-              <h4>Vaccination</h4>
-              <p>Regulary vaccine to protect your body</p>
-            </div>
-            <div class="column">
-              <div class="icon mb-4">
-                <span class="far fa-smile-beam"></span>
-              </div>
-              <h4>Happy Patient</h4>
-              <p>Patients are very happy to use our services.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-6 cwp23-text align-self mt-lg-0 mt-5 pr-md-3 pr-2">
-          <img src="{% static 'patients/images/1.jpg' %}" alt=""
-            class="radius-image img-fluid">
-        </div>
-        <div class="col-lg-3 col-6  cwp23-text align-self mt-lg-0 mt-5 pl-md-3 pl-2">
-          <img src="{% static 'patients/images/2.jpg' %}" alt=""
-            class="radius-image img-fluid">
-        </div>
-      </div>
-    </div>
-  </section>
- <!--//w3l-about2-->
-  <!--/w3l-project-->
-  <!-- <section class="w3l-project-main py-5">
-    <div class="container py-md-5 py-2">
-      <div class="w3l-project-in">
-        <div class="row">
-          <div class="col-lg-8">
-            <div class="bottom-info">
-              <div class="header-section pr-lg-5">
-                <h5 class="title-subw3hny mb-3">Free Consultation</h5>
-                <h3 class="title-w3l mb-3">Request Free Consultation <br>and <span class="span-bold">Lets Do It!</span>
-                </h3>
-                <p>Lorem ipsum dolor sit amet elit. Velit beatae rem ullam dolore nisi esse quasi, sit amet. Lorem ipsum dolor sit amet elit.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 align-self text-lg-right mt-lg-0 mt-sm-5 mt-4">
-            <a href="#" class="btn btn-primary btn-white  btn-style mr-2"> Contact Now </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-  <!--//w3l-project-->
-  {% include 'patientapp/footer.html' %}
-  <!-- Template JavaScript -->
-  <script src="{% static 'patients/js/jquery-3.3.1.min.js' %}"></script>
-  <script src="{% static 'patients/js/theme-change.js' %}"></script>
-  <!-- disable body scroll which navbar is in active -->
-  <script>
-    $(function () {
-      $('.navbar-toggler').click(function () {
-        $('body').toggleClass('noscroll');
-      })
-    });
-  </script>
-  <!-- disable body scroll which navbar is in active -->
-
-  <!--/MENU-JS-->
-  <script>
-    $(window).on("scroll", function () {
-      var scroll = $(window).scrollTop();
-
-      if (scroll >= 80) {
-        $("#site-header").addClass("nav-fixed");
-      } else {
-        $("#site-header").removeClass("nav-fixed");
-      }
-    });
-
-    //Main navigation Active Class Add Remove
-    $(".navbar-toggler").on("click", function () {
-      $("header").toggleClass("active");
-    });
-    $(document).on("ready", function () {
-      if ($(window).width() > 991) {
-        $("header").removeClass("active");
-      }
-      $(window).on("resize", function () {
-        if ($(window).width() > 991) {
-          $("header").removeClass("active");
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | About Us</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
+              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+            animation: { 'float': 'float 6s ease-in-out infinite', 'blob': 'blob 7s infinite', 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
+            keyframes: {
+              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
+              blob: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }, '100%': { transform: 'translate(0px, 0px) scale(1)' } },
+              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
+            }
+          }
         }
-      });
-    });
-  </script>
-  <!--//MENU-JS-->
-  <script src="{% static 'patients/js/bootstrap.min.js' %}"></script>
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+      .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); }
+      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 50%, center; position: relative; }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
+      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
+      .bento-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+      .bento-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 30px 60px rgba(0, 101, 101, 0.12); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg">
+
+    <!-- Standalone Tailwind Navbar (from home.html) -->
+    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <!-- Brand Logo with original FontAwesome Icon -->
+            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
+                </span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-10">
+                <a class="font-headline font-bold text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
+                <a class="font-headline font-bold text-lg text-primary border-b-2 border-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
+            </nav>
+
+            <!-- Authentication / Profile Dropdown -->
+            <div class="flex items-center gap-4">
+                {% if request.session.CName is None %} 
+                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
+                {% else %}
+                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
+                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
+                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> My Appointments
+                            </a>
+                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
+                            </a>
+                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
+        
+        <!-- About Hero Section (Adapted from Home) -->
+        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
+            <div class="relative z-10 max-w-3xl space-y-8 text-center mx-auto">
+                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 justify-center">
+                    <span class="flex h-3 w-3 relative">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                    </span>
+                    <span class="text-sm font-bold tracking-wider uppercase">Prevent the Spread</span>
+                </div>
+                
+                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white">
+                    About <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">KiddoVax.</span>
+                </h1>
+                
+                <p class="text-xl text-cyan-50 font-medium leading-relaxed opacity-90">
+                    Stay at Home, Stay Safe.
+                </p>
+            </div>
+        </section>
+
+        <!-- About Us Content Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-16 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="relative w-full h-[500px] rounded-[2rem] overflow-hidden shadow-2xl group bento-hover">
+                <div class="absolute inset-0 bg-primary/20 mix-blend-multiply z-10 group-hover:bg-transparent transition-colors duration-500"></div>
+                <img src="{% static 'patients/images/banner5.jpg' %}" alt="About KiddoVax" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+            </div>
+            
+            <div class="space-y-6">
+                <h5 class="inline-block px-4 py-1.5 rounded-full bg-cyan-100 text-modern-cyan font-bold tracking-widest text-sm mb-2 shadow-sm uppercase">Who We Are</h5>
+                <h3 class="font-headline font-black text-4xl md:text-5xl text-gray-900 tracking-tight leading-tight">Empowering Care Through <span class="text-primary">Innovation</span></h3>
+                <p class="text-gray-600 text-lg leading-relaxed font-medium">
+                    The KiddoVAX involves creating a user-friendly website with the goal of efficiently managing immunizations for youngsters up to the age of 18. The use of RFID technology for accurate data capture during visits will allow parents to easily plan, monitor, and organize immunization sessions. 
+                </p>
+                <p class="text-gray-600 text-lg leading-relaxed font-medium">
+                    Parents will be able to view their child's immunization record while the system protects the confidentiality and privacy of their personal information. The website will further give clinic locators, educational resources, contacts with medical specialists, and telemedicine services.
+                </p>
+                <div class="pt-4">
+                     <span class="inline-flex items-center gap-2 font-headline font-bold text-modern-cyan border-b-2 border-modern-cyan pb-1">Our initiative seeks to improve child health in general.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features (How to Protect Yourself) -->
+        <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-cyan-50 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">masks</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Wear A Face Mask</h4>
+                    <p class="text-gray-500 font-medium">Safe for wear a face mask</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-teal-50 text-teal-600 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">clean_hands</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Wash Your Hands</h4>
+                    <p class="text-gray-500 font-medium">Regularly wash your hands</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-500">
+                        <span class="material-symbols-outlined text-3xl">social_distance</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Avoid Close Contact</h4>
+                    <p class="text-gray-500 font-medium">To prevent infection</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Grid -->
+        <section class="bg-white rounded-[3rem] p-12 md:p-20 shadow-xl border border-gray-100 my-20 animate__animated animate__fadeInUp relative overflow-hidden">
+            <!-- Background abstraction -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+                <div class="lg:col-span-6 space-y-8">
+                    <h5 class="inline-block px-4 py-1.5 rounded-full bg-teal-100 text-teal-700 font-bold tracking-widest text-sm shadow-sm uppercase">Why Choose Us</h5>
+                    <h3 class="font-headline font-black text-4xl md:text-5xl text-gray-900 tracking-tight leading-tight">Safety brings first aid to the uninjured.</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white shadow-lg">
+                                <span class="material-symbols-outlined">vaccines</span>
+                            </div>
+                            <h4 class="font-headline font-bold text-2xl text-gray-900">Vaccination</h4>
+                            <p class="text-gray-500 font-medium">Regularly vaccine to protect your body.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-lg">
+                                <span class="material-symbols-outlined">sentiment_very_satisfied</span>
+                            </div>
+                            <h4 class="font-headline font-bold text-2xl text-gray-900">Happy Patient</h4>
+                            <p class="text-gray-500 font-medium">Patients are very happy to use our services.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-6 grid grid-cols-2 gap-6">
+                    <div class="mt-12 rounded-[2rem] overflow-hidden shadow-2xl bento-hover">
+                        <img src="{% static 'patients/images/1.jpg' %}" alt="KiddoVax Facility" class="w-full h-full object-cover">
+                    </div>
+                    <div class="rounded-[2rem] overflow-hidden shadow-2xl bento-hover">
+                        <img src="{% static 'patients/images/2.jpg' %}" alt="KiddoVax Staff" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Ultra-Modern Dark Footer (from home.html) -->
+    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
+        <!-- Abstract gradient blob in footer background -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
+            <div class="flex flex-col items-center md:items-start gap-6">
+                <!-- Footer Logo -->
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
+                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
+                </div>
+                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
+                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
+                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
+            </div>
+            
+            <div class="flex gap-4">
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">public</span>
+                </button>
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">mail</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
+            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
+        </div>
+    </footer>
 
 </body>
-
 </html>

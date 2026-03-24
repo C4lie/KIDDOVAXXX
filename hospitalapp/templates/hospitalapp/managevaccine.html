@@ -1,119 +1,156 @@
-{% extends 'hospitalapp/base.html' %}
-{% block contents %}
-
-
-    <h2 class="title1">Manage Vaccine</h2>
-    {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-        {{ message }}
-    </div>
-           
-       
-    {% endfor %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <!-- <div class="mx-auto" style="width: 400px;"> -->
-           
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.vaccineName.label}}</label>
-               {{form.vaccineName}}
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.vaccineDescr.label}}</label>
-               {{form.vaccineDescr}}
-            </div>
-        
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.price.label}}</label>
-               {{form.price}}
-            </div>
-         
-         
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="submit" value="Reset" name="btnreset" class="btn btn-warning">Reset</button>
-           
-            <script language="Javascript" type="text/javascript">
-              function isNumberKey(evt) {
-                  var charCode = (evt.which) ? evt.which : event.keyCode
-                  if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-      
-                      return true;
-                  }
-         
-                  return false;
-      
-              }
-          </script>
-        
-        <!-- </div> -->
-    </form>
-        <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Price</th>
-         
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in vaccinedata %}
-          <tr>
-            <td>{{item.id}}</td>
-          
-            <td>{{item.vaccineName}}</td>
-            <td>{{item.vaccineDescr}}</td>
-            
-            <td>{{item.price}}</td>
-             <td>
-                <a href="{% url 'hospitalapp:editvaccine' item.id %}"><button type="submit" class="btn btn-info">Edit</button></a>
-                <a href="{% url 'hospitalapp:deletevaccine' item.id %}"><button type="submit" class="btn btn-danger">Delete</button></a>
-            </td> 
-          </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-    </div>     
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-       
-{% endblock contents %}
-<script>
-    const inputfield = document.getElementsByTagName('input')
-    for(let i in inputfield)
-    {
-          inputfield[i].className += 'form-control'
-    }
-</script>
-
-
-
-<script language="Javascript" type="text/javascript">
-  function isNumberKey(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode
-      if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-
-          return true;
-      }
-
-      return false;
-
-  }
-  
-</script>
-
-<script type="text/javascript">
-
-    function restrictAlphabets(evt) {
-        var x = (evt.which) ? evt.which : event.keyCode
-        if ((x >= 48 && x <= 57) || x == 8 )
-            return true;
-        else
-            return false;
-    }
-</script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Manage Vaccines</title>
     
-          
-           
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+      tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020", "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6" }, fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] }, } } }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm"><span class="material-symbols-outlined text-xl">logout</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-[90rem] mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col justify-between items-start gap-4 border-b border-gray-200/60 pb-6">
+            <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Vaccine Inventory</h1>
+            <p class="text-gray-500 font-medium mt-1 text-lg">Add and manage the hospital's available vaccines.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-teal-50 border-l-4 border-primary text-primary p-4 rounded-r-xl shadow-sm animate__animated animate__fadeInDown" role="alert">
+                    <p class="font-bold font-headline">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Add/Edit Form -->
+            <div class="xl:col-span-1 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-headline font-bold text-2xl text-gray-800"><span class="material-symbols-outlined align-bottom text-primary mr-2">add_task</span>New Vaccine</h2>
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data" class="space-y-5">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Vaccine Name</label>
+                        {{ form.vaccineName }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Description</label>
+                        {{ form.vaccineDescr }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Price (₹)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">₹</span>
+                            {{ form.price }}
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex gap-4">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-[0_8px_20px_rgba(6,182,212,0.3)] hover:-translate-y-0.5 transition-all outline-none">Publish Vaccine</button>
+                        <button type="reset" name="btnreset" class="px-6 bg-slate-100 text-gray-600 font-headline font-bold py-3 rounded-xl hover:bg-slate-200 transition-all outline-none">Classify</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Data Table -->
+            <div class="xl:col-span-2 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Title</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Description</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Price</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100/60">
+                        {% for item in vaccinedata %}
+                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="py-4 px-4 font-bold text-gray-800">{{ item.vaccineName }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-500 whitespace-normal min-w-[300px]">{{ item.vaccineDescr }}</td>
+                            <td class="py-4 px-4 text-sm font-black text-primary">₹{{ item.price }}</td>
+                            <td class="py-4 px-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{% url 'hospitalapp:editvaccine' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-modern-blue hover:bg-modern-blue hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    </a>
+                                    <a href="{% url 'hospitalapp:deletevaccine' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+        inputs.forEach(input => {
+            if(input.id === 'id_price') {
+                input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'pl-9', 'pr-4', 'py-3', 'text-gray-800', 'font-monaco', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
+            } else {
+                input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'px-4', 'py-3', 'text-gray-800', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
+            }
+        });
+    </script>
+</body>
+</html>

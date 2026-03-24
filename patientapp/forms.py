@@ -15,7 +15,6 @@ class PatientForm(forms.ModelForm):
             'areaId' : forms.TextInput(attrs={'required': True,'class':'form-control'}),
             'contactNo': forms.TextInput(attrs={'required': True, 'maxlength':"10", 'class':'form-control', 'onkeypress': 'return restrictAlphabets(event);'}),
             'password' : forms.PasswordInput(attrs={'required': True,'class':'form-control'}),
-            'rfidno': forms.TextInput(attrs={'required': True, 'maxlength':"20", 'class':'form-control', 'onkeypress': 'return restrictAlphabets(event);'}),
         }
 
 class AppointmentForm(forms.ModelForm):

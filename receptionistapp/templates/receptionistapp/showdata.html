@@ -1,52 +1,171 @@
-{% extends 'receptionistapp/base.html' %}
-{% block contents %}
-<h1>View Appointment Details</h1>
-<hr/>
-<form method="POST">
-    {% csrf_token%}
-    <!-- <div class="mx-auto" style="width: 400px;"> -->
-       {% for item in  data %}
-       <div class="form-group">
-        <label for="exampleInputEmail1">Select RFID : </label>
-         {{form.rfidno}}
-        </div>
-       <div class="form-group">
-        <label for="exampleInputEmail1">Appointment Date : </label>
-         {{item.aptdate|date:"d-m-Y"}}
-        </div>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Child Name : </label>
-             {{item.childname}}
-        </div>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Vaccine Name : </label>
-             {{item.vaccineid.vaccineName}}
-        </div>
-        {% endfor %}
-         
-
-        <button type="submit" class="btn btn-primary">Submit</button>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | View Appointment</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "admin-primary": "#4f46e5",    /* Indigo 600 */
+              "admin-secondary": "#4338ca",  /* Indigo 700 */
+              "background": "#f8fafc",
+              "on-surface": "#0f172a",       /* Slate 900 */
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"]
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
       
-       
-     
-    
-    <!-- </div> -->
-</form>
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(79, 70, 229, 0.1);
+      }
+      
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      
+      .mesh-bg {
+        background-image: 
+          radial-gradient(at 10% 20%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
+          radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+          radial-gradient(at 50% 50%, rgba(255, 255, 255, 1) 0px, transparent 100%);
+      }
 
-{% endblock contents %}
-<script>
-    const inputfield = document.getElementsByTagName('input')
-    for(let i in inputfield)
-    {
-          inputfield[i].className += 'form-control'
-    }
-</script>
+      .glass-input {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(203, 213, 225, 0.6);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .glass-input:focus {
+        background: #ffffff;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
 
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm animate__animated animate__fadeInDown">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <!-- Brand -->
+            <a href="{% url 'receptionist:receptionisthome' %}" class="flex items-center decoration-transparent group">
+                <div class="flex items-center font-headline font-black text-3xl tracking-tighter text-[#006a6a]">
+                    Kidd<img src="{% static 'patients/images/logo-icon.png' %}" alt="o" class="h-8 mx-0.5 object-contain">Vax
+                </div>
+                <span class="text-admin-primary/80 font-bold text-lg ml-3 tracking-widest uppercase border-l-2 border-slate-200 pl-3 flex items-center h-8">Receptionist</span>
+            </a>
+            
+            <!-- Context Links -->
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'receptionist:receptionisthome' %}">Dashboard Hub</a>
+                <a class="font-headline font-bold text-sm text-admin-primary bg-admin-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'receptionist:managepatients' %}">Bookings</a>
+            </nav>
 
+            <!-- User Status & Logout -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-indigo-50">
+                    <div class="w-10 h-10 bg-gradient-to-br from-admin-primary to-admin-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner text-sm">
+                        {{ request.session.CName|make_list|first|upper }}
+                    </div>
+                    <span class="font-headline font-bold text-slate-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'receptionist:logout' %}" title="Logout" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                    <svg class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                </a>
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Content -->
+    <main class="flex-grow max-w-3xl mx-auto px-8 py-10 w-full animate__animated animate__fadeIn">
+        
+        <div class="flex items-center gap-4 border-b border-slate-200/60 pb-6 mb-8">
+            <a href="{% url 'receptionist:managepatients' %}" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <svg class="w-5 h-5 pr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            </a>
+            <div>
+                <h1 class="font-headline font-black text-3xl text-slate-800 tracking-tight">Process Appointment</h1>
+                <p class="text-slate-500 mt-1 font-medium">Verify patient details and associate RFID for tracking.</p>
+            </div>
+        </div>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    
-          
-           
+        <div class="glass-card rounded-[2rem] p-10 shadow-[0_10px_40px_rgb(0,0,0,0.04)] relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-100 rounded-full blur-2xl opacity-50"></div>
+            
+            <form method="POST" class="space-y-6 relative z-10">
+                {% csrf_token %}
+                
+                {% for item in data %}
+                <!-- Readonly Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 mb-6">
+                    <div>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Appointment Date</span>
+                        <span class="font-headline font-bold text-lg text-slate-800">{{item.aptdate|date:"d-m-Y"}}</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Child Name</span>
+                        <span class="font-headline font-bold text-lg text-slate-800">{{item.childname}}</span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Vaccine details</span>
+                        <span class="font-headline font-bold text-lg text-admin-primary">{{item.vaccineid.vaccineName}}</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Actionable Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-slate-700 ml-1">Scan or Enter RFID Number</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-admin-primary transition-colors">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        </div>
+                        {{ form.rfidno }}
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-2xl shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] text-lg font-bold text-white bg-gradient-to-r from-admin-primary to-admin-secondary hover:translate-y-[-2px] hover:shadow-[0_15px_30px_-10px_rgba(79,70,229,0.6)] focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all duration-300 group">
+                        Update Appointment Status
+                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+            inputs.forEach(input => {
+                input.classList.add('glass-input', 'block', 'w-full', 'pl-11', 'pr-4', 'py-4', 'rounded-2xl', 'text-slate-800', 'placeholder-slate-400', 'focus:outline-none', 'font-medium', 'text-lg', 'leading-tight');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -18,16 +18,52 @@ def Logout(request):
     logout(request)
     Session.objects.all().delete()
   
-    return render(request, 'hospitalapp/login.html')
+    return redirect('hospitalapp:hospitallogin')
 
 def Home(request):
     storage = messages.get_messages(request)
     for message in storage:
-        message = None
+        pass
+    
     if request.session.get('CName') is None:
         return redirect('hospitalapp:hospitallogin') 
-    return render(request,'hospitalapp/home.html')
 
+    hosp_id = request.session.get('Cid')
+    hospital = Hospitaltbl.objects.get(id=hosp_id)
+    
+    if request.method == 'POST':
+        new_name = request.POST.get('dcrname')
+        new_pass = request.POST.get('password')
+        if new_name and new_pass:
+            hospital.dcrname = new_name
+            hospital.password = new_pass
+            hospital.save()
+            request.session['CName'] = new_name
+            messages.success(request, 'Hospital Profile updated successfully.')
+            return redirect('hospitalapp:hospitalhome')
+
+    today = datetime.datetime.now().date()
+    
+    total_vaccines_registered = Vaccinetbl.objects.filter(hospitalId_id=hosp_id).count()
+    
+    this_month_apps = Appointmenttbl.objects.filter(
+        hospitalid_id=hosp_id, 
+        aptdate__year=today.year, 
+        aptdate__month=today.month
+    )
+    
+    total_vaccines_this_month = this_month_apps.count()
+    unique_children_this_month = this_month_apps.values('childname').distinct().count()
+
+    context = {
+        'hospital': hospital,
+        'total_vaccines_registered': total_vaccines_registered,
+        'total_vaccines_this_month': total_vaccines_this_month,
+        'unique_children_this_month': unique_children_this_month,
+        'current_month_name': today.strftime("%B")
+    }
+
+    return render(request,'hospitalapp/home.html', context)
 class HospitalLogin(View):
     def get(self, request):  
 
@@ -229,8 +265,7 @@ class ShowAppointments(View):
             return redirect('hospitalapp:hospitallogin')
         
         # show data
-       
-        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),aptdate=datetime.datetime.now().date()).order_by('-id')
+        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),aptdate__gte=datetime.datetime.now().date()).exclude(active=2).order_by('-id')
             #getData  =  Appointmenttbl.objects.filter(id = id).all().order_by('-id')
            
         context={
@@ -250,7 +285,7 @@ class ShowPastAppointments(View):
         
         # show data
         dt = datetime.datetime.now().date()
-        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),aptdate__lt = dt).order_by('-id')
+        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),active=2).order_by('-id')
             #getData  =  Appointmenttbl.objects.filter(id = id).all().order_by('-id')
            
         context={

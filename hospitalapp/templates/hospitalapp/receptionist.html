@@ -1,208 +1,272 @@
-{% extends 'hospitalapp/base.html' %}
-{% block contents %}
-
-
-    <h2 class="title1">Manage Adminstrative Staff</h2>
-    {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-        {{ message }}
-    </div>
-           
-       
-    {% endfor %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <!-- <div class="mx-auto" style="width: 400px;"> -->
-           
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.name.label}}</label>
-               {{form.name}}
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.address.label}}</label>
-               {{form.address}}
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.gender.label}}</label>
-             
-              {% if selGender == 'Male' %}
-                <input type="radio" checked=true name="gender" value="Male"> Male 
-                <input type="radio"  name="gender" value="Female">   Female    
-              {% elif selGender == 'Female' %}  
-                <input type="radio"  name="gender" value="Male"> Male 
-                <input type="radio" checked=true name="gender" value="Female">   Female 
-              {% else %}     
-                  <input type="radio" checked=true name="gender" value="Male"> Male    
-                  <input type="radio"  name="gender" value="Female">   Female         
-              {% endif %}
-              </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.cityId.label}}</label>
-              <select id="cityId" name="cityId" size="1" class="form-control" required>
-                     
-                <option value="">--Select City--</option>
-                {% for item in cityData %}    
-                <option value="{{item.id}}"
-                    {% if selectedCity and selectedCity.cityName in item.cityName %}
-                        Selected 
-                    {% endif %}>    
-                    {{item.cityName}}
-                </option>
-                {% endfor %}
-            </select>
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.areaId.label}}</label>
-              <select id="areaId" name="areaId" size="1" class="form-control" required>
-                     
-                <option value="">--Select Area--</option>
-                {% for item in areaData %}    
-                <option value="{{item.id}}"
-                    {% if selectedArea and selectedArea.areaName in item.areaName %}
-                        Selected 
-                    {% endif %}>    
-                    {{item.areaName}}
-                </option>
-                {% endfor %}
-            </select>
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.contactNo.label}}</label>
-               {{form.contactNo}}
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.password.label}}</label>
-               {{form.password}}
-            </div>
-            <div class="form-group">
-                <label for="exampleInputEmail1">{{form.doj.label}}</label>
-                 {{form.doj}}
-              </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">{{form.staffimg.label}}</label>
-              <input type="file" name="staffimg" id="staffimg"/>
-              {% if imgurl %}
-                 <img src='{{imgurl.StaffImageUrl}}' width="70px" height="70px" alt="">
-              {% else %}
-                <p><img src="../../../static/staffimages/noimg.png"  width="70px" height="70px"></p>
-              {% endif %}
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="submit" value="Reset" name="btnreset" class="btn btn-warning">Reset</button>
-           
-            <script language="Javascript" type="text/javascript">
-              function isNumberKey(evt) {
-                  var charCode = (evt.which) ? evt.which : event.keyCode
-                  if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-      
-                      return true;
-                  }
-         
-                  return false;
-      
-              }
-          </script>
-        
-        <!-- </div> -->
-    </form>
-        <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Image</th>
-            <th scope="col">Name</th>
-            <th scope="col">Gender</th>
-            <th scope="col">City</th>
-            <th scope="col">Contact</th>
-             <th scope="col">Action</th> 
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in ReceptionistData %}
-          <tr>
-            <td>{{item.id}}</td>
-            <td><img src='../../../static/{{item.staffimg}}' width="100px" height="100px"/></td>
-            <td>{{item.name}}</td>
-            <td>{{item.gender}}</td>
-            <td>{{item.cityId.cityName}}</td>
-            <td>{{item.contactNo}}</td>
-             <td>
-                <a href="{% url 'hospitalapp:editdata' item.id %}"><button type="submit" class="btn btn-info">Edit</button></a>
-                <a href="{% url 'hospitalapp:deletedata' item.id %}"><button type="submit" class="btn btn-danger">Delete</button></a>
-            </td> 
-          </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-    </div>     
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script>
-$(document).ready(
-$("#cityId").change(function () {
-    var cityid = $(this).val();  
-    $("#areaId").empty();
-    $.ajax({                       
-    url: "{% url 'adminapp:load_areas' %}",       
-    data: {
-        'city_id': cityid      
-    },
-    success: function (data) {   
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Manage Staff</title>
     
-        $("#areaId").html(data);  
-
-    }
-    });  
-
-})
-);
-</script>        
-{% endblock contents %}
-<script>
-    const inputfield = document.getElementsByTagName('input')
-    for(let i in inputfield)
-    {
-          inputfield[i].className += 'form-control'
-    }
-</script>
-
-<script>
- $(document).ready(function() {
-     $('#id_contactNo').on('input change blur', function() {
-         if($(this).val() != '' && $("#id_contactNo").val().length == 10) {
-             $('#btnsubmit').prop('disabled', false);
-         } else {
-             $('#btnsubmit').prop('disabled', true);
-         }
-     });
- });
-</script>
-
-<script language="Javascript" type="text/javascript">
-  function isNumberKey(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode
-      if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-
-          return true;
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
+              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
       }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
 
-      return false;
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+            </nav>
 
-  }
-  
-</script>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner">
+                        <span class="material-symbols-outlined">local_hospital</span>
+                    </div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-xl">logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
 
-<script type="text/javascript">
+    <!-- Main Content -->
+    <main class="flex-grow max-w-[90rem] mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Administrative Staff</h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">Manage receptionists and system access.</p>
+            </div>
+        </div>
 
-    function restrictAlphabets(evt) {
-        var x = (evt.which) ? evt.which : event.keyCode
-        if ((x >= 48 && x <= 57) || x == 8 )
-            return true;
-        else
-            return false;
-    }
-</script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    
-          
-           
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-teal-50 border-l-4 border-primary text-primary p-4 rounded-r-xl shadow-sm animate__animated animate__fadeInDown" role="alert">
+                    <p class="font-bold font-headline">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Add/Edit Form -->
+            <div class="xl:col-span-1 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-headline font-bold text-2xl text-gray-800"><span class="material-symbols-outlined align-bottom text-primary mr-2">person_add</span>Staff Details</h2>
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data" class="space-y-5">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Full Name</label>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Address</label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Gender</label>
+                        <div class="flex gap-4 p-3 bg-slate-50 border border-gray-200 rounded-xl">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-700">
+                                <input type="radio" {% if selGender != 'Female' %}checked{% endif %} name="gender" value="Male" class="text-primary focus:ring-primary w-4 h-4"> Male 
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-700">
+                                <input type="radio" {% if selGender == 'Female' %}checked{% endif %} name="gender" value="Female" class="text-primary focus:ring-primary w-4 h-4"> Female 
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">City</label>
+                            <select id="cityId" name="cityId" class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 font-medium focus:ring-2 focus:ring-modern-blue/50 focus:border-modern-blue transition-all" required>
+                                <option value="">--Select City--</option>
+                                {% for item in cityData %}    
+                                    <option value="{{item.id}}" {% if selectedCity and selectedCity.cityName == item.cityName %}selected{% endif %}>{{item.cityName}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Area</label>
+                            <select id="areaId" name="areaId" class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 font-medium focus:ring-2 focus:ring-modern-blue/50 focus:border-modern-blue transition-all" required>
+                                <option value="">--Select Area--</option>
+                                {% for item in areaData %}    
+                                    <option value="{{item.id}}" {% if selectedArea and selectedArea.areaName == item.areaName %}selected{% endif %}>{{item.areaName}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Contact Number</label>
+                        {{ form.contactNo }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Password</label>
+                        {{ form.password }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Date of Joining</label>
+                        {{ form.doj }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Profile Image</label>
+                        <div class="flex items-center gap-4">
+                            {% if imgurl %}
+                                <img id="imagePreview" src="/static/{{imgurl.staffimg}}" class="w-16 h-16 rounded-xl object-cover shadow-sm border border-gray-100">
+                            {% else %}
+                                <img id="imagePreview" src="" class="hidden w-16 h-16 rounded-xl object-cover shadow-sm border border-gray-100">
+                                <div id="imagePlaceholder" class="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center border border-gray-200 text-gray-400">
+                                    <span class="material-symbols-outlined">image</span>
+                                </div>
+                            {% endif %}
+                            <input type="file" accept="image/*" name="staffimg" id="staffimg" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-modern-blue hover:file:bg-blue-100 transition-all"/>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex gap-4">
+                        <button type="submit" id="btnsubmit" class="flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-[0_8px_20px_rgba(6,182,212,0.3)] hover:-translate-y-0.5 transition-all outline-none">Save Staff</button>
+                        <button type="submit" name="btnreset" class="px-6 bg-slate-100 text-gray-600 font-headline font-bold py-3 rounded-xl hover:bg-slate-200 transition-all outline-none">Reset</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Data Table -->
+            <div class="xl:col-span-2 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Image</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Name</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Gender & City</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Contact</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100/60">
+                        {% for item in ReceptionistData %}
+                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="py-4 px-4">
+                                <img src="/static/{{item.staffimg}}" class="w-12 h-12 rounded-full object-cover shadow-sm border border-gray-200 group-hover:border-primary transition-colors">
+                            </td>
+                            <td class="py-4 px-4 font-bold text-gray-800">{{ item.name }}</td>
+                            <td class="py-4 px-4">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-semibold text-gray-700">{{ item.gender }}</span>
+                                    <span class="text-xs text-gray-500">{{ item.cityId.cityName }}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-sm font-medium text-gray-600">{{ item.contactNo }}</td>
+                            <td class="py-4 px-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{% url 'hospitalapp:editdata' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-modern-blue hover:bg-modern-blue hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    </a>
+                                    <a href="{% url 'hospitalapp:deletedata' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Apply Tailwind classes to Django rendered form inputs
+        const inputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="date"], input[type="number"], input[type="email"]');
+        inputs.forEach(input => {
+            input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'px-4', 'py-3', 'text-gray-800', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
+        });
+
+        // AJAX for City/Area cascade
+        $(document).ready(function() {
+            $("#cityId").change(function () {
+                var cityid = $(this).val();  
+                $("#areaId").empty().append('<option value="">Loading...</option>');
+                $.ajax({                       
+                    url: "{% url 'adminapp:load_areas' %}",       
+                    data: { 'city_id': cityid },
+                    success: function (data) {   
+                        $("#areaId").html(data);  
+                    }
+                });  
+            });
+            
+            // Validate Contact Number (10 digits)
+            $('#id_contactNo').on('input change blur', function() {
+                var val = $(this).val();
+                if(val != '' && val.length == 10) {
+                    $('#btnsubmit').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                } else {
+                    $('#btnsubmit').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                }
+            });
+
+            // Live Image Preview Logic
+            $('#staffimg').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        $('#imagePreview').attr('src', evt.target.result).removeClass('hidden');
+                        $('#imagePlaceholder').addClass('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

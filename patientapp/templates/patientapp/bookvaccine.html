@@ -1,254 +1,615 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Kiddovax :: Vaccine Booking</title>
-  <!-- google fonts -->
-  <link href="//fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <!-- Template CSS -->
-  <link rel="stylesheet" href="{% static 'patients/css/style-starter.css' %}">
-</head>
-
-<body>
-  <!--header-->
-  <header id="site-header" class="fixed-top">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-dark stroke">
-        <h1>
-          <a class="navbar-brand" href="{% url 'patient:homepage' %}">
-            Kidd<i class="fab fa-keycdn"></i>Vax</a>
-        </h1>
-        <!-- if logo is image enable this   
-          <a class="navbar-brand" href="#index.html">
-              <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-          </a> -->
-        <button class="navbar-toggler  collapsed bg-gradient" type="button" data-toggle="collapse"
-          data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon fa icon-expand fa-bars"></span>
-          <span class="navbar-toggler-icon fa icon-close fa-times"></span>
-          </span>
-        </button>
-        {% include 'patientapp/menu.html' %}
-      
-        <!-- toggle switch for light and dark theme -->
-        <div class="mobile-position">
-          <nav class="navigation">
-            <div class="theme-switch-wrapper">
-              <label class="theme-switch" for="checkbox">
-                <input type="checkbox" id="checkbox">
-                <div class="mode-container py-1">
-                  <i class="gg-sun"></i>
-                  <i class="gg-moon"></i>
-                </div>
-              </label>
-            </div>
-          </nav>
-        </div>
-        <!-- //toggle switch for light and dark theme -->
-      </nav>
-
-    </div>
-  </header>
-  <!--/header-->
-<!-- breadcrumb -->
-<section class="w3l-about-breadcrumb text-center">
-  <div class="breadcrumb-bg breadcrumb-bg-about py-5">
-      <div class="container py-lg-5 py-md-4">
-        <div class="w3breadcrumb-gids">
-          <div class="w3breadcrumb-left text-left">
-                    <h2 class="title AboutPageBanner">
-                Vaccine Booking   </h2>
-                              <p class="inner-page-para mt-2">
-                                Prevent the Spread
-                                Stay at Home, Stay Safe             </p>
-          </div>
-          <div class="w3breadcrumb-right">
-                <ul class="breadcrumbs-custom-path">
-                  <li><a href="{% url 'patient:homepage' %}">Home</a></li>
-                  <li class="active"><span class="fas fa-angle-double-right mx-2"></span> Vaccine Booking</li>
-                </ul>
-          </div>
-    </div>
-      </div>
-      <div class="hero-overlay"></div>
-  </div>
-</section>
-<!--//breadcrumb-->
- <!-- contact-form 2 -->
- <section class="w3l-contact-2 py-5" id="contact">
-  <div class="container py-lg-4 py-md-3 py-2">
-    <div class="title-content text-center">
-      <span class="title-subw3hny">Appointment Booking</span>
-      <!-- <h3 class="title-w3l mb-lg-4">Contact with our support <br>
-        during emergency!</h3> -->
-
-    </div>
-    {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-        {{ message }}
-    </div>
-           
-       
-    {% endfor %}
- 
-      
-        <div class="mx-lg-5">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Child Name</label>
-                    <input type="text"  class="form-control" id="childname"  name="childname" placeholder="Child Name">
-                </div>
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Hospital</label>
-                <select id="hospitalid" name="hospitalid" size="1" class="form-control" required>
-                        
-                    <option value="">--Select Hospital--</option>
-                    {% for item in hospitalData %}    
-                    <option value="{{item.id}}">    
-                        {{item.title}}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Vaccine</label>
-                <select id="vaccineid" name="vaccineid" size="1" class="form-control" required>
-                        
-                    <option value="">--Select Vaccine--</option>
-                    
-                    <option value="{{item.id}}">
-                        
-                        {{item.vaccineName}}
-                    </option>
-                
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Date</label>
-                <input type="date"  class="form-control" id="aptdate"  name="aptdate" placeholder="Select Date">
-            </div>
-
-            <div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-            </form>
-            <table class="table mt-5" >
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Hospital</th>
-                    <th scope="col">Vaccine</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for bookingitem in bindData %}
-                  <tr>
-                    <td>{{bookingitem.id}}</td>
-                    <td>{{bookingitem.aptdate|date:"d-m-Y"}}</td>
-                    <td>{{bookingitem.childname}}</td>
-                    <td>{{bookingitem.hospitalid.title}}</td>
-                    <td>{{bookingitem.vaccineid.vaccineName}}</td>
-                    <td>{% if bookingitem.active == 0 %}
-                      <span class="badge badge-warning">Pending</span>
-                      {% elif bookingitem.active == 1 %} 
-                      <span class="badge badge-secondary">Waiting</span>
-                      {% elif bookingitem.active == 2 %} 
-                      <span class="badge badge-success">Success</span>
-                      {% endif %}
-                    </td>
-                    <td>
-                      {% if bookingitem.active == 0  %}
-                        <a href="{% url 'patient:deleteappointment' bookingitem.id %}"><button type="submit" class="btn btn-danger">Cancel</button></a>
-                      {% else %}
-                      <span class="badge badge-success">No Action</span>
-                        {% endif %}
-
-                      </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-                </table>
-        </div>
-
- 
-</section>
-<!-- /contact-form-2 -->
-
-  <!-- /contact1 -->
-  {% include 'patientapp/footer.html' %}
-<!-- Template JavaScript -->
-
-<script src="{% static 'patients/js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'patients/js/theme-change.js' %}"></script>
-<!-- disable body scroll which navbar is in active -->
-<script>
-  $(function () {
-    $('.navbar-toggler').click(function () {
-      $('body').toggleClass('noscroll');
-    })
-  });
-</script>
-<!-- disable body scroll which navbar is in active -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script>
-$(document).ready(
-$("#hospitalid").change(function () {
-    var hid = $(this).val();  
-    $("#vaccineid").empty();
-    $.ajax({                       
-    url: "{% url 'patient:load_vaccines' %}",       
-    data: {
-        'h_id': hid      
-    },
-    success: function (data) {   
-        $("#vaccineid").html(data);  
-
-    }
-    });  
-
-})
-);
-</script> 
-<!--/MENU-JS-->
-<script>
-  $(window).on("scroll", function () {
-    var scroll = $(window).scrollTop();
-
-    if (scroll >= 80) {
-      $("#site-header").addClass("nav-fixed");
-    } else {
-      $("#site-header").removeClass("nav-fixed");
-    }
-  });
-
-  //Main navigation Active Class Add Remove
-  $(".navbar-toggler").on("click", function () {
-    $("header").toggleClass("active");
-  });
-  $(document).on("ready", function () {
-    if ($(window).width() > 991) {
-      $("header").removeClass("active");
-    }
-    $(window).on("resize", function () {
-      if ($(window).width() > 991) {
-        $("header").removeClass("active");
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Vaccine Booking</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
+              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+            animation: { 'float': 'float 6s ease-in-out infinite', 'blob': 'blob 7s infinite', 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
+            keyframes: {
+              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
+              blob: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }, '100%': { transform: 'translate(0px, 0px) scale(1)' } },
+              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
+            }
+          }
+        }
       }
-    });
-  });
-</script>
-<!--//MENU-JS-->
-<script src="{% static 'patients/js/bootstrap.min.js' %}"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-</body>
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+      .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); }
+      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 50%, center; position: relative; }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
+      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
+      
+      /* Select2 & Flatpickr Custom Tailwind Theme */
+      .select2-container .select2-selection--single { height: 3.25rem; border-radius: 0.75rem; border-color: rgba(20, 184, 166, 0.4); background-color: #f8fafc; padding: 0.6rem 0.5rem; }
+      .select2-container--default .select2-selection--single .select2-selection__arrow { height: 3.25rem; right: 10px; }
+      .select2-container--default .select2-selection--single .select2-selection__rendered { color: #374151; font-weight: 500; font-family: 'Inter', sans-serif; }
+      .select2-dropdown { border-radius: 1rem; border: 1px solid rgba(6, 182, 212, 0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; padding-top: 0.25rem; padding-bottom: 0.25rem; }
+      .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable { background-color: #06b6d4; color: white; }
+      .flatpickr-calendar { border-radius: 1.5rem !important; border: none !important; box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important; padding: 10px !important; font-family: 'Inter', sans-serif !important; }
+      .flatpickr-day.selected { background: #06b6d4 !important; border-color: #06b6d4 !important; }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg">
 
+    <!-- Standalone Tailwind Navbar -->
+    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <!-- Brand Logo with original FontAwesome Icon -->
+            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
+                </span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-10">
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
+                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
+            </nav>
+
+            <!-- Authentication / Profile Dropdown -->
+            <div class="flex items-center gap-4">
+                {% if request.session.CName is None %} 
+                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
+                {% else %}
+                    <!-- Notification Bell -->
+                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4 mr-2">
+                        <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+                            <span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">notifications</span>
+                            <!-- Dynamic Unread Badge -->
+                            <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center hidden border-2 border-white transform translate-x-1 -translate-y-1">0</span>
+                        </button>
+                        
+                        <!-- Notification Dropdown Menu -->
+                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden z-50 overflow-hidden transform origin-top-right">
+                            <div class="p-4 border-b border-gray-100/80 flex items-center justify-between bg-teal-50/30">
+                                <h4 class="font-headline font-bold text-gray-800 text-sm">Notifications</h4>
+                                <button id="mark-read-btn" class="text-[10px] font-bold text-modern-cyan hover:text-primary uppercase tracking-widest hidden">Mark Read</button>
+                            </div>
+                            <div id="notif-list" class="max-h-[300px] overflow-y-auto">
+                                <div class="p-6 text-center text-gray-400 font-medium text-xs">Loading alerts...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
+                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
+                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-primary bg-teal-50 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> My Appointments
+                            </a>
+                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
+                            </a>
+                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
+                            </a>
+                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
+                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
+        
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
+            <div class="relative z-10 max-w-3xl space-y-8 text-center mx-auto">
+                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 justify-center">
+                    <span class="flex h-3 w-3 relative">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                    </span>
+                    <span class="text-sm font-bold tracking-wider uppercase">Prevent the Spread</span>
+                </div>
+                
+                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white">
+                    Vaccine <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">Booking.</span>
+                </h1>
+                
+                <p class="text-xl text-cyan-50 font-medium leading-relaxed opacity-90">
+                    Schedule and manage securely. Stay at home, stay safe.
+                </p>
+            </div>
+        </section>
+
+        <!-- Booking Interface -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Booking Form Column (Left) -->
+            <div class="w-full lg:w-[35%] space-y-8 animate__animated animate__fadeInLeft animate__delay-1s lg:sticky lg:top-28 lg:self-start">
+                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-50 rounded-full blur-2xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+                    
+                    <h3 class="font-headline font-bold text-2xl text-gray-900 mb-6 flex items-center gap-3 relative z-10">
+                        <span class="material-symbols-outlined text-modern-cyan">edit_calendar</span>
+                        New Appointment
+                    </h3>
+                    
+                    {% for message in messages %}
+                    <div class="relative z-10 bg-green-50 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-3 border border-green-200">
+                        <span class="material-symbols-outlined text-green-500">check_circle</span>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+
+                    <form method="POST" class="space-y-5 relative z-10">
+                        {% csrf_token %}
+                        <!-- Child Name -->
+                        <div class="space-y-2">
+                            <label for="child_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Select Child</label>
+                            {% if children %}
+                            <div class="relative">
+                                <select id="child_select" name="child_id" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
+                                    <option value="">-- Choose Registered Child --</option>
+                                    {% for child in children %}
+                                    <option value="{{ child.id }}" data-childname="{{ child.childname }}">{{ child.childname }} {% if child.age > 0 %}({{ child.age }} yr){% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                                {# Hidden input keeps childname for backward-compat with Appointmenttbl.childname #}
+                                <input type="hidden" id="childname" name="childname" value="">
+                            </div>
+                            </div>
+                            <div class="mt-2 text-right">
+                                <a href="{% url 'patient:profilepage' %}" class="inline-flex items-center gap-1 text-[10px] font-bold text-modern-cyan hover:text-primary transition-colors uppercase tracking-wider">
+                                    <span class="material-symbols-outlined text-[12px]">person_add</span> Add Another Child
+                                </a>
+                            </div>
+                            <!-- ⚠️ Missed Vaccines Alert Panel -->
+                            <div id="booking-missed-alert" class="hidden mt-3 rounded-xl border p-4 shadow-sm transition-all mb-2"></div>
+                            {% else %}
+                            <div class="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-700 text-sm font-medium flex items-center justify-between shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-orange-500">warning</span>
+                                    <span>No children registered.</span>
+                                </div>
+                                <a href="{% url 'patient:profilepage' %}" class="px-4 py-2 bg-white rounded-lg shadow-sm text-sm font-bold text-orange-600 hover:bg-orange-600 hover:text-white transition-colors border border-orange-200">Add Child</a>
+                            </div>
+                            <select id="child_select" name="child_id" required class="hidden"><option value=""></option></select>
+                            <input type="hidden" id="childname" name="childname" value="">
+                            {% endif %}
+                        </div>
+                        <!-- Hospital -->
+                        <div class="space-y-2">
+                            <label for="hospitalid" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Hospital Clinic</label>
+                            <div class="relative">
+                                <select id="hospitalid" name="hospitalid" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
+                                    <option value="">-- Select Hospital --</option>
+                                    {% for item in hospitalData %}    
+                                    <option value="{{item.id}}">{{item.title}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Vaccine -->
+                        <div class="space-y-2">
+                            <label for="vaccineid" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Vaccine</label>
+
+                            <!-- Smart Recommendation Banner -->
+                            <div id="recommendation-container" class="hidden mb-4">
+                                <h4 class="font-headline font-bold text-xs uppercase tracking-widest text-gray-500 mb-2 pl-1">Recommended Vaccines</h4>
+                                
+                                <div class="bg-slate-50 border border-teal-100/60 rounded-xl p-4 shadow-sm min-h-[80px] flex flex-col justify-center">
+                                    <!-- Loading State -->
+                                    <div id="rec-loading" class="flex justify-center items-center gap-2 text-primary font-bold text-sm hidden">
+                                        <span class="material-symbols-outlined animate-spin text-modern-cyan">sync</span> Fetching recommendations...
+                                    </div>
+                                    
+                                    <!-- Empty State -->
+                                    <div id="rec-empty" class="flex justify-center items-center gap-2 text-gray-400 font-bold text-[13px] hidden">
+                                        <span class="material-symbols-outlined text-lg">check_circle</span> No vaccines due at this time.
+                                    </div>
+                                    
+                                    <!-- Cards Container -->
+                                    <div id="recommendation-cards" class="w-full grid grid-cols-1 gap-3 hidden">
+                                        <!-- UI cards injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <select id="vaccineid" name="vaccineid" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
+                                    <option value="">-- Select Vaccine --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Date -->
+                        <div class="space-y-2">
+                            <label for="aptdate" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Appointment Date</label>
+                            <!-- Notice the ID here is strictly "aptdate" which hooks directly into the JS constraint script -->
+                            <input type="date" id="aptdate" name="aptdate" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-text uppercase tracking-widest font-mono text-sm">
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-modern-cyan text-white py-4 rounded-[1rem] font-bold font-headline tracking-wide hover:shadow-[0_10px_20px_rgba(6,182,212,0.3)] hover:-translate-y-1 transition-all flex justify-center items-center gap-2 group">
+                                Confirm Booking <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </form>
+            </div>
+
+            <!-- Booking History Column (Right) -->
+            <div class="w-full lg:w-[65%] animate__animated animate__fadeInRight animate__delay-1s">
+                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 overflow-hidden">
+                    <h3 class="font-headline font-bold text-2xl text-gray-900 mb-6 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-modern-blue">history</span>
+                        Booking History
+                    </h3>
+
+                    <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100">
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider"># ID</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Date</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Child Name</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Hospital</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Vaccine</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Status</th>
+                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 bg-white">
+                                {% for bookingitem in bindData %}
+                                <tr class="hover:bg-cyan-50/20 transition-colors group/row">
+                                    <td class="py-4 px-5 text-sm font-bold text-cyan-200 group-hover/row:text-cyan-400 transition-colors">#{{bookingitem.id}}</td>
+                                    <td class="py-4 px-5 font-medium text-gray-800">{{bookingitem.aptdate|date:"d M Y"}}</td>
+                                    <td class="py-4 px-5 font-bold text-primary">{{bookingitem.childname}}</td>
+                                    <td class="py-4 px-5 text-gray-500 text-sm font-medium">{{bookingitem.hospitalid.title}}</td>
+                                    <td class="py-4 px-5 text-gray-500 text-sm font-medium">{{bookingitem.vaccineid.vaccineName}}</td>
+                                    
+                                    <td class="py-4 px-5 text-center">
+                                        {% if bookingitem.active == 0 %}
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-amber-100 text-amber-700 ring-1 ring-amber-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending</span>
+                                        {% elif bookingitem.active == 1 %} 
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-blue-100 text-blue-700 ring-1 ring-blue-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Waiting</span>
+                                        {% elif bookingitem.active == 2 %} 
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Success</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="py-4 px-5 text-center">
+                                        {% if bookingitem.active == 0 %}
+                                            <a href="{% url 'patient:deleteappointment' bookingitem.id %}" class="inline-flex items-center justify-center p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white hover:shadow-lg hover:-translate-y-0.5 transition-all" title="Cancel Appointment">
+                                                <span class="material-symbols-outlined text-sm">close</span>
+                                            </a>
+                                        {% else %}
+                                            <span class="inline-flex p-2 rounded-xl bg-gray-50 text-gray-300" title="No action available">
+                                                <span class="material-symbols-outlined text-sm">remove</span>
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="py-16 text-center text-gray-400 font-medium bg-gray-50/50">
+                                        <div class="flex flex-col items-center justify-center gap-3">
+                                            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
+                                                <span class="material-symbols-outlined text-3xl">inbox</span>
+                                            </div>
+                                            <span>No upcoming appointments found.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Ultra-Modern Dark Footer (from home.html) -->
+    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
+        <!-- Abstract gradient blob in footer background -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
+            <div class="flex flex-col items-center md:items-start gap-6">
+                <!-- Footer Logo -->
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
+                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
+                </div>
+                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
+                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
+                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
+                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
+            </div>
+            
+            <div class="flex gap-4">
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">public</span>
+                </button>
+                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
+                    <span class="material-symbols-outlined">mail</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
+            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
+        </div>
+    </footer>
+
+    <!-- jQuery & Custom Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sleek Flatpickr calendar with minimum date constraint
+            flatpickr("#aptdate", {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                disableMobile: "true"
+            });
+        });
+
+        $(document).ready(function() {
+            // Initialize Select2 custom UI with theme
+            $('#hospitalid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
+            $('#vaccineid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
+            $('#child_select').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
+
+            // Sync hidden childname field from child_select so Appointmenttbl.childname is always populated
+            $('#child_select').on('change', function() {
+                var selected = $(this).find('option:selected');
+                var cid = $(this).val();
+                $('#childname').val(selected.data('childname') || '');
+                
+                // 1. Fetch Missed Vaccines Alert
+                var alertPanel = $('#booking-missed-alert');
+                if (!cid) {
+                    alertPanel.addClass('hidden').empty();
+                } else {
+                    $.ajax({
+                        url: "{% url 'patient:missed_vaccines' %}",
+                        data: { 'child_id': cid },
+                        success: function(res) {
+                            var missed = res.missed || [];
+                            
+                            if (missed.length === 0) {
+                                // Green State - All good
+                                alertPanel.removeClass('hidden')
+                                          .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 bg-emerald-50 border-emerald-200')
+                                          .html('<div class="flex items-center gap-2 text-emerald-700 font-bold text-sm"><span class="material-symbols-outlined">verified</span> All vaccinations are up to date!</div>');
+                                return;
+                            }
+                            
+                            var sv = res.overall_severity || 'low';
+                            var style = {
+                                'high':   { border: 'border-red-200',    bg: 'bg-red-50',    text: 'text-red-800', badge: 'bg-red-100 text-red-700' },
+                                'medium': { border: 'border-orange-200', bg: 'bg-orange-50', text: 'text-orange-800', badge: 'bg-orange-100 text-orange-700' },
+                                'low':    { border: 'border-yellow-200', bg: 'bg-yellow-50', text: 'text-yellow-800', badge: 'bg-yellow-100 text-yellow-700' },
+                            }[sv] || { border: 'border-gray-200', bg: 'bg-gray-50', text: 'text-gray-800', badge: 'bg-gray-200 text-gray-700' };
+                            
+                            var header = '<div class="flex flex-col gap-1 mb-2">' +
+                                '<div class="flex items-center gap-2 ' + style.text + ' font-bold text-sm">' +
+                                '<span class="material-symbols-outlined text-lg">warning</span> ⚠️ Your child has missed ' + res.total_missed + ' vaccines' +
+                                '</div>' +
+                                '<p class="text-[11px] opacity-80 ' + style.text + '">These should ideally be booked as soon as possible.</p>' +
+                                '</div>';
+                                
+                            var items = missed.map(function(v) {
+                                return '<div class="flex items-center justify-between py-1 border-t ' + style.border + ' first:border-0">' +
+                                    '<span class="font-bold text-[12px] ' + style.text + ' flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">vaccines</span> ' + v.name + '</span>' +
+                                    '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold ' + style.badge + '">' + v.due_age_range + '</span>' +
+                                    '</div>';
+                            }).join('');
+                            
+                            alertPanel.removeClass('hidden')
+                                      .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 ' + style.bg + ' ' + style.border)
+                                      .html(header + items);
+                        }
+                    });
+                }
+
+                // 2. Re-trigger vaccine load to filter for the newly selected child
+                var hid = $('#hospitalid').val();
+                if (hid) { $('#hospitalid').trigger('change'); }
+            });
+
+            // Original AJAX backend logic seamlessly preserved — now also sends child_id
+            $("#hospitalid").change(function () {
+                var hid = $(this).val();
+                var cid = $('#child_select').val();
+                // UX: clear choices and display loading string via select2 update
+                $("#vaccineid").empty().append('<option value="">-- Loading available vaccines... --</option>').trigger('change');
+                // Hide old banner logic is replaced by the new state system
+                
+                if (!hid) {
+                    $('#recommendation-container').addClass('hidden');
+                    return;
+                }
+
+                // Show container and loading state
+                if (cid) {
+                    $('#recommendation-container').removeClass('hidden');
+                    $('#rec-loading').removeClass('hidden');
+                    $('#rec-empty').addClass('hidden');
+                    $('#recommendation-cards').addClass('hidden').empty();
+                } else {
+                    $('#recommendation-container').addClass('hidden');
+                }
+
+                // 1. Load filtered vaccines (existing logic)
+                $.ajax({                       
+                    url: "{% url 'patient:load_vaccines' %}",       
+                    data: { 'h_id': hid, 'child_id': cid },
+                    success: function (data) {   
+                        $("#vaccineid").html(data).trigger('change');  
+                        
+                        // 2. Load smart recommendations (new UX) AFTER options are inserted
+                        if (cid) {
+                            $.ajax({
+                                url: "{% url 'patient:recommend_vaccines' %}",
+                                data: { 'child_id': cid, 'hospital_id': hid },
+                                success: function(res) {
+                                    $('#rec-loading').addClass('hidden');
+                                    
+                                    var vaccines = res.vaccines || [];
+                                    if (vaccines.length === 0) {
+                                        $('#rec-empty').removeClass('hidden');
+                                        return;
+                                    }
+                                    
+                                    var cards = vaccines.map(function(v) {
+                                        var badge = '<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">verified</span> Recommended</span>';
+                                        var desc = v.description || 'Routine age-appropriate vaccination due for your child.';
+                                        return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-lg border border-teal-200 bg-white hover:border-modern-cyan transition-all cursor-pointer relative overflow-hidden group">' +
+                                            '<div class="absolute top-0 left-0 w-1 h-full bg-modern-cyan scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
+                                            '<div class="flex justify-between items-start mb-1.5">' +
+                                                '<h5 class="font-headline font-bold text-[13px] text-gray-800">' + v.name + '</h5>' +
+                                                badge +
+                                            '</div>' +
+                                            '<p class="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">' + desc + '</p>' +
+                                        '</div>';
+                                    }).join('');
+                                    
+                                    $('#recommendation-cards').html(cards).removeClass('hidden');
+
+                                    // Pre-select the FIRST recommended vaccine automatically
+                                    var firstVid = vaccines[0].id.toString();
+                                    setTimeout(function() {
+                                        $('#vaccineid').val(firstVid).trigger('change');
+                                        $('.rec-card').first().addClass('ring-1 ring-modern-cyan shadow-sm');
+                                    }, 50);
+
+                                    // Clicking a card manually selects it
+                                    $('.rec-card').on('click', function() {
+                                        var vid = $(this).data('vaccine-id').toString();
+                                        $('#vaccineid').val(vid).trigger('change');
+                                        $('.rec-card').removeClass('ring-1 ring-modern-cyan shadow-sm');
+                                        $(this).addClass('ring-1 ring-modern-cyan shadow-sm');
+                                    });
+                                },
+                                error: function() {
+                                    // On network error, just hide loading
+                                    $('#rec-loading').addClass('hidden');
+                                    $('#recommendation-container').addClass('hidden');
+                                }
+                            });
+                        }
+                    }
+                });
+            });  // end #hospitalid.change
+
+            // Notifications System Logic
+            function loadNotifications() {
+                $.ajax({
+                    url: "{% url 'patient:get_notifications' %}",
+                    success: function(res) {
+                        var notifs = res.notifications || [];
+                        var count = res.unread_count || 0;
+                        
+                        // Update Badge
+                        if(count > 0) {
+                            $('#notif-badge').text(count).removeClass('hidden');
+                            $('#mark-read-btn').removeClass('hidden');
+                        } else {
+                            $('#notif-badge').addClass('hidden');
+                            $('#mark-read-btn').addClass('hidden');
+                        }
+                        
+                        // Render List
+                        var listContainer = $('#notif-list');
+                        if (notifs.length === 0) {
+                            listContainer.html('<div class="p-8 text-center flex flex-col items-center gap-2"><span class="material-symbols-outlined text-gray-300 text-3xl">notifications_paused</span><span class="text-gray-400 font-medium text-xs">You\'re all caught up!</span></div>');
+                            return;
+                        }
+                        
+                        var items = notifs.map(function(n) {
+                            var icon = n.type === 'vaccine' ? 'vaccines' : 'calendar_month';
+                            var iconColor = n.type === 'vaccine' ? 'text-orange-500 bg-orange-100' : 'text-blue-500 bg-blue-100';
+                            var bg = n.is_read ? 'bg-white' : 'bg-teal-50/50';
+                            var dot = n.is_read ? '' : '<span class="w-2 h-2 rounded-full bg-modern-cyan flex-shrink-0 mt-1.5"></span>';
+                            
+                            return '<div class="p-4 border-b border-gray-50 flex items-start gap-3 hover:bg-slate-50 transition-colors ' + bg + '">' +
+                                '<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ' + iconColor + '"><span class="material-symbols-outlined text-[16px]">' + icon + '</span></div>' +
+                                '<div class="flex-1">' +
+                                '<p class="text-[11px] text-gray-700 leading-snug font-medium">' + n.message + '</p>' +
+                                '<span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">' + n.date + '</span>' +
+                                '</div>' + dot +
+                                '</div>';
+                        }).join('');
+                        
+                        listContainer.html(items);
+                    }
+                });
+            }
+            
+            // Mark all read
+            $('#mark-read-btn').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $.ajax({
+                    url: "{% url 'patient:mark_notifications_read' %}",
+                    type: "POST",
+                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                    success: function() {
+                        loadNotifications();
+                    }
+                });
+            });
+
+            // Initial Load
+            loadNotifications();
+        });  // end $(document).ready
+    </script>
+</body>
 </html>

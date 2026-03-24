@@ -18,7 +18,7 @@ def Logout(request):
     logout(request)
     Session.objects.all().delete()
   
-    return render(request, 'adminapp/login.html')
+    return redirect('adminapp:adminlogin')
     
 
 class AdminCreation(View):
