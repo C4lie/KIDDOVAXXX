@@ -1,211 +1,350 @@
+{% extends 'patientapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | Contact Us</title>
-    
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
-            },
-            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
-            animation: { 'float': 'float 6s ease-in-out infinite', 'blob': 'blob 7s infinite', 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
-            keyframes: {
-              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
-              blob: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }, '100%': { transform: 'translate(0px, 0px) scale(1)' } },
-              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
-      .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); }
-      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 50%, center; position: relative; }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
-      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
-      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
-      .bento-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-      .bento-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 30px 60px rgba(0, 101, 101, 0.12); }
-    </style>
-</head>
-<body class="text-on-surface font-body mesh-bg">
 
-    <!-- Standalone Tailwind Navbar (from home.html) -->
-    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
-            <!-- Brand Logo with original FontAwesome Icon -->
-            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
-                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
-                </span>
+{% block title %}{{ T.contact|default:"Contact Us" }}{% endblock %}
+
+{% block content %}
+<div class="space-y-16">
+    <!-- Contact Hero Section -->
+    <section class="relative overflow-hidden rounded-[2.5rem] p-16 md:p-24 text-white shadow-xl animate__animated animate__fadeIn relative" style="background-image: linear-gradient(rgba(0, 101, 101, 0.8), rgba(0, 101, 101, 0.8)), url('{% static 'patients/images/banner2.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-3xl space-y-6 text-center mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-200 font-bold tracking-widest text-xs uppercase">Support Desk</span>
+            <h1 class="font-headline font-black text-4xl md:text-6xl tracking-tight text-white leading-tight">Contact Us</h1>
+            <p class="text-lg md:text-xl text-teal-50 font-medium leading-relaxed opacity-95">
+                We are here to help parents and families with every vaccination journey.
+            </p>
+        </div>
+    </section>
+
+    <!-- Location Card Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/contact_clinic_location.png' %}" alt="Our Location" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Location</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Our Main Clinic</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p class="text-xl font-bold text-text-main">KiddoVax Clinical Headquarters</p>
+                <p>Parul University Campus,</p>
+                <p>Limda, Waghodia, Vadodara,</p>
+                <p>Gujarat, India - 391760</p>
+            </div>
+            <a href="https://maps.google.com/?q=Parul+University+Limda" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-primary-container shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">
+                Open In Maps <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Helpline Card Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="lg:order-2 relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/contact_phone_support.png' %}" alt="Helpline Support" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="lg:order-1 space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Helpline</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Call Support</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p>Feel free to reach out to our emergency support desk or hospital helpline. Our staff is available during clinic hours.</p>
+                <div class="space-y-2 font-semibold text-text-main">
+                    <p>Primary Support: <span class="font-mono text-primary">+91 9662568312</span></p>
+                    <p>Emergency Support: <span class="font-mono text-red-600">+91 9876543210</span></p>
+                    <p>Hospital Desk: <span class="font-mono text-primary">+91 1122334455</span></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="tel:+919662568312" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-primary-container shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">
+                    Call Now <span class="material-symbols-outlined text-sm">call</span>
+                </a>
+                <button onclick="copyToClipboard('+919662568312', 'number-toast')" class="inline-flex items-center gap-2 bg-white border border-slate-200 text-text-main font-bold px-8 py-3 rounded-full hover:bg-slate-50 shadow-md hover:-translate-y-0.5 transition-all duration-300 relative border-0 cursor-pointer">
+                    Copy Number <span class="material-symbols-outlined text-sm">content_copy</span>
+                    <span id="number-toast" class="hidden absolute -top-10 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded shadow-sm">Copied!</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Email Support Card Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/contact_email_support.png' %}" alt="Email Support" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Email</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Email Support</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p>Send us your queries, feedback, or request technical support. We typically respond within 24 hours.</p>
+                <div class="space-y-2 font-semibold text-text-main">
+                    <p>Official Support: <span class="text-primary">kiddovaxhelp@gmail.com</span></p>
+                    <p>Secondary Inquiries: <span class="text-primary">info@kiddovax.org</span></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="mailto:kiddovaxhelp@gmail.com" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-primary-container shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">
+                    Send Email <span class="material-symbols-outlined text-sm">mail</span>
+                </a>
+                <button onclick="copyToClipboard('kiddovaxhelp@gmail.com', 'email-toast')" class="inline-flex items-center gap-2 bg-white border border-slate-200 text-text-main font-bold px-8 py-3 rounded-full hover:bg-slate-50 shadow-md hover:-translate-y-0.5 transition-all duration-300 relative border-0 cursor-pointer">
+                    Copy Email <span class="material-symbols-outlined text-sm">content_copy</span>
+                    <span id="email-toast" class="hidden absolute -top-10 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded shadow-sm">Copied!</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Services Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Assistance</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Our Support Services</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">event_available</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Appointment Assistance</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Need help scheduling or managing vaccine bookings? We coordinate directly with local clinics to resolve booking conflicts.</p>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">construction</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Technical Support</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Facing registration, login, profile updates, or OCR file upload issues? Our technicians will troubleshoot your account immediately.</p>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">medical_services</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Vaccination Guidance</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Have clinical questions regarding age milestones, recommended vaccines, side-effects, or prices? Get details here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Navigation</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Quick Actions</h2>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <a href="{% url 'patient:vaccinebooking' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <span class="material-symbols-outlined">event_note</span>
+                </div>
+                <h4 class="font-headline font-bold text-base text-text-main">Book Appointment</h4>
             </a>
             
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-10">
-                <a class="font-headline font-bold text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
-                <a class="font-headline font-bold text-lg text-primary border-b-2 border-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
-            </nav>
-
-            <!-- Authentication / Profile Dropdown -->
-            <div class="flex items-center gap-4">
-                {% if request.session.CName is None %} 
-                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
-                {% else %}
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
-                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
-                                <span class="material-symbols-outlined">person</span>
-                            </div>
-                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
-                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
-                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> My Appointments
-                            </a>
-                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
-                            </a>
-                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+            <a href="{% url 'patient:showdata' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <span class="material-symbols-outlined">vaccines</span>
+                </div>
+                <h4 class="font-headline font-bold text-base text-text-main">Vaccine Catalogue</h4>
+            </a>
+            
+            <a href="{% url 'patient:aboutpage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <span class="material-symbols-outlined">info</span>
+                </div>
+                <h4 class="font-headline font-bold text-base text-text-main">About KiddoVax</h4>
+            </a>
+            
+            <a href="{% url 'patient:homepage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <span class="material-symbols-outlined">home</span>
+                </div>
+                <h4 class="font-headline font-bold text-base text-text-main">Home Page</h4>
+            </a>
         </div>
-    </header>
+    </section>
 
-    <!-- Main Content -->
-    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
-        
-        <!-- Contact Hero Section -->
-        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
-            <div class="relative z-10 max-w-3xl space-y-8 text-center mx-auto">
-                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 justify-center">
-                    <span class="flex h-3 w-3 relative">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-                    </span>
-                    <span class="text-sm font-bold tracking-wider uppercase">Prevent the Spread</span>
-                </div>
-                
-                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white">
-                    Get in <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">Touch.</span>
-                </h1>
-                
-                <p class="text-xl text-cyan-50 font-medium leading-relaxed opacity-90">
-                    Contact with our support during an emergency. Stay at home, stay safe.
-                </p>
-            </div>
-        </section>
-
-        <!-- Contact Bento Grid -->
-        <section class="my-20 animate__animated animate__fadeInUp animate__delay-1s">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Location Card -->
-                <div class="group bg-white rounded-[2rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden flex flex-col items-center text-center">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-20 h-20 rounded-[1.5rem] flex items-center justify-center shadow-lg mb-8 bg-teal-50 text-teal-600 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-500 transform group-hover:rotate-12 group-hover:scale-110">
-                        <span class="material-symbols-outlined text-4xl">location_on</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-4 tracking-tight">Our Head Office</h4>
-                    <p class="text-gray-500 font-medium text-lg mt-2">Baroda, Gujarat, India</p>
-                </div>
-
-                <!-- Call Support Card -->
-                <div class="group bg-white rounded-[2rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden flex flex-col items-center text-center">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-20 h-20 rounded-[1.5rem] flex items-center justify-center shadow-lg mb-8 bg-cyan-50 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
-                        <span class="material-symbols-outlined text-4xl">call</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-4 tracking-tight">Call for Help</h4>
-                    <a href="tel:+919662568312" class="text-modern-cyan font-bold text-xl mt-2 hover:text-primary transition-colors">+91 9662568312</a>
-                </div>
-
-                <!-- Email Support Card -->
-                <div class="group bg-white rounded-[2rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden flex flex-col items-center text-center">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-20 h-20 rounded-[1.5rem] flex items-center justify-center shadow-lg mb-8 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-500 transform group-hover:rotate-12 group-hover:scale-110">
-                        <span class="material-symbols-outlined text-4xl">mail</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-4 tracking-tight">Mail Us</h4>
-                    <a href="mailto:kiddovaxhelp@gmail.com" class="text-modern-blue font-bold text-lg mt-2 hover:text-primary transition-colors">kiddovaxhelp@gmail.com</a>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Ultra-Modern Dark Footer (from home.html) -->
-    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
-        <!-- Abstract gradient blob in footer background -->
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
-            <div class="flex flex-col items-center md:items-start gap-6">
-                <!-- Footer Logo -->
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
-                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
-                </div>
-                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
-                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
-                </p>
-            </div>
-            
-            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
-                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
-            </div>
-            
-            <div class="flex gap-4">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">public</span>
-                </button>
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">mail</span>
-                </button>
-            </div>
+    <!-- FAQ Accordion Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp max-w-3xl mx-auto">
+        <div class="text-center space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Questions</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Frequently Asked Questions</h2>
         </div>
         
-        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
-            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
+        <div class="space-y-4 font-headline" id="faq-accordion">
+            <!-- FAQ 1 -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <button class="faq-btn w-full px-6 py-5 flex items-center justify-between text-left font-headline font-bold text-lg text-text-main hover:bg-slate-50 transition-colors border-0 bg-transparent cursor-pointer">
+                    <span>How do I book an appointment?</span>
+                    <span class="material-symbols-outlined text-slate-400 faq-icon transition-transform duration-300">expand_more</span>
+                </button>
+                <div class="faq-panel hidden px-6 pb-5 pt-1 border-t border-slate-50 text-text-secondary text-sm leading-relaxed font-medium font-body">
+                    Navigate to the Book Appointment page from the dashboard or quick action panels. Select your registered child profile, the hospital clinic location, select the recommended vaccine, select your preferred date using the calendar, and confirm booking.
+                </div>
+            </div>
+            
+            <!-- FAQ 2 -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <button class="faq-btn w-full px-6 py-5 flex items-center justify-between text-left font-headline font-bold text-lg text-text-main hover:bg-slate-50 transition-colors border-0 bg-transparent cursor-pointer">
+                    <span>How do I add a child profile?</span>
+                    <span class="material-symbols-outlined text-slate-400 faq-icon transition-transform duration-300">expand_more</span>
+                </button>
+                <div class="faq-panel hidden px-6 pb-5 pt-1 border-t border-slate-50 text-text-secondary text-sm leading-relaxed font-medium font-body">
+                    Go to your Family Profile dashboard page. In the left panel or the "Register New Child" card, input your child's full name, date of birth, gender, and blood group. Press "Add Profile" to save, which will automatically generate a dynamic vaccination calendar.
+                </div>
+            </div>
+            
+            <!-- FAQ 3 -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <button class="faq-btn w-full px-6 py-5 flex items-center justify-between text-left font-headline font-bold text-lg text-text-main hover:bg-slate-50 transition-colors border-0 bg-transparent cursor-pointer">
+                    <span>Can I change hospitals?</span>
+                    <span class="material-symbols-outlined text-slate-400 faq-icon transition-transform duration-300">expand_more</span>
+                </button>
+                <div class="faq-panel hidden px-6 pb-5 pt-1 border-t border-slate-50 text-text-secondary text-sm leading-relaxed font-medium font-body">
+                    Yes, you can choose any accredited hospital clinic from the dropdown options each time you schedule a booking. This allows you to check vaccine stock and coordinates at clinics closest to your current location.
+                </div>
+            </div>
+            
+            <!-- FAQ 4 -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <button class="faq-btn w-full px-6 py-5 flex items-center justify-between text-left font-headline font-bold text-lg text-text-main hover:bg-slate-50 transition-colors border-0 bg-transparent cursor-pointer">
+                    <span>How do notifications work?</span>
+                    <span class="material-symbols-outlined text-slate-400 faq-icon transition-transform duration-300">expand_more</span>
+                </button>
+                <div class="faq-panel hidden px-6 pb-5 pt-1 border-t border-slate-50 text-text-secondary text-sm leading-relaxed font-medium font-body">
+                    Our smart reminder systems calculate age milestones and upcoming timelines. You will see notifications highlighted in red under the bell icon dropdown on the navbar, and alerts will appear next to children's cards inside the Family Profile.
+                </div>
+            </div>
         </div>
-    </footer>
+    </section>
 
-</body>
-</html>
+    <!-- Contact Form Section -->
+    <section class="bg-white rounded-[3rem] p-8 md:p-16 border border-slate-100 shadow-xl my-20 animate__animated animate__fadeInUp max-w-3xl mx-auto">
+        <div class="text-center space-y-4 mb-10">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Message Form</span>
+            <h2 class="font-headline font-black text-3xl text-text-main tracking-tight">Send Us A Message</h2>
+        </div>
+        
+        <!-- Client-Side Success Notification (hidden by default) -->
+        <div id="contact-success-alert" class="hidden mb-6 rounded-2xl p-4 bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm font-semibold flex items-center gap-3 animate__animated animate__fadeIn">
+            <span class="material-symbols-outlined text-xl">verified</span>
+            <span>Thank you! Your message has been sent successfully. Our support desk will contact you soon.</span>
+        </div>
+        
+        <form id="contact-query-form" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="c-name" class="block text-xs font-bold text-text-secondary uppercase tracking-widest">Full Name</label>
+                    <input type="text" id="c-name" required placeholder="Enter full name" class="w-full rounded-xl border border-slate-200 p-3.5 text-sm text-text-main placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+                </div>
+                <div class="space-y-2">
+                    <label for="c-email" class="block text-xs font-bold text-text-secondary uppercase tracking-widest">Email Address</label>
+                    <input type="email" id="c-email" required placeholder="Enter email address" class="w-full rounded-xl border border-slate-200 p-3.5 text-sm text-text-main placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <label for="c-subject" class="block text-xs font-bold text-text-secondary uppercase tracking-widest">Subject</label>
+                <input type="text" id="c-subject" required placeholder="Subject of your message" class="w-full rounded-xl border border-slate-200 p-3.5 text-sm text-text-main placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+            </div>
+            
+            <div class="space-y-2">
+                <label for="c-message" class="block text-xs font-bold text-text-secondary uppercase tracking-widest">Message</label>
+                <textarea id="c-message" rows="5" required placeholder="Type your detailed message here..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm text-text-main placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"></textarea>
+            </div>
+            
+            <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-center tracking-wide uppercase text-sm border-0 cursor-pointer">
+                Send Message
+            </button>
+        </form>
+    </section>
+
+    <!-- Map Section -->
+    <section class="my-20 animate__animated animate__fadeInUp">
+        <div class="bg-white rounded-[2.5rem] p-6 border border-slate-100 shadow-xl overflow-hidden flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 pt-2">
+                <div>
+                    <h3 class="font-headline font-bold text-xl text-text-main flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">location_on</span> Clinical Headquarters Location
+                    </h3>
+                    <p class="text-text-secondary text-xs mt-1 font-medium">Parul University Campus, Limda, Vadodara, Gujarat</p>
+                </div>
+                <a href="https://maps.google.com/?q=Parul+University+Limda" target="_blank" class="self-start sm:self-auto inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-2.5 rounded-full hover:bg-primary-container shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-xs decoration-transparent">
+                    Open Google Maps
+                </a>
+            </div>
+            <div class="rounded-[1.8rem] overflow-hidden h-[380px] w-full border border-slate-100 shadow-inner">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.6782806307137!2d73.36195537597956!3d22.290209643444004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc902b9e116ad%3A0x6b1cfb268df178f5!2sParul%20University!5e0!3m2!1sen!2sin!4v1687352342345!5m2!1sen!2sin" 
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard(text, toastId) {
+    navigator.clipboard.writeText(text).then(function() {
+        var toast = document.getElementById(toastId);
+        toast.classList.remove('hidden');
+        toast.classList.add('animate__animated', 'animate__fadeIn');
+        setTimeout(function() {
+            toast.classList.add('animate__fadeOut');
+            setTimeout(function() {
+                toast.classList.add('hidden');
+                toast.classList.remove('animate__animated', 'animate__fadeIn', 'animate__fadeOut');
+            }, 300);
+        }, 1500);
+    });
+}
+
+$(document).ready(function() {
+    // Accordion Toggle Logic
+    $('.faq-btn').on('click', function() {
+        var $btn = $(this);
+        var $panel = $btn.next('.faq-panel');
+        var $icon = $btn.find('.faq-icon');
+        
+        if ($panel.is(':visible')) {
+            $panel.slideUp(350);
+            $icon.removeClass('rotate-180');
+        } else {
+            $('.faq-panel').slideUp(350);
+            $('.faq-icon').removeClass('rotate-180');
+            
+            $panel.slideDown(350);
+            $icon.addClass('rotate-180');
+        }
+    });
+
+    // Contact Form Submit Logic
+    $('#contact-query-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var alertBox = $('#contact-success-alert');
+        alertBox.removeClass('hidden');
+        
+        $('#c-name').val('');
+        $('#c-email').val('');
+        $('#c-subject').val('');
+        $('#c-message').val('');
+        
+        $('html, body').animate({
+            scrollTop: alertBox.offset().top - 120
+        }, 500);
+        
+        setTimeout(function() {
+            alertBox.fadeOut(500, function() {
+                alertBox.addClass('hidden').show();
+            });
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

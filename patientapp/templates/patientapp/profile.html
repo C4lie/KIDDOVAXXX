@@ -1,519 +1,995 @@
+{% extends 'patientapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | Family Profile</title>
-    
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
-            },
-            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
-            animation: { 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
-            keyframes: {
-              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
-              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
-      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1632386923485-bd351ec30f81?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 40%, center; position: relative; }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.12) 0px, transparent 60%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
-      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
-      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
-    </style>
-</head>
-<body class="text-on-surface font-body mesh-bg">
 
-    <!-- Standalone Tailwind Navbar -->
-    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
-            <!-- Brand Logo -->
-            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
-                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
-                </span>
-            </a>
-            
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-10">
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
-            </nav>
+{% block title %}Family Profile{% endblock %}
 
-            <!-- Authentication / Profile Dropdown -->
-            <div class="flex items-center gap-4">
-                {% if request.session.CName is None %} 
-                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
-                {% else %}
-                    <!-- Notification Bell -->
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4 mr-2">
-                        <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">notifications</span>
-                            <!-- Dynamic Unread Badge -->
-                            <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center hidden border-2 border-white transform translate-x-1 -translate-y-1">0</span>
-                        </button>
-                        
-                        <!-- Notification Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden z-50 overflow-hidden transform origin-top-right">
-                            <div class="p-4 border-b border-gray-100/80 flex items-center justify-between bg-teal-50/30">
-                                <h4 class="font-headline font-bold text-gray-800 text-sm">Notifications</h4>
-                                <button id="mark-read-btn" class="text-[10px] font-bold text-modern-cyan hover:text-primary uppercase tracking-widest hidden">Mark Read</button>
-                            </div>
-                            <div id="notif-list" class="max-h-[300px] overflow-y-auto">
-                                <div class="p-6 text-center text-gray-400 font-medium text-xs">Loading alerts...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
-                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
-                                <span class="material-symbols-outlined">person</span>
-                            </div>
-                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
-                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
-                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> Appointments
-                            </a>
-                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-primary bg-teal-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">person_edit</span></div> My Profile
-                            </a>
-                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+{% block content %}
+<div class="space-y-12 pb-12">
+    <!-- Profile Page Header Banner -->
+    <section class="relative overflow-hidden rounded-[2.5rem] p-16 md:p-24 text-white shadow-xl animate__animated animate__fadeIn" style="background-image: linear-gradient(rgba(0, 101, 101, 0.8), rgba(0, 101, 101, 0.8)), url('{% static 'patients/images/banner3.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-3xl space-y-6 text-center mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-200 font-bold tracking-widest text-xs uppercase">My Family</span>
+            <h1 class="font-headline font-black text-4xl md:text-6xl tracking-tight text-white leading-tight">
+                {{ T.family_account|default:"Family Profile" }}
+            </h1>
+            <p class="text-lg md:text-xl text-teal-50 font-medium leading-relaxed opacity-95">
+                Manage your parent details, child cards, and digitize immunization histories securely.
+            </p>
         </div>
-    </header>
+    </section>
 
-    <main class="pt-[130px] pb-20 max-w-7xl mx-auto px-8 space-y-12">
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 text-white shadow-2xl animate__animated animate__fadeIn">
-            <div class="relative z-10 text-center mx-auto">
-                <h1 class="font-headline font-black text-5xl tracking-tighter text-white drop-shadow-md">
-                    Family <span class="text-white drop-shadow-sm">Account</span>
-                </h1>
-                <p class="text-lg text-cyan-50 font-medium leading-relaxed opacity-95 mt-2 drop-shadow-sm">
-                    Manage your guardian details and securely register your children for swift appointment booking.
-                </p>
-            </div>
-        </section>
-
-        <!-- Messages -->
-        {% if messages %}
-        <div class="space-y-3">
-            {% for message in messages %}
-            <div class="bg-teal-50 border border-teal-200 text-teal-800 px-6 py-4 rounded-2xl flex items-center gap-3 shadow-sm animate__animated animate__fadeInDown">
-                <span class="material-symbols-outlined text-teal-500">task_alt</span>
-                <span class="font-bold tracking-wide">{{ message }}</span>
-            </div>
-            {% endfor %}
+    <!-- Messages -->
+    {% if messages %}
+    <div class="space-y-3 animate__animated animate__fadeIn">
+        {% for message in messages %}
+        <div class="bg-emerald-50 border border-emerald-250 text-emerald-800 px-6 py-4 rounded-2xl flex items-center gap-3 shadow-sm">
+            <span class="material-symbols-outlined text-emerald-500 font-bold">check_circle</span>
+            <span class="font-bold tracking-wide text-sm">{{ message }}</span>
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+    <!-- SECTION 1 — GUARDIAN INFORMATION -->
+    <section class="animate__animated animate__fadeInUp">
+        <form id="guardian-form" method="POST" class="bg-white rounded-[1.5rem] p-8 border border-slate-100 shadow-sm transition-all relative overflow-hidden">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_profile">
             
-            <!-- Guardian Profile Card -->
-            <div class="lg:col-span-4 animate__animated animate__fadeInLeft animate__delay-1s">
-                <form method="POST" class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 flex flex-col gap-6 sticky top-28">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-4">
+                <h3 class="font-headline font-bold text-xl text-slate-800 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2.5">shield_person</span>
+                    {{ T.guardian_info|default:"Guardian Information" }}
+                </h3>
+                <div class="flex items-center gap-3">
+                    <button type="button" id="edit-profile-btn" class="btn-secondary-custom h-10 px-5 rounded-xl text-xs flex items-center gap-2 border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all font-bold">
+                        <span class="material-symbols-outlined text-sm">edit</span> Edit Profile
+                    </button>
+                    <a href="{% url 'patient:changeauth' %}" class="btn-secondary-custom h-10 px-5 rounded-xl text-xs flex items-center gap-2 border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all font-bold decoration-transparent">
+                        <span class="material-symbols-outlined text-sm">lock</span> Change Password
+                    </a>
+                    <button type="submit" id="save-profile-btn" class="hidden btn-primary-custom h-10 px-6 rounded-xl text-xs flex items-center gap-2 bg-primary text-white hover:bg-primary-hover transition-all font-bold shadow-sm">
+                        <span class="material-symbols-outlined text-sm">save</span> Save Changes
+                    </button>
+                    <button type="button" id="cancel-edit-btn" class="hidden btn-secondary-custom h-10 px-4 rounded-xl text-xs flex items-center gap-1 border border-red-200 text-red-655 hover:bg-red-50 transition-all font-bold">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Guardian Name -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">{{ T.full_name|default:"Full Name" }}</label>
+                    <input type="text" name="name" value="{{ patientData.name }}" required readonly
+                           class="guardian-input w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-sm font-semibold shadow-sm cursor-not-allowed">
+                </div>
+                <!-- Relation -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">{{ T.relation|default:"Relation" }}</label>
+                    <select name="relation" required disabled
+                            class="guardian-input w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-sm font-semibold shadow-sm cursor-not-allowed">
+                        <option value="Father" {% if patientData.relation == 'Father' %}selected{% endif %}>Father</option>
+                        <option value="Mother" {% if patientData.relation == 'Mother' %}selected{% endif %}>Mother</option>
+                        <option value="Guardian" {% if patientData.relation == 'Guardian' %}selected{% endif %}>Guardian</option>
+                    </select>
+                </div>
+                <!-- Phone -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">{{ T.phone|default:"Phone" }}</label>
+                    <input type="text" name="contactNo" value="{{ patientData.contactNo }}" required maxlength="10" readonly
+                           onkeypress="return event.charCode >= 48 && event.charCode <= 57" 
+                           class="guardian-input w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-sm font-mono tracking-wider shadow-sm cursor-not-allowed">
+                </div>
+                <!-- Address -->
+                <div class="md:col-span-2 space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">{{ T.address_details|default:"Address Details" }}</label>
+                    <input type="text" name="address" value="{{ patientData.address }}" required readonly
+                           class="guardian-input w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-sm font-semibold shadow-sm cursor-not-allowed">
+                </div>
+                <!-- City & Area -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Location (City & Area)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="cityId" name="cityId" required disabled
+                                class="guardian-input w-full bg-slate-50 border border-slate-205 rounded-xl px-3 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-xs font-semibold shadow-sm cursor-not-allowed">
+                            <option value="">-- City --</option>
+                            {% for item in cityData %}    
+                            <option value="{{item.id}}" {% if selectedCity and selectedCity.id == item.id %}Selected{% endif %}>{{item.cityName}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="areaId" name="areaId" required disabled
+                                class="guardian-input w-full bg-slate-50 border border-slate-205 rounded-xl px-3 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-xs font-semibold shadow-sm cursor-not-allowed">
+                            <option value="">-- Area --</option>
+                            {% for item in areaData %}    
+                            <option value="{{item.id}}" {% if selectedArea and selectedArea.id == item.id %}Selected{% endif %}>{{item.areaName}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- SECTION 2 — CHILD MANAGEMENT AREA (2 Columns on Desktop) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT CARD — Child Registration (col-span-5) -->
+        <section class="lg:col-span-5 animate__animated animate__fadeInLeft">
+            <div class="bg-white rounded-[1.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-secondary"></div>
+                <h3 class="font-headline font-bold text-lg text-slate-800 mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2 font-bold text-xl">person_add</span>
+                    Register Child Profile
+                </h3>
+                <form method="POST" class="space-y-5">
                     {% csrf_token %}
-                    <input type="hidden" name="action" value="update_profile">
+                    <input type="hidden" name="action" value="add_child">
                     
-                    <div class="flex items-center justify-between border-b border-gray-100/80 pb-4 relative">
-                        <!-- Tiny aesthetic deco -->
-                        <div class="w-16 h-16 rounded-full bg-cyan-50 absolute right-0 blur-xl"></div>
-                        <h3 class="font-headline font-bold text-xl text-gray-900 flex items-center gap-3 relative z-10">
-                            <span class="material-symbols-outlined text-primary shadow-sm bg-teal-50 rounded-full p-2">shield_person</span> Guardian Info
-                        </h3>
+                    <!-- Child Name -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Child's Full Name</label>
+                        <input type="text" name="childname" required placeholder="e.g. Liam Michael" 
+                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all text-sm font-semibold shadow-sm">
                     </div>
-
-                    <div class="space-y-5">
-                        <div class="space-y-1.5 focus-within:text-modern-cyan transition-colors">
-                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest px-1">Full Name</label>
-                            <input type="text" name="name" value="{{ patientData.name }}" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan transition-all shadow-sm">
+                    
+                    <!-- DOB & Gender -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Date of Birth</label>
+                            <input type="text" name="dob" id="childdob" required 
+                                   class="w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all font-mono text-sm tracking-wide cursor-pointer shadow-sm"
+                                   placeholder="Select DOB">
                         </div>
-
-                        <div class="grid grid-cols-2 gap-4 focus-within:text-modern-cyan transition-colors">
-                            <div class="space-y-1.5">
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest px-1">Relation</label>
-                                <select name="relation" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan transition-all cursor-pointer shadow-sm">
-                                    <option value="Father" {% if patientData.relation == 'Father' %}selected{% endif %}>Father</option>
-                                    <option value="Mother" {% if patientData.relation == 'Mother' %}selected{% endif %}>Mother</option>
-                                    <option value="Guardian" {% if patientData.relation == 'Guardian' %}selected{% endif %}>Guardian</option>
-                                </select>
-                            </div>
-                            <div class="space-y-1.5 focus-within:text-modern-cyan transition-colors">
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest px-1">Phone</label>
-                                <input type="text" name="contactNo" value="{{ patientData.contactNo }}" required maxlength="10" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan transition-all shadow-sm font-mono text-sm tracking-widest">
-                            </div>
-                        </div>
-
-                        <div class="space-y-1.5 focus-within:text-modern-cyan transition-colors">
-                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest px-1">Address Details</label>
-                            <input type="text" name="address" value="{{ patientData.address }}" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 mb-3 focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan transition-all shadow-sm">
-                            <div class="grid grid-cols-2 gap-4">
-                                <select id="cityId" name="cityId" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 cursor-pointer focus:ring-2 focus:ring-modern-cyan/50 shadow-sm text-sm">
-                                    <option value="">-- City --</option>
-                                    {% for item in cityData %}    
-                                    <option value="{{item.id}}" {% if selectedCity and selectedCity.id == item.id %}Selected{% endif %}>{{item.cityName}}</option>
-                                    {% endfor %}
-                                </select>
-                                <select id="areaId" name="areaId" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 cursor-pointer focus:ring-2 focus:ring-modern-cyan/50 shadow-sm text-sm">
-                                    <option value="">-- Area --</option>
-                                    {% for item in areaData %}    
-                                    <option value="{{item.id}}" {% if selectedArea and selectedArea.id == item.id %}Selected{% endif %}>{{item.areaName}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gender</label>
+                            <select name="gender" required 
+                                    class="w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all cursor-pointer text-sm font-semibold shadow-sm">
+                                <option value="Boy">Boy</option>
+                                <option value="Girl">Girl</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                     </div>
+                    
+                    <!-- Blood Group -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Blood Group</label>
+                        <select name="blood_group" 
+                                class="w-full bg-slate-50 border border-slate-205 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan transition-all cursor-pointer text-sm font-semibold shadow-sm">
+                            <option value="">N/A (Not Known)</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
 
-                    <button type="submit" class="w-full bg-slate-800 text-white flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold font-headline tracking-wide hover:bg-slate-950 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all mt-4">
-                        Save Guardian Details <span class="material-symbols-outlined text-[1rem]">save</span>
+                    <button type="submit" class="w-full mt-2 bg-primary text-white py-3.5 rounded-xl font-bold font-headline text-sm tracking-wide hover:bg-primary-hover shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px] font-bold">add_circle</span> Add Child Profile
                     </button>
                 </form>
             </div>
+        </section>
 
-            <!-- Children Dashboard -->
-            <div class="lg:col-span-8 animate__animated animate__fadeInRight animate__delay-1s flex flex-col gap-8">
-                
-                <!-- Child Cards Section -->
-                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
-                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100/80">
-                        <h3 class="font-headline font-bold text-2xl text-gray-900 flex items-center gap-3">
-                            <span class="material-symbols-outlined text-modern-cyan text-[2rem]">escalator_warning</span> Registered Children
-                        </h3>
-                        <div class="bg-cyan-50 border border-teal-100 text-modern-cyan font-bold px-4 py-1.5 rounded-full text-sm">
-                            {{ children|length }} Registered
-                        </div>
+        <!-- RIGHT CARD — Registered Children (col-span-7) -->
+        <section class="lg:col-span-7 animate__animated animate__fadeInRight">
+            <div class="bg-white rounded-[1.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-secondary to-primary"></div>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-headline font-bold text-lg text-slate-800 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-secondary bg-cyan-50 rounded-xl p-2 font-bold text-xl">escalator_warning</span>
+                        Registered Children
+                    </h3>
+                    <div class="badge-custom bg-teal-50 text-primary border border-teal-100 font-extrabold text-[10px] px-3 py-1">
+                        {{ children|length }} Profiles
                     </div>
+                </div>
 
-                    {% if children %}
-                    <div class="grid grid-cols-1 gap-8">
-                        {% for child in children %}
-                        <div class="relative bg-white rounded-[1.5rem] border border-gray-100/80 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col">
-                            <!-- Abstract decoration -->
-                            <div class="absolute top-0 right-0 w-32 h-32 {% if child.gender == 'Boy' %}bg-blue-300{% else %}bg-pink-300{% endif %} rounded-full blur-[40px] opacity-10 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-                            
-                            <!-- Header Info -->
-                            <div class="flex gap-4 items-start relative z-10 p-6 pb-5 bg-gradient-to-br from-slate-50 to-white border-b border-gray-100">
-                                <div class="w-[52px] h-[52px] flex-shrink-0 rounded-[1.2rem] {% if child.gender == 'Boy' %}bg-blue-100 text-blue-500 border-blue-200{% else %}bg-pink-100 text-pink-500 border-pink-200{% endif %} flex items-center justify-center font-bold shadow-sm border border-b-2">
-                                    <span class="material-symbols-outlined text-[2rem]">{% if child.gender == 'Boy' %}face{% else %}face_3{% endif %}</span>
+                {% if children %}
+                <!-- Children list container (scrollable if > 2 children) -->
+                <div class="space-y-6 max-h-[500px] overflow-y-auto pr-1">
+                    {% for child in children %}
+                    <div class="child-stat-container relative bg-slate-50/50 rounded-2xl border border-slate-100 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all duration-300 hover:scale-[1.01] hover:shadow-sm"
+                         data-child-id="{{ child.id }}" data-completed="{{ child.vaccination_records.count }}">
+                        
+                        <!-- Invisible helper for collecting upcoming appointment elements -->
+                        {% for apt in child.appointments.all %}
+                            {% if apt.active == 0 or apt.active == 1 %}
+                                <span class="upcoming-item-{{ child.id }} hidden" data-date="{{ apt.aptdate|date:'Y-m-d' }}" data-name="{{ apt.vaccineid.vaccineName }}"></span>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Left Details -->
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl {% if child.gender == 'Boy' %}bg-blue-50 text-blue-500 border border-blue-150{% else %}bg-pink-50 text-pink-500 border border-pink-150{% endif %} flex items-center justify-center font-bold shadow-sm">
+                                <span class="material-symbols-outlined text-2xl font-bold">{% if child.gender == 'Boy' %}face{% else %}face_3{% endif %}</span>
+                            </div>
+                            <div class="space-y-0.5">
+                                <h4 class="font-headline font-bold text-slate-900 leading-tight flex items-center gap-2">
+                                    {{ child.childname }}
+                                    <span class="text-[9px] font-extrabold bg-slate-100 border border-slate-205 text-slate-500 px-1.5 py-0.5 rounded">
+                                        {% if child.age == 0 %}&lt; 1 Yr{% else %}{{ child.age }} Yrs{% endif %}
+                                    </span>
+                                </h4>
+                                <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                                    ID: <span class="font-mono text-slate-655">KDV-{{ child.id|stringformat:"05d" }}</span> • Blood: {{ child.blood_group|default:"N/A" }}
                                 </div>
-                                <div class="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div>
-                                        <h4 class="font-headline font-bold text-xl leading-tight text-gray-900 flex items-center gap-3">
-                                            {{ child.childname }}
-                                            <div class="bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 shadow-sm text-[10px] font-black tracking-widest text-[#006565] flex gap-1 items-center">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-[#006565]"></span>
-                                                {% if child.age == 0 %}< 1 YR{% else %}{{ child.age }} YRS{% endif %}
-                                            </div>
-                                        </h4>
-                                        <p class="text-xs font-bold text-gray-400 tracking-wider uppercase mt-1.5">{{ child.gender }} • {{ child.dob|date:"M j, Y" }}</p>
-                                    </div>
-                                    <form method="POST" class="m-0 p-0 self-start md:self-auto">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="action" value="delete_child">
-                                        <input type="hidden" name="child_id" value="{{ child.id }}">
-                                        <button type="submit" class="text-red-400 hover:text-red-600 font-bold text-xs flex items-center gap-1 transition-colors uppercase tracking-wider bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg" onclick="return confirm('Please confirm: Remove {{ child.childname }} from your family account?');">
-                                            <span class="material-symbols-outlined text-[13px]">delete</span> Remove
-                                        </button>
-                                    </form>
+                                <div class="text-[10px] text-slate-450 font-semibold mt-0.5">
+                                    DOB: {{ child.dob|date:"M j, Y" }}
                                 </div>
                             </div>
-                            
-                            <!-- ⚠️ Missed Vaccines Alert Panel (populated by JS) -->
-                            <div id="missed-alert-{{ child.id }}" class="missed-vaccine-panel hidden mx-6 mt-5 rounded-xl border p-4" data-child-id="{{ child.id }}"></div>
+                        </div>
 
-                            <!-- Vaccination Timeline Body -->
-                            <div class="p-6 bg-white relative z-10">
-                                <h5 class="font-headline font-bold text-[13px] text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">vaccines</span> Vaccination Timeline
-                                </h5>
-                                
-                                {% if child.appointments.all %}
-                                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-                                    <table class="w-full text-left whitespace-nowrap">
-                                        <thead>
-                                            <tr class="bg-gray-50/80 border-b border-gray-100">
-                                                <th class="py-3 px-4 font-bold text-gray-400 text-[10px] uppercase tracking-wider">Date</th>
-                                                <th class="py-3 px-4 font-bold text-gray-400 text-[10px] uppercase tracking-wider">Vaccine</th>
-                                                <th class="py-3 px-4 font-bold text-gray-400 text-[10px] uppercase tracking-wider">Hospital Center</th>
-                                                <th class="py-3 px-4 font-bold text-gray-400 text-[10px] uppercase tracking-wider text-right">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-50">
-                                            {% for apt in child.appointments.all %}
-                                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                                <td class="py-3 px-4 text-xs font-bold text-gray-600">
-                                                    {{ apt.aptdate|date:"d M Y" }}
-                                                </td>
-                                                <td class="py-3 px-4 text-sm font-bold text-gray-800">
-                                                    {{ apt.vaccineid.vaccineName }}
-                                                </td>
-                                                <td class="py-3 px-4 text-xs font-medium text-gray-500">
-                                                    {{ apt.hospitalid.title }}
-                                                </td>
-                                                <td class="py-3 px-4 text-right">
-                                                    {% if apt.active == 0 %}
-                                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider font-bold bg-amber-50 text-amber-600 ring-1 ring-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Pending</span>
-                                                    {% elif apt.active == 1 %}
-                                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider font-bold bg-blue-50 text-blue-600 ring-1 ring-blue-200"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Waiting</span>
-                                                    {% elif apt.active == 2 %}
-                                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider font-bold bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Completed</span>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                {% else %}
-                                <div class="text-center py-6 bg-slate-50 border border-slate-100 border-dashed rounded-xl">
-                                    <span class="material-symbols-outlined text-3xl text-gray-300 block mb-2">event_busy</span>
-                                    <p class="text-xs font-bold text-gray-400 tracking-wider uppercase">No Vaccines Scheduled Yet</p>
+                        <!-- Right Actions -->
+                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                            <!-- Download PDF -->
+                            <a href="{% url 'patient:download_vaccine_card' child.id %}" 
+                               class="btn-secondary-custom h-9 px-3.5 rounded-xl text-[10px] font-bold tracking-wider uppercase border border-slate-200 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5 decoration-transparent shadow-sm">
+                                <span class="material-symbols-outlined text-sm font-bold">download</span> PDF
+                            </a>
+                            <!-- OCR Recovery -->
+                            <button type="button" 
+                                    class="ocr-upload-btn btn-secondary-custom h-9 px-3.5 rounded-xl text-[10px] font-bold tracking-wider uppercase border border-slate-200 text-cyan-600 hover:bg-cyan-50/50 flex items-center gap-1.5 shadow-sm"
+                                    data-child-id="{{ child.id }}" data-child-name="{{ child.childname }}">
+                                <span class="material-symbols-outlined text-sm font-bold">photo_camera</span> Scan OCR
+                            </button>
+                            <!-- View Timeline Link -->
+                            <a href="#roadmap-child-{{ child.id }}" 
+                               class="btn-secondary-custom h-9 px-3.5 rounded-xl text-[10px] font-bold tracking-wider uppercase border border-slate-200 text-teal-650 hover:bg-teal-50/50 flex items-center gap-1.5 decoration-transparent shadow-sm">
+                                <span class="material-symbols-outlined text-sm font-bold">insights</span> Timeline
+                            </a>
+                            <!-- Remove Child -->
+                            <form method="POST" class="m-0 p-0 inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_child">
+                                <input type="hidden" name="child_id" value="{{ child.id }}">
+                                <button type="submit" 
+                                        class="btn-secondary-custom h-9 px-3 rounded-xl text-[10px] font-bold tracking-wider uppercase border border-red-250 text-red-500 hover:bg-red-50 flex items-center gap-1 shadow-sm"
+                                        onclick="return confirm('Are you sure you want to delete the profile for {{ child.childname }}? This will permanently delete all associated schedules and records.');">
+                                    <span class="material-symbols-outlined text-sm font-bold">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Empty state markup inside Section 2 -->
+                <div class="py-12 px-6 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/40 flex flex-col items-center justify-center">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 mb-4 text-slate-400">
+                        <span class="material-symbols-outlined text-4xl">child_care</span>
+                    </div>
+                    <h4 class="text-base font-headline font-bold text-slate-800 mb-1">No Child Profiles Registered</h4>
+                    <p class="text-slate-500 max-w-xs text-xs leading-relaxed font-semibold mb-5">Register your children profiles to track age-based vaccine immunization schedules.</p>
+                    <button type="button" onclick="document.getElementsByName('childname')[0].focus();" class="btn-primary-custom h-10 px-5 rounded-xl text-xs bg-primary text-white hover:bg-primary-hover font-bold shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm font-bold">person_add</span> Register First Child
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <!-- SECTION 3 — CHILD ROADMAPS (Independent Progress Timelines) -->
+    {% if children %}
+    <section class="space-y-6 animate__animated animate__fadeInUp">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2.5 font-bold">insights</span>
+            <h3 class="font-headline font-bold text-xl text-slate-800">Child Immunization Roadmaps</h3>
+        </div>
+        
+        <div class="space-y-8">
+            {% for child in children %}
+            <div id="roadmap-child-{{ child.id }}" class="bg-white rounded-[1.5rem] p-6 border border-slate-100 shadow-sm relative overflow-hidden transition-all duration-300 hover:shadow-md">
+                <!-- Child Header Above Timeline -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-105 pb-4 mb-6 gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl {% if child.gender == 'Boy' %}bg-blue-50 text-blue-500 border border-blue-150{% else %}bg-pink-50 text-pink-500 border border-pink-150{% endif %} flex items-center justify-center font-bold">
+                            <span class="material-symbols-outlined text-xl">{% if child.gender == 'Boy' %}face{% else %}face_3{% endif %}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-headline font-bold text-slate-800 text-sm leading-snug">{{ child.childname }}</h4>
+                            <p class="text-[10px] text-slate-450 font-bold uppercase tracking-wider">
+                                {% if child.age == 0 %}&lt; 1 Year Old{% else %}{{ child.age }} Years Old{% endif %} • Blood Group: {{ child.blood_group|default:"N/A" }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <span class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Legend:</span>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span class="text-[10px] font-bold text-slate-655">Completed</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-[10px] font-bold text-slate-655">Upcoming</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span><span class="text-[10px] font-bold text-slate-655">Missed</span></div>
+                    </div>
+                </div>
+
+                <!-- Overdue/Missed Vaccine alerts box (AJAX container) -->
+                <div id="missed-alert-{{ child.id }}" class="missed-vaccine-panel hidden mb-6 rounded-2xl border p-4 shadow-sm" data-child-id="{{ child.id }}"></div>
+
+                <!-- Timeline Container -->
+                <div class="space-y-3">
+                    <h5 class="font-headline font-bold text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-xs">timeline</span> Immunization Roadmap
+                    </h5>
+                    <!-- The flex layout with connecting line -->
+                    <div class="relative py-4">
+                        <!-- Horizontal Connecting Connector Line -->
+                        <div class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-[3px] bg-cyan-100 rounded-full z-0"></div>
+                        
+                        <div id="roadmap-timeline-{{ child.id }}" class="flex flex-row items-center gap-6 overflow-x-auto pb-4 relative z-10 px-2 scrollbar-thin">
+                            <!-- Birth Node -->
+                            <div class="flex-shrink-0 flex items-center gap-2 bg-emerald-500 text-white px-3.5 py-2 rounded-xl shadow-sm hover:scale-[1.03] transition-all">
+                                <span class="material-symbols-outlined text-sm font-bold">child_care</span>
+                                <span class="text-xs font-bold font-headline">Birth</span>
+                            </div>
+                            
+                            <!-- Completed Nodes -->
+                            {% for record in child.vaccination_records.all %}
+                            <div class="flex-shrink-0 flex items-center gap-2 bg-white border border-emerald-250 px-3.5 py-2 rounded-xl shadow-sm hover:scale-[1.03] transition-all">
+                                <div class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-[9px]">✓</div>
+                                <span class="text-xs font-bold text-emerald-800 font-headline">{{ record.vaccine.vaccineName }}</span>
+                            </div>
+                            {% endfor %}
+
+                            <!-- Scheduled Nodes -->
+                            {% for apt in child.appointments.all %}
+                                {% if apt.active == 0 or apt.active == 1 %}
+                                <div class="flex-shrink-0 flex items-center gap-2 bg-white border border-amber-250 px-3.5 py-2 rounded-xl shadow-sm hover:scale-[1.03] transition-all animate-pulse">
+                                    <div class="w-4 h-4 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[9px]">•</div>
+                                    <span class="text-xs font-bold text-amber-800 font-headline">{{ apt.vaccineid.vaccineName }}</span>
+                                    <span class="text-[9px] font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded font-headline">Scheduled</span>
                                 </div>
                                 {% endif %}
-                            </div>
+                            {% endfor %}
+                            
+                            <!-- Missed/Overdue elements will be dynamically appended here via AJAX -->
                         </div>
-                        {% endfor %}
                     </div>
-                    {% else %}
-                    <div class="p-12 text-center border-[3px] border-dashed border-gray-200/70 rounded-[1.5rem] bg-gray-50/50 flex flex-col items-center">
-                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
-                            <span class="material-symbols-outlined text-4xl text-gray-400">child_care</span>
-                        </div>
-                        <h4 class="text-xl font-headline font-bold text-gray-800 mb-2">No Children Registered</h4>
-                        <p class="text-gray-500 max-w-sm text-sm leading-relaxed">Add your children's profiles below so you can seamlessly book pediatric vaccination appointments for them in seconds.</p>
-                    </div>
-                    {% endif %}
                 </div>
 
-                <!-- Add New Child Form Box -->
-                <div class="bg-gradient-to-br from-cyan-50 to-teal-50/20 rounded-[2rem] p-8 shadow-sm border border-teal-100/80">
-                    <h3 class="font-headline font-bold text-xl text-primary mb-6 flex items-center gap-3">
-                        <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-sm text-modern-cyan">
-                            <span class="material-symbols-outlined font-bold text-2xl">add</span>
-                        </div> 
-                        Register New Child
-                    </h3>
-                    <form method="POST" class="space-y-5">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="add_child">
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div class="space-y-1.5 md:col-span-3">
-                                <label class="block text-[11px] font-bold text-teal-800 uppercase tracking-widest px-1">Child's Full Name</label>
-                                <input type="text" name="childname" required placeholder="e.g. Michael Smith" class="w-full bg-white border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-modern-cyan focus:border-modern-cyan transition-all">
-                            </div>
-                            
-                            <div class="space-y-1.5 md:col-span-2">
-                                <label class="block text-[11px] font-bold text-teal-800 uppercase tracking-widest px-1">Date of Birth</label>
-                                <input type="text" name="dob" id="childdob" required class="w-full bg-white border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-modern-cyan focus:border-modern-cyan transition-all font-mono text-sm tracking-wide cursor-pointer placeholder-gray-400" placeholder="Select accurate birth date">
-                            </div>
-                            
-                            <div class="space-y-1.5 md:col-span-1">
-                                <label class="block text-[11px] font-bold text-teal-800 uppercase tracking-widest px-1">Gender</label>
-                                <select name="gender" required class="w-full bg-white border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-modern-cyan focus:border-modern-cyan transition-all cursor-pointer">
-                                    <option value="Boy">Boy</option>
-                                    <option value="Girl">Girl</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full md:w-auto px-10 mt-6 bg-gradient-to-r from-primary to-modern-cyan text-white py-3.5 rounded-xl font-bold font-headline text-lg tracking-wide hover:shadow-[0_10px_20px_rgba(6,182,212,0.3)] hover:-translate-y-1 transition-all flex justify-center items-center gap-3">
-                            <span class="material-symbols-outlined text-[1.2rem]">add_circle</span> Add Profile to Family
-                        </button>
-                    </form>
+                <!-- Table Logs for detail view -->
+                {% if child.appointments.all %}
+                <div class="mt-6 border-t border-slate-50 pt-5">
+                    <h5 class="font-headline font-bold text-[10px] text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-xs">list_alt</span> Detailed Appointment History
+                    </h5>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                    <th class="py-3 px-4">Date</th>
+                                    <th class="py-3 px-4">Vaccine</th>
+                                    <th class="py-3 px-4">Medical Center</th>
+                                    <th class="py-3 px-4 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 text-xs font-semibold text-slate-700">
+                                {% for apt in child.appointments.all %}
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="py-3 px-4 font-mono font-bold text-slate-500">
+                                        {{ apt.aptdate|date:"d M Y" }}
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-slate-800 font-headline">
+                                        {{ apt.vaccineid.vaccineName }}
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-slate-505">
+                                        {{ apt.hospitalid.title }}
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        {% if apt.active == 0 %}
+                                            <span class="badge-custom bg-amber-50 text-amber-600 border border-amber-200 font-extrabold text-[9px] px-2.5 py-0.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Pending</span>
+                                        {% elif apt.active == 1 %}
+                                            <span class="badge-custom bg-blue-50 text-blue-600 border border-blue-200 font-extrabold text-[9px] px-2.5 py-0.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Waiting</span>
+                                        {% elif apt.active == 2 %}
+                                            <span class="badge-custom bg-emerald-50 text-emerald-600 border border-emerald-200 font-extrabold text-[9px] px-2.5 py-0.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Completed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 
+    <!-- SECTION 4 — CHILD HEALTH SUMMARY (Combined Statistics) -->
+    <section class="space-y-6 animate__animated animate__fadeInUp">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2.5 font-bold">health_and_safety</span>
+            <h3 class="font-headline font-bold text-xl text-slate-800">Family Health Summary</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Completed Card -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl font-bold">verified</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Completed</p>
+                    <p class="text-2xl font-headline font-black text-slate-800 mt-0.5"><span id="stat-completed-count">{% if children %}0{% else %}-{% endif %}</span></p>
+                </div>
+            </div>
+            
+            <!-- Upcoming Card -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl font-bold">pending_actions</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Upcoming Scheduled</p>
+                    <p class="text-2xl font-headline font-black text-slate-800 mt-0.5"><span id="stat-upcoming-count">{% if children %}0{% else %}-{% endif %}</span></p>
+                </div>
+            </div>
+
+            <!-- Overdue/Missed Card -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="w-12 h-12 rounded-xl bg-red-50 text-red-500 border border-red-100 flex items-center justify-center animate-pulse">
+                    <span class="material-symbols-outlined text-2xl font-bold">warning</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Missed / Overdue</p>
+                    <p class="text-2xl font-headline font-black text-slate-800 mt-0.5"><span id="stat-missed-count">{% if children %}0{% else %}-{% endif %}</span></p>
+                </div>
+            </div>
+
+            <!-- Next Due Card -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md col-span-1">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl font-bold">event</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Next Due Vaccine</p>
+                    <p class="text-xs font-headline font-black text-slate-800 mt-1.5 truncate max-w-[180px]"><span id="stat-next-due">{% if children %}Loading...{% else %}N/A{% endif %}</span></p>
+                </div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <!-- Ultra-Modern Dark Footer -->
-    <!-- (Include standard footer exactly as home.html) -->
-    <!-- Note: Truncated for space, assume same robust footer as everywhere -->
+    <!-- SECTION 5 — DIGITAL RECORDS -->
+    <section class="space-y-6 animate__animated animate__fadeInUp">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2.5 font-bold">folder_shared</span>
+            <h3 class="font-headline font-bold text-xl text-slate-800">Digital Immunization Records</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Vaccine PDF Certificate -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl font-bold">picture_as_pdf</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Vaccine PDF Card</h4>
+                    <p class="text-[11px] text-slate-500 font-semibold leading-relaxed">Download official PDF vaccination credentials for your children to keep on file.</p>
+                </div>
+                <div class="mt-5 border-t border-slate-50 pt-4 flex flex-col gap-2">
+                    {% if children %}
+                        {% for child in children %}
+                        <a href="{% url 'patient:download_vaccine_card' child.id %}" class="text-[10px] font-extrabold uppercase text-primary hover:text-teal-950 flex items-center justify-between tracking-wider decoration-transparent">
+                            <span>{{ child.childname }}</span>
+                            <span class="material-symbols-outlined text-xs">download</span>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-[10px] text-slate-400 font-bold italic">No children registered</span>
+                    {% endif %}
+                </div>
+            </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        // Initialize premium Flatpickr calendar restricting future dates
-        document.addEventListener('DOMContentLoaded', () => {
-            flatpickr("#childdob", {
-                maxDate: "today",
-                altInput: true,
-                altFormat: "F j, Y",
-                dateFormat: "Y-m-d",
-                disableMobile: true,                   // Ensures mobile browsers use this gorgeous UI instead of their default
-                defaultDate: new Date().setFullYear(new Date().getFullYear() - 5) // Sensible default start view
-            });
-        });
+            <!-- QR Vaccine Card -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl font-bold">qr_code_2</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">QR Vaccine Card</h4>
+                    <p class="text-[11px] text-slate-500 font-semibold leading-relaxed">Generate QR immunization passports for quick verify check-ins at schools or clinics.</p>
+                </div>
+                <div class="mt-5 border-t border-slate-50 pt-4">
+                    {% if children %}
+                        {% for child in children %}
+                        <a href="{% url 'patient:download_vaccine_card' child.id %}" class="text-[10px] font-extrabold uppercase text-cyan-600 hover:text-cyan-800 flex items-center justify-between tracking-wider decoration-transparent mb-2 last:mb-0">
+                            <span>{{ child.childname }} QR</span>
+                            <span class="material-symbols-outlined text-xs">qr_code_scanner</span>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-[10px] text-slate-400 font-bold italic">No children registered</span>
+                    {% endif %}
+                </div>
+            </div>
 
-        // AJAX for dependent City -> Area dropdown precisely preserved
-        $(document).ready(function() {
-            $("#cityId").change(function () {
-                var cityid = $(this).val();  
-                $("#areaId").empty();
-                $.ajax({                       
-                    url: "{% url 'adminapp:load_areas' %}",       
-                    data: { 'city_id': cityid },
-                    success: function (data) {   
-                        $("#areaId").html(data);  
-                    }
-                });  
-            });
-        });
+            <!-- Appointment History -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl font-bold">history</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Appointment History</h4>
+                    <p class="text-[11px] text-slate-500 font-semibold leading-relaxed">View all logs of previous vaccinations, hospital facilities visited, and dates.</p>
+                </div>
+                <div class="mt-5 border-t border-slate-50 pt-4">
+                    {% if children %}
+                    <a href="#roadmap-child-{{ children.0.id }}" class="text-[10px] font-extrabold uppercase text-blue-600 hover:text-blue-800 flex items-center justify-between tracking-wider decoration-transparent">
+                        <span>View Logs</span>
+                        <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                    </a>
+                    {% else %}
+                    <span class="text-[10px] text-slate-400 font-bold italic">No children registered</span>
+                    {% endif %}
+                </div>
+            </div>
 
-        // Notifications System Logic
-        $(document).ready(function() {
-            function loadNotifications() {
-                $.ajax({
-                    url: "{% url 'patient:get_notifications' %}",
-                    success: function(res) {
-                        var notifs = res.notifications || [];
-                        var count = res.unread_count || 0;
-                        
-                        // Update Badge
-                        if(count > 0) {
-                            $('#notif-badge').text(count).removeClass('hidden');
-                            $('#mark-read-btn').removeClass('hidden');
-                        } else {
-                            $('#notif-badge').addClass('hidden');
-                            $('#mark-read-btn').addClass('hidden');
-                        }
-                        
-                        // Render List
-                        var listContainer = $('#notif-list');
-                        if (notifs.length === 0) {
-                            listContainer.html('<div class="p-8 text-center flex flex-col items-center gap-2"><span class="material-symbols-outlined text-gray-300 text-3xl">notifications_paused</span><span class="text-gray-400 font-medium text-xs">You\'re all caught up!</span></div>');
-                            return;
-                        }
-                        
-                        var items = notifs.map(function(n) {
-                            var icon = n.type === 'vaccine' ? 'vaccines' : 'calendar_month';
-                            var iconColor = n.type === 'vaccine' ? 'text-orange-500 bg-orange-100' : 'text-blue-500 bg-blue-100';
-                            var bg = n.is_read ? 'bg-white' : 'bg-teal-50/50';
-                            var dot = n.is_read ? '' : '<span class="w-2 h-2 rounded-full bg-modern-cyan flex-shrink-0 mt-1.5"></span>';
-                            
-                            return '<div class="p-4 border-b border-gray-50 flex items-start gap-3 hover:bg-slate-50 transition-colors ' + bg + '">' +
-                                '<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ' + iconColor + '"><span class="material-symbols-outlined text-[16px]">' + icon + '</span></div>' +
-                                '<div class="flex-1">' +
-                                '<p class="text-[11px] text-gray-700 leading-snug font-medium">' + n.message + '</p>' +
-                                '<span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">' + n.date + '</span>' +
-                                '</div>' + dot +
-                                '</div>';
-                        }).join('');
-                        
-                        listContainer.html(items);
-                    }
-                });
-            }
+            <!-- Health Summary Report -->
+            <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl font-bold">analytics</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Consolidated Summary</h4>
+                    <p class="text-[11px] text-slate-500 font-semibold leading-relaxed">Print or export the comprehensive medical immunization status overview for all children.</p>
+                </div>
+                <div class="mt-5 border-t border-slate-50 pt-4">
+                    <button type="button" onclick="window.print();" class="w-full text-[10px] font-extrabold uppercase text-orange-600 hover:text-orange-850 flex items-center justify-between tracking-wider">
+                        <span>Print Overview</span>
+                        <span class="material-symbols-outlined text-xs">print</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6 — QUICK ACTIONS -->
+    <section class="space-y-6 animate__animated animate__fadeInUp">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2.5 font-bold">offline_bolt</span>
+            <h3 class="font-headline font-bold text-xl text-slate-800">Quick Actions</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Schedule Appointment -->
+            <a href="{% url 'patient:vaccinebooking' %}" 
+               class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md decoration-transparent group">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-2xl font-bold">medical_services</span>
+                </div>
+                <div>
+                    <p class="font-headline font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Schedule Appointment</p>
+                    <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Book vaccination slot</p>
+                </div>
+            </a>
             
-            // Mark all read
-            $('#mark-read-btn').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $.ajax({
-                    url: "{% url 'patient:mark_notifications_read' %}",
-                    type: "POST",
-                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-                    success: function() {
-                        loadNotifications();
-                    }
-                });
-            });
+            <!-- Vaccine Directory -->
+            <a href="{% url 'patient:showdata' %}" 
+               class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md decoration-transparent group">
+                <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100 flex items-center justify-center group-hover:bg-modern-cyan group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-2xl font-bold">menu_book</span>
+                </div>
+                <div>
+                    <p class="font-headline font-bold text-slate-800 text-sm group-hover:text-cyan-600 transition-colors">Vaccine Directory</p>
+                    <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Explore catalog & info</p>
+                </div>
+            </a>
 
-            // Initial Load
-            loadNotifications();
+            <!-- Notifications -->
+            <a href="#guardian-form" 
+               class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md decoration-transparent group">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-2xl font-bold">notifications_active</span>
+                </div>
+                <div>
+                    <p class="font-headline font-bold text-slate-800 text-sm group-hover:text-amber-600 transition-colors">View Notifications</p>
+                    <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Check account alerts</p>
+                </div>
+            </a>
+
+            <!-- Contact Support -->
+            <a href="{% url 'patient:contactpage' %}" 
+               class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-md decoration-transparent group">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-2xl font-bold">support_agent</span>
+                </div>
+                <div>
+                    <p class="font-headline font-bold text-slate-800 text-sm group-hover:text-blue-650 transition-colors">Contact Support</p>
+                    <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Get professional help</p>
+                </div>
+            </a>
+        </div>
+    </section>
+</div>
+
+<!-- OCR Recovery Modal Overlay -->
+<div id="ocr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white w-full max-w-lg rounded-[1.5rem] p-8 border border-slate-100 shadow-2xl mx-4 transform scale-95 transition-transform duration-300 flex flex-col gap-5 relative">
+        <button id="close-ocr-modal" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
+            <span class="material-symbols-outlined font-bold">close</span>
+        </button>
+        
+        <h3 class="font-headline font-bold text-xl text-primary flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl font-bold">photo_camera</span>
+            Recover Vaccine Card
+        </h3>
+        <p class="text-xs text-slate-500 font-semibold leading-relaxed">Upload a clear photograph of an old immunization records card. The OCR extraction engine will scan details to import vaccine histories.</p>
+        
+        <form id="ocr-form" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="child_id" id="ocr-child-id">
+            
+            <div class="border-2 border-dashed border-teal-100 rounded-2xl p-6 text-center bg-teal-50/20 hover:bg-teal-50/50 transition-all cursor-pointer relative" id="dropzone">
+                <input type="file" name="card_image" id="ocr-image" required class="absolute inset-0 opacity-0 cursor-pointer">
+                <span class="material-symbols-outlined text-4xl text-teal-500 block mb-2">cloud_upload</span>
+                <span class="text-xs font-bold text-teal-800 uppercase tracking-wider block">Choose or Drop Card Photo</span>
+                <span class="text-[10px] text-slate-400 mt-1 block">Supports PNG, JPG, JPEG</span>
+            </div>
+            
+            <div id="selected-file-name" class="text-xs font-bold text-slate-600 hidden text-center bg-slate-50 py-2.5 rounded-xl border border-slate-100"></div>
+            
+            <button type="submit" id="ocr-submit-btn" class="w-full bg-primary text-white py-3.5 rounded-xl font-bold font-headline hover:bg-primary-hover transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                <span class="material-symbols-outlined text-[18px] font-bold">analytics</span> Run Card OCR Recovery
+            </button>
+        </form>
+        
+        <!-- OCR Verification Container (shows parsed data) -->
+        <div id="ocr-results-area" class="hidden space-y-4 border-t border-slate-100 pt-4 max-h-[300px] overflow-y-auto">
+            <h4 class="font-headline font-bold text-xs text-slate-800 flex items-center gap-2 uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[16px] text-emerald-500 font-bold">verified</span>
+                Detected Immunizations
+            </h4>
+            <p class="text-[10px] text-slate-500 font-semibold leading-relaxed">Review the matched dosages below. Adjust date values if necessary before saving to records.</p>
+            
+            <div id="ocr-results-list" class="space-y-2"></div>
+            
+            <button id="ocr-confirm-btn" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold font-headline hover:bg-slate-900 transition-all text-sm shadow-sm">
+                Import & Save Checked Records
+            </button>
+        </div>
+        
+        <!-- Loading Loader overlay -->
+        <div id="ocr-loading" class="hidden inset-0 bg-white/95 absolute rounded-[1.5rem] flex flex-col items-center justify-center gap-3">
+            <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-xs font-bold text-primary animate-pulse">Running AI OCR Engine...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // DOB Date picker bounds
+        flatpickr("#childdob", {
+            maxDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+            disableMobile: true,
+            defaultDate: new Date().setFullYear(new Date().getFullYear() - 3)
         });
-    </script>
-    
-    <!-- Missed Vaccine Detection -->
-    <script>
+    });
+
     $(document).ready(function() {
-        var severityStyles = {
-            'high':   { border: 'border-red-200',    bg: 'bg-red-50',    icon: 'bg-red-100 text-red-500',   badge: 'bg-red-100 text-red-700',   text: 'text-red-800',  label: '🔴 High Risk' },
-            'medium': { border: 'border-orange-200', bg: 'bg-orange-50', icon: 'bg-orange-100 text-orange-500', badge: 'bg-orange-100 text-orange-700', text: 'text-orange-800', label: '🟠 Medium Risk' },
-            'low':    { border: 'border-yellow-200', bg: 'bg-yellow-50', icon: 'bg-yellow-100 text-yellow-600', badge: 'bg-yellow-100 text-yellow-700', text: 'text-yellow-800', label: '🟡 Review Advised' },
+        // Toggle Guardian Edit Profile Form fields editable/readonly states
+        const editProfileBtn = $('#edit-profile-btn');
+        const saveProfileBtn = $('#save-profile-btn');
+        const cancelEditBtn = $('#cancel-edit-btn');
+        const guardianInputs = $('.guardian-input');
+        
+        let originalValues = {};
+        
+        editProfileBtn.on('click', function() {
+            originalValues = {};
+            guardianInputs.each(function() {
+                const nameAttr = $(this).attr('name') || $(this).attr('id');
+                originalValues[nameAttr] = $(this).val();
+                
+                $(this).removeAttr('readonly');
+                $(this).removeAttr('disabled');
+                $(this).removeClass('cursor-not-allowed bg-slate-50').addClass('bg-white border-primary');
+            });
+            
+            editProfileBtn.addClass('hidden');
+            saveProfileBtn.removeClass('hidden');
+            cancelEditBtn.removeClass('hidden');
+        });
+        
+        cancelEditBtn.on('click', function() {
+            guardianInputs.each(function() {
+                const nameAttr = $(this).attr('name') || $(this).attr('id');
+                $(this).val(originalValues[nameAttr]);
+                
+                $(this).attr('readonly', 'readonly');
+                if ($(this).is('select')) {
+                    $(this).attr('disabled', 'disabled');
+                }
+                $(this).removeClass('bg-white border-primary').addClass('cursor-not-allowed bg-slate-50');
+            });
+            
+            editProfileBtn.removeClass('hidden');
+            saveProfileBtn.addClass('hidden');
+            cancelEditBtn.addClass('hidden');
+        });
+        
+        // Ensure disabled select values are still submitted by enabling them in submit phase
+        $('#guardian-form').on('submit', function() {
+            guardianInputs.removeAttr('disabled');
+        });
+
+        // City -> Area dynamic cascade selection
+        $("#cityId").change(function () {
+            var cityid = $(this).val();  
+            $("#areaId").empty().append('<option value="">Loading...</option>');
+            $.ajax({                       
+                url: "{% url 'adminapp:load_areas' %}",       
+                data: { 'city_id': cityid },
+                success: function (data) {   
+                    $("#areaId").html(data);  
+                }
+            });  
+        });
+
+        // Fetch Missed Vaccines alerts dynamically
+        var missedStyles = {
+            'high':   { border: 'border-red-200', bg: 'bg-red-50/50', icon: 'bg-red-100 text-red-500', badge: 'bg-red-100 text-red-700', text: 'text-red-800', label: '🔴 High Overdue' },
+            'medium': { border: 'border-orange-200', bg: 'bg-orange-50/50', icon: 'bg-orange-100 text-orange-500', badge: 'bg-orange-100 text-orange-700', text: 'text-orange-850', label: '🟠 Moderate Risk' },
+            'low':    { border: 'border-yellow-250', bg: 'bg-yellow-50/40', icon: 'bg-yellow-100 text-yellow-600', badge: 'bg-yellow-100 text-yellow-700', text: 'text-yellow-850', label: '🟡 Review Needed' }
         };
 
+        let totalCompleted = 0;
+        let totalUpcoming = 0;
+        let totalMissed = 0;
+        let nextDueItems = [];
+
+        // Aggregate static statistics across all child lists
+        $('.child-stat-container').each(function() {
+            const childId = $(this).data('child-id');
+            totalCompleted += parseInt($(this).data('completed') || 0);
+            
+            // Count upcoming scheduled appointments from helper markers
+            const upcomingCount = $('.upcoming-item-' + childId).length;
+            totalUpcoming += upcomingCount;
+            
+            $('.upcoming-item-' + childId).each(function() {
+                const dateVal = $(this).data('date');
+                const nameVal = $(this).data('name');
+                if (dateVal) {
+                    nextDueItems.push({
+                        date: new Date(dateVal),
+                        name: nameVal
+                    });
+                }
+            });
+        });
+
+        // Set initial stats values
+        $('#stat-completed-count').text(totalCompleted);
+        $('#stat-upcoming-count').text(totalUpcoming);
+
+        let ajaxCallsCompleted = 0;
+        const totalChildren = $('.missed-vaccine-panel').length;
+
+        if (totalChildren === 0) {
+            updateNextDueStat();
+        }
+
+        // Query missed vaccines for each child and update roadmaps/stats
         $('.missed-vaccine-panel').each(function() {
             var panel = $(this);
             var childId = panel.data('child-id');
-            if(!childId) return;
+            if(!childId) {
+                checkAjaxDone();
+                return;
+            }
 
             $.ajax({
                 url: "{% url 'patient:missed_vaccines' %}",
                 data: { 'child_id': childId },
                 success: function(res) {
                     var missed = res.missed || [];
-                    if (missed.length === 0) return; // All caught up — hide panel
+                    totalMissed += missed.length;
+                    $('#stat-missed-count').text(totalMissed);
                     
-                    var sv = res.overall_severity || 'low';
-                    var style = severityStyles[sv] || severityStyles['low'];
-                    
-                    var header = '<div class="flex items-center gap-3 mb-3">' +
-                        '<span class="w-8 h-8 rounded-full flex items-center justify-center ' + style.icon + '">' +
-                        '<span class="material-symbols-outlined text-[17px]">warning</span></span>' +
-                        '<div>' +
-                        '<p class="font-headline font-black text-[13px] ' + style.text + '">Missed Vaccines Detected</p>' +
-                        '<p class="text-[11px] ' + style.text + ' opacity-70">' + res.total_missed + ' overdue · ' + style.label + '</p>' +
-                        '</div></div>';
-                    
-                    var items = missed.map(function(v) {
-                        return '<div class="flex items-start gap-2 py-2 border-t ' + style.border + ' first:border-0">' +
-                            '<span class="material-symbols-outlined text-[14px] mt-0.5 ' + style.text + '">syringe</span>' +
+                    if (missed.length > 0) {
+                        var severity = res.overall_severity || 'low';
+                        var st = missedStyles[severity] || missedStyles['low'];
+                        
+                        var head = '<div class="flex items-center gap-3 mb-3">' +
+                            '<span class="w-8 h-8 rounded-xl flex items-center justify-center ' + st.icon + '">' +
+                            '<span class="material-symbols-outlined text-[17px] font-bold">warning</span></span>' +
                             '<div>' +
-                            '<span class="font-bold text-[12px] ' + style.text + '">' + v.name + '</span>' +
-                            '<span class="ml-2 px-1.5 py-0.5 rounded text-[9px] font-bold ' + style.badge + '">' + v.due_age_range + '</span>' +
-                            '<p class="text-[11px] ' + style.text + ' opacity-70 mt-0.5">' + v.overdue_since + '</p>' +
+                            '<p class="font-headline font-black text-xs ' + st.text + '">Missed / Overdue Immunizations</p>' +
+                            '<p class="text-[10px] ' + st.text + ' opacity-75 font-semibold">' + res.total_missed + ' overdue vaccines · ' + st.label + '</p>' +
                             '</div></div>';
-                    }).join('');
+                        
+                        var bodyItems = missed.map(function(v) {
+                            var catchUp = v.catch_up_date ? '<p class="text-[10px] text-teal-850 font-bold mt-1 bg-teal-100/50 px-2 py-0.5 rounded-lg inline-block">⚡ Suggest Catch-Up: ' + v.catch_up_date + '</p>' : '';
+                            
+                            // Dynamically append red Missed nodes into Child Roadmap Tracker
+                            var timeline = $('#roadmap-timeline-' + childId);
+                            if (timeline.length) {
+                                var redNode = $('<div class="flex-shrink-0 flex items-center gap-2 bg-white border border-red-250 px-3.5 py-2 rounded-xl shadow-sm hover:scale-[1.03] transition-all">' +
+                                    '<div class="w-4 h-4 rounded-full bg-red-100 text-red-655 flex items-center justify-center font-bold text-[9px]">!</div>' +
+                                    '<span class="text-xs font-bold text-red-800 font-headline">' + v.name + '</span>' +
+                                    '<span class="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded font-headline">Missed</span>' +
+                                    '</div>');
+                                timeline.append(redNode);
+                            }
+
+                            // Collect catch up dates towards next due stats
+                            if (v.catch_up_date) {
+                                nextDueItems.push({
+                                    date: new Date(v.catch_up_date),
+                                    name: v.name + " (Catch-up)"
+                                });
+                            }
+                            
+                            return '<div class="flex items-start gap-2.5 py-2.5 border-t ' + st.border + ' first:border-0">' +
+                                '<span class="material-symbols-outlined text-[14px] mt-0.5 ' + st.text + ' font-bold">syringe</span>' +
+                                '<div>' +
+                                '<span class="font-bold text-xs ' + st.text + '">' + v.name + '</span>' +
+                                '<span class="ml-2 px-1.5 py-0.5 rounded-md text-[9px] font-bold ' + st.badge + '">' + v.due_age_range + '</span>' +
+                                '<p class="text-[10px] ' + st.text + ' opacity-70 mt-0.5 font-medium">' + v.overdue_since + '</p>' +
+                                catchUp +
+                                '</div></div>';
+                        }).join('');
+                        
+                        panel.addClass(st.bg + ' ' + st.border)
+                             .html(head + bodyItems)
+                             .removeClass('hidden');
+                    }
                     
-                    panel.addClass(style.bg + ' ' + style.border)
-                         .html(header + items)
-                         .removeClass('hidden');
+                    checkAjaxDone();
+                },
+                error: function() {
+                    checkAjaxDone();
+                }
+            });
+        });
+
+        function checkAjaxDone() {
+            ajaxCallsCompleted++;
+            if (ajaxCallsCompleted >= totalChildren) {
+                updateNextDueStat();
+            }
+        }
+
+        function updateNextDueStat() {
+            if (nextDueItems.length === 0) {
+                $('#stat-next-due').text('None Scheduled');
+                return;
+            }
+            
+            // Sort nextDueItems by date ascending to find the earliest
+            nextDueItems.sort((a, b) => a.date - b.date);
+            
+            const nextItem = nextDueItems[0];
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const dateStr = nextItem.date.toLocaleDateString('en-US', options);
+            
+            $('#stat-next-due').text(nextItem.name + ' (' + dateStr + ')');
+        }
+
+        // OCR Modal script logic
+        var ocrModal = $('#ocr-modal');
+        
+        $('.ocr-upload-btn').on('click', function() {
+            var childId = $(this).data('child-id');
+            $('#ocr-child-id').val(childId);
+            ocrModal.removeClass('hidden').addClass('flex');
+            setTimeout(function() { 
+                ocrModal.removeClass('opacity-0').addClass('opacity-100').find('.transform').removeClass('scale-95').addClass('scale-100'); 
+            }, 50);
+            
+            // Reset modal inputs and fields
+            $('#ocr-form')[0].reset();
+            $('#selected-file-name').addClass('hidden').text('');
+            $('#ocr-results-area').addClass('hidden');
+            $('#ocr-results-list').empty();
+        });
+        
+        $('#close-ocr-modal').on('click', function() {
+            ocrModal.removeClass('opacity-100').addClass('opacity-0').find('.transform').removeClass('scale-100').addClass('scale-95');
+            setTimeout(function() { ocrModal.addClass('hidden').removeClass('flex'); }, 300);
+        });
+        
+        $('#ocr-image').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                $('#selected-file-name').text("Selected: " + file.name).removeClass('hidden');
+            }
+        });
+        
+        // Handle image submission for OCR
+        $('#ocr-form').on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $('#ocr-loading').removeClass('hidden');
+            
+            $.ajax({
+                url: "{% url 'patient:upload_vaccine_card_ocr' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    $('#ocr-loading').addClass('hidden');
+                    if (res.status === 'success') {
+                        var list = $('#ocr-results-list');
+                        list.empty();
+                        
+                        var vaccines = res.extracted.vaccines || [];
+                        if (vaccines.length === 0) {
+                            list.html('<p class="text-xs text-red-500 font-bold p-3 text-center bg-red-50 border border-red-150 rounded-xl">No vaccine records identified. Please try again with another photo.</p>');
+                            return;
+                        }
+                        
+                        vaccines.forEach(function(v) {
+                            var row = $('<div class="flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">' +
+                                '<span class="font-bold text-xs text-slate-800">' + v.name + '</span>' +
+                                '<input type="date" class="ocr-date-input text-xs border border-slate-205 rounded-lg px-2.5 py-1.5 bg-white font-mono shadow-sm" value="' + v.date + '" data-name="' + v.name + '">' +
+                                '</div>');
+                            list.append(row);
+                        });
+                        
+                        $('#ocr-results-area').removeClass('hidden');
+                    } else {
+                        alert("OCR Error: " + res.message);
+                    }
+                },
+                error: function() {
+                    $('#ocr-loading').addClass('hidden');
+                    alert("A network error occurred during OCR upload.");
+                }
+            });
+        });
+        
+        // Confirm & save extracted children records
+        $('#ocr-confirm-btn').on('click', function() {
+            var childId = $('#ocr-child-id').val();
+            var vaccines = [];
+            
+            $('.ocr-date-input').each(function() {
+                vaccines.push({
+                    name: $(this).data('name'),
+                    date: $(this).val()
+                });
+            });
+            
+            $('#ocr-loading').removeClass('hidden');
+            
+            $.ajax({
+                url: "{% url 'patient:confirm_ocr_results' %}",
+                type: "POST",
+                data: {
+                    'child_id': childId,
+                    'vaccines': JSON.stringify(vaccines),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(res) {
+                    $('#ocr-loading').addClass('hidden');
+                    if (res.status === 'success') {
+                        alert(res.message);
+                        location.reload();
+                    } else {
+                        alert("Confirmation failed: " + res.message);
+                    }
+                },
+                error: function() {
+                    $('#ocr-loading').addClass('hidden');
+                    alert("A database error occurred during importing.");
                 }
             });
         });
     });
-    </script>
-</body>
-</html>
+</script>
+{% endblock %}

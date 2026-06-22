@@ -26,9 +26,21 @@ class Vaccinetbl(models.Model):
     vaccineName = models.CharField(max_length=255, verbose_name='Vaccine Name')   
     vaccineDescr = models.CharField(max_length=500, verbose_name='Description') 
     price = models.IntegerField(blank=True, null=True, verbose_name='Price')
+    stock_quantity = models.IntegerField(default=0, verbose_name='Stock Quantity')
+    minimum_quantity = models.IntegerField(default=5, verbose_name='Minimum Quantity')
     
     def __str__(self):
         return f'{(self.hospitalId),(self.vaccineName)(self.vaccineDescr)(self.price)}'
+
+
+class VaccineInfo(models.Model):
+    vaccine = models.ForeignKey(Vaccinetbl, on_delete=models.CASCADE, related_name='education_info', verbose_name='Vaccine')
+    protects_against = models.TextField(verbose_name='Protects Against')
+    side_effects = models.TextField(verbose_name='Common Side Effects')
+    warning_signs = models.TextField(verbose_name='Warning Signs')
+
+    def __str__(self):
+        return f"Info for {self.vaccine.vaccineName}"
 
     
 class Receptionisttbl(models.Model):

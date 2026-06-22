@@ -20,8 +20,13 @@
         theme: {
           extend: {
             colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+              "primary": "#0F4C81",     /* Clinical Blue Primary */
+              "secondary": "#3BAFDA",   /* Clinical Blue Secondary */
+              "background": "#F6F9FC",  /* Clinical Background */
+              "on-surface": "#1E293B",  /* Slate 800 */
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
             },
             fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
           }
@@ -30,10 +35,10 @@
     </script>
     <style>
       .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
       .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
     </style>
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
@@ -42,7 +47,7 @@
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
                     Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
                 </span>
             </a>
@@ -57,7 +62,7 @@
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner">
                         <span class="material-symbols-outlined">local_hospital</span>
                     </div>
                     <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>

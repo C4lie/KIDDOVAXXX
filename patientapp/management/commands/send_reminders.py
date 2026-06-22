@@ -36,8 +36,8 @@ class Command(BaseCommand):
 
             # Interactive two-way SMS — patient replies YES or NO
             sms_msg = (
-                f"KiddoVax Reminder: '{child_name}' has a {vaccine_name} appointment "
-                f"tomorrow ({apt_date_str}). "
+                f"KiddoVax Reminder: {child_name}'s {vaccine_name} vaccine is due tomorrow. "
+                f"Mild fever after vaccination is normal. "
                 f"Reply YES to confirm or NO to cancel."
             )
 

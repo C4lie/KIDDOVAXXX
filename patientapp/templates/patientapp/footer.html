@@ -1,125 +1,101 @@
-    <!--/footer-->
-    <section class="w3l-footer-29-main">
-        <div class="footer-29 py-5">
-            <div class="container py-lg-3">
-                <div class="row footer-top-29">
-                    <div class="col-lg-3 col-sm-6 footer-list-29 footer-2 mt-lg-0 mt-md-5 mt-4">
-                        <ul>
-                            <h6 class="footer-title-29">Quick Links</h6>
-                            <li><a href="{% url 'patient:aboutpage' %}">About Us</a></li>
-                            <!-- <li><a href="blog.html"> Blog Posts</a></li>
-                            <li><a href="services.html">Services</a></li> -->
-                           
-                            <!-- <li><a href="about.html">Team</a></li> -->
-                            <li><a href="{% url 'patient:contactpage' %}">Contact us</a></li>
-                        </ul>
-                    </div>
-                     <div class="col-lg-3 col-sm-6 footer-list-29 footer-2 mt-lg-0 mt-md-5 mt-4">
-                        <!-- <h6 class="footer-title-29">Quick Link</h6>
-                        <ul>
-                            <li><a href="#syn">Symptoms</a></li>
-                        
-                            <li><a href="#vention">Prevention</a></li>
-                            <li><a href="#protect">Protect Youself</a></li>
-                            <li><a href="#our">Our Doctors</a></li>
-                            <li><a href="#pack">About Corona</a></li>
-                            
-                        </ul> -->
-                    </div> 
-                    <div class="col-lg-3 col-sm-6 footer-list-29 footer-2 mt-lg-0 mt-md-5 mt-4">
-                        <!-- <h6 class="footer-title-29">Helpful link</h6>
-                        <ul>
-                            <li><a href="{% url 'patient:homepage' %}">Home</a></li>
-                            <li><a href="{% url 'patient:aboutpage' %}"> About</a></li>
-                            <li><a href="{% url 'patient:contactpage' %}"> Contact</a></li>
-                            <li><a href="{% url 'patient:loginpage' %}"> Login</a></li>
-                    
-                        </ul> -->
-                    </div>
-                    <div class="col-lg-3 col-sm-6 footer-list-29 footer-2 mt-lg-0 mt-md-5 mt-4">
-                        <div class="footer-logo mb-3">
-                            <h2>
-                                <a class="navbar-brand" href="#">
-                                    Kiddo<i class="fab fa-keycdn"></i>Vax</a>
-                            </h2>
-                        </div>
-                        <p>The KiddoVAX involves creating a user-friendly website with the goal of efficiently managing immunizations for youngsters up to the age of 18. </p>
+<!-- Ultra-Modern Dark Footer -->
+<footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
+    <!-- Ambient gradients in background -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
-                        <div class="cont-details">
-                            <div class="cont-top margin-up">
-                              <div class="cont-left text-center">
-                                <span class="fas fa-map-marked-alt"></span>
-                              </div>
-                              <div class="cont-right">
-                                <p> Baroda, Gujarat, India</p>
-                              </div>
-                            </div>
-                            <div class="cont-top margin-up">
-                              <div class="cont-left text-center">
-                                <span class="fas fa-blender-phone"></span>
-                              </div>
-                              <div class="cont-right">
-                                <p><a href="tel:++(91) 9825237398"> 9825237398|9662568312</a></p>
-                              </div>
-                            </div>
-                            <div class="cont-top margin-up">
-                              <div class="cont-left text-center">
-                                <span class="fas fa-envelope-open-text"></span>
-                              </div>
-                              <div class="cont-right">
-                                <p><a href="mailto:example@mail.com" class="mail">
-                                    example@mail.com</a></p>
-                              </div>
-                            </div>
-                          </div>
-                       
-                    </div>
+    <div class="max-w-7xl mx-auto px-6 md:px-8 py-16 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 border-b border-slate-800 pb-12">
+            <!-- Column 1: About -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyan-400 text-3xl font-bold">health_and_safety</span>
+                    <span class="font-headline font-black text-white text-2xl tracking-tight">KiddoVax<span class="text-cyan-400">.</span></span>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed font-body">
+                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families to easily manage childhood immunization.
+                </p>
+                <!-- Social media icons with hover elevations -->
+                <div class="flex gap-3.5 mt-4">
+                    <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all duration-300 shadow hover:-translate-y-1"><i class="fab fa-facebook-f text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all duration-300 shadow hover:-translate-y-1"><i class="fab fa-twitter text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all duration-300 shadow hover:-translate-y-1"><i class="fab fa-instagram text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all duration-300 shadow hover:-translate-y-1"><i class="fab fa-linkedin-in text-sm"></i></a>
+                </div>
+            </div>
+            
+            <!-- Column 2: Quick Links -->
+            <div class="space-y-4">
+                <h4 class="font-headline font-bold text-white text-base tracking-wide uppercase">Quick Links</h4>
+                <ul class="space-y-2.5 text-sm font-medium">
+                    <li><a href="{% url 'patient:homepage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Home</a></li>
+                    <li><a href="{% url 'patient:aboutpage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> About Us</a></li>
+                    <li><a href="{% url 'patient:contactpage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Contact us</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Contact Details -->
+            <div class="space-y-4">
+                <h4 class="font-headline font-bold text-white text-base tracking-wide uppercase">Contact Details</h4>
+                <ul class="space-y-3 text-sm text-slate-400">
+                    <li class="flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-cyan-400 text-[18px]">location_on</span>
+                        <span>Baroda, Gujarat, India</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-cyan-400 text-[18px]">phone</span>
+                        <a href="tel:+919825237398" class="hover:text-cyan-400 transition-colors decoration-transparent font-mono">+91 9825237398</a>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-cyan-400 text-[18px]">mail</span>
+                        <a href="mailto:kiddovaxhelp@gmail.com" class="hover:text-cyan-400 transition-colors decoration-transparent">kiddovaxhelp@gmail.com</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 4: Google Map -->
+            <div class="space-y-4">
+                <h4 class="font-headline font-bold text-white text-base tracking-wide uppercase">Google Map</h4>
+                <div class="w-full h-32 rounded-2xl overflow-hidden border border-slate-800 shadow-inner">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.6782806307137!2d73.36195537597956!3d22.290209643444004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc902b9e116ad%3A0x6b1cfb268df178f5!2sParul%20University!5e0!3m2!1sen!2sin!4v1687352342345!5m2!1sen!2sin" 
+                            class="w-full h-full border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300" 
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- //footer -->
-    <!-- copyright -->
-    <section class="w3l-copyright">
-        <div class="container">
-            <div class="row bottom-copies">
-                <p class="col-lg-8 copy-footer-29">© 2023 KiddoVax. All rights reserved.Design by<a
-                        href="https://w3layouts.com/" target="_blank">
-                        KiddoVax</a></p>
-                  <div class="col-lg-4 main-social-footer-29">
-                    <!-- <a href="#facebook" class="facebook"><span class="fab fa-facebook-f"></span></a>
-                    <a href="#twitter" class="twitter"><span class="fab fa-twitter"></span></a>
-                    <a href="#pinterest"><span class="fab fa-pinterest-p"></span></a>
-                    <a href="#instagram" class="instagram"><span class="fab fa-instagram"></span></a> -->
-                 
-                  </div>
-            </div>
+        
+        <!-- Copyright Section -->
+        <div class="flex flex-col md:flex-row items-center justify-between pt-8 text-slate-500 font-medium text-xs gap-4">
+            <p>© 2026 KiddoVax Clinical Hospital System. All rights reserved.</p>
+            <p>Designed for <span class="text-slate-400 font-bold">World-Class Healthcare.</span></p>
         </div>
-        <!-- move top -->
-        <button onclick="topFunction()" id="movetop" title="Go to top">
-            <i class="fas fa-level-up-alt"></i>
-        </button>
-        <script>
-            // When the user scrolls down 20px from the top of the document, show the button
-            window.onscroll = function () {
-                scrollFunction()
-            };
+    </div>
+    
+    <!-- Smooth back-to-top component -->
+    <button onclick="scrollToTop()" id="movetop" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-primary/95 text-white flex items-center justify-center shadow-2xl hover:bg-cyan-500 hover:-translate-y-1 hover:scale-105 active:scale-95 transition-all duration-300 hidden z-40 border border-white/10">
+        <span class="material-symbols-outlined font-black text-[22px]">arrow_upward</span>
+    </button>
+</footer>
 
-            function scrollFunction() {
-                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                    document.getElementById("movetop").style.display = "block";
-                } else {
-                    document.getElementById("movetop").style.display = "none";
-                }
+<script>
+    // Smooth scrolling function to return to top of page
+    window.onscroll = function() {
+        const topBtn = document.getElementById("movetop");
+        if (topBtn) {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                topBtn.classList.remove("hidden");
+                topBtn.classList.add("flex");
+            } else {
+                topBtn.classList.add("hidden");
+                topBtn.classList.remove("flex");
             }
+        }
+    };
 
-            // When the user clicks on the button, scroll to the top of the document
-            function topFunction() {
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-            }
-        </script>
-        <!-- /move top -->
-    </section>
-    <!-- //copyright -->
-    <!--//footer-->
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+</script>

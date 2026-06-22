@@ -39,6 +39,7 @@ class Childtbl(models.Model):
     childname = models.CharField(max_length=255, verbose_name="Child Name")
     dob = models.DateField(verbose_name="Date of Birth")
     gender = models.CharField(max_length=50, verbose_name="Gender")
+    blood_group = models.CharField(max_length=10, blank=True, null=True, verbose_name="Blood Group")
     
     @property
     def age(self):
@@ -48,6 +49,16 @@ class Childtbl(models.Model):
 
     def __str__(self):
         return self.childname
+
+
+class VaccineCardUpload(models.Model):
+    patient = models.ForeignKey(Patienttbl, on_delete=models.CASCADE, related_name='card_uploads', verbose_name="Patient")
+    image = models.ImageField(upload_to="vaccine_cards/", verbose_name="Vaccine Card Image")
+    extracted_data = models.JSONField(null=True, blank=True, verbose_name="Extracted Data")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Uploaded At")
+
+    def __str__(self):
+        return f"Upload by {self.patient.name} at {self.created_at}"
 
 
 class VaccinationRecord(models.Model):

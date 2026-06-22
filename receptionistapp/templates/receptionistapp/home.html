@@ -95,6 +95,12 @@
         
         <!-- Welcome Hero -->
         <div class="text-center space-y-4 animate__animated animate__fadeInUp">
+            {% if hospital_name %}
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 font-headline font-bold text-sm uppercase tracking-wider shadow-sm mb-2">
+                <span class="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                {{ hospital_name }}
+            </div>
+            {% endif %}
             <h1 class="font-headline font-black text-5xl text-slate-800 tracking-tight">Clinical Check-in Hub</h1>
             <p class="text-slate-500 font-medium text-lg max-w-2xl mx-auto">Manage daily patient flows, verify RFID tags, and mark vaccines as administered securely.</p>
         </div>

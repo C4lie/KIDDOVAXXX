@@ -1,270 +1,384 @@
+{% extends 'patientapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | About Us</title>
-    
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
-            },
-            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
-            animation: { 'float': 'float 6s ease-in-out infinite', 'blob': 'blob 7s infinite', 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
-            keyframes: {
-              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
-              blob: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }, '100%': { transform: 'translate(0px, 0px) scale(1)' } },
-              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
-      .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); }
-      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 50%, center; position: relative; }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
-      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
-      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
-      .bento-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-      .bento-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 30px 60px rgba(0, 101, 101, 0.12); }
-    </style>
-</head>
-<body class="text-on-surface font-body mesh-bg">
 
-    <!-- Standalone Tailwind Navbar (from home.html) -->
-    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
-            <!-- Brand Logo with original FontAwesome Icon -->
-            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
-                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
-                </span>
-            </a>
-            
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-10">
-                <a class="font-headline font-bold text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
-                <a class="font-headline font-bold text-lg text-primary border-b-2 border-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
-            </nav>
+{% block title %}About Us{% endblock %}
 
-            <!-- Authentication / Profile Dropdown -->
-            <div class="flex items-center gap-4">
-                {% if request.session.CName is None %} 
-                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
-                {% else %}
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
-                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
-                                <span class="material-symbols-outlined">person</span>
-                            </div>
-                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
-                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
-                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> My Appointments
-                            </a>
-                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
-                            </a>
-                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+{% block content %}
+<div class="space-y-16">
+    <!-- About Hero Section -->
+    <section class="relative overflow-hidden rounded-[2.5rem] p-16 md:p-24 text-white shadow-xl animate__animated animate__fadeIn relative" style="background-image: linear-gradient(rgba(0, 101, 101, 0.8), rgba(0, 101, 101, 0.8)), url('{% static 'patients/images/banner7.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-3xl space-y-6 text-center mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-200 font-bold tracking-widest text-xs uppercase">Platform Identity</span>
+            <h1 class="font-headline font-black text-4xl md:text-6xl tracking-tight text-white leading-tight">About KiddoVax</h1>
+            <p class="text-lg md:text-xl text-teal-50 font-medium leading-relaxed opacity-95">
+                Helping parents manage vaccinations with confidence and simplicity.
+            </p>
         </div>
-    </header>
+    </section>
 
-    <!-- Main Content -->
-    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
-        
-        <!-- About Hero Section (Adapted from Home) -->
-        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
-            <div class="relative z-10 max-w-3xl space-y-8 text-center mx-auto">
-                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 justify-center">
-                    <span class="flex h-3 w-3 relative">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-                    </span>
-                    <span class="text-sm font-bold tracking-wider uppercase">Prevent the Spread</span>
-                </div>
-                
-                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white">
-                    About <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">KiddoVax.</span>
-                </h1>
-                
-                <p class="text-xl text-cyan-50 font-medium leading-relaxed opacity-90">
-                    Stay at Home, Stay Safe.
+    <!-- Our Story Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/banner5.jpg' %}" alt="Our Story" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Our Story</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Who We Are</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p>
+                    KiddoVax was created to solve a critical issue in child healthcare: managing vaccination schedules and digital health records seamlessly. Our platform bridges the gap between pediatric healthcare providers and parents.
+                </p>
+                <p>
+                    By digitizing immunizations, we eliminate the reliance on paper charts that can be lost or damaged. We provide families with automatic age-based notifications, clinical schedule tracking, and detailed vaccine educational guides.
+                </p>
+                <p class="font-semibold text-primary">
+                    Our commitment to parents is absolute — providing a secure, transparent, and user-friendly portal for your child's health journey.
                 </p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- About Us Content Section -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-16 animate__animated animate__fadeInUp animate__delay-1s">
-            <div class="relative w-full h-[500px] rounded-[2rem] overflow-hidden shadow-2xl group bento-hover">
-                <div class="absolute inset-0 bg-primary/20 mix-blend-multiply z-10 group-hover:bg-transparent transition-colors duration-500"></div>
-                <img src="{% static 'patients/images/banner5.jpg' %}" alt="About KiddoVax" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+    <!-- Our Mission Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="lg:order-2 relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/banner2.jpg' %}" alt="Our Mission" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="lg:order-1 space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Our Mission</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Mission</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p>
+                    Our mission is to make childhood immunizations simpler and stress-free for families. We empower parents with the right tools, knowledge, and secure record tracking to make informed decisions.
+                </p>
+                <p>
+                    Through platform security and clinical partnerships, we aim to increase awareness about the life-saving benefits of timely vaccines and support healthcare ecosystems globally.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Vision Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/banner3.jpg' %}" alt="Our Vision" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Our Vision</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Vision</h2>
+            <div class="space-y-4 text-text-secondary font-medium text-base leading-relaxed">
+                <p>
+                    We envision a future where digital healthcare is seamlessly accessible to every family. KiddoVax strives to be the gold standard in childhood immunization tracking, providing parent peace of mind.
+                </p>
+                <p>
+                    By integrating smart technologies and automated notifications, we look forward to achieving 100% vaccination compliance and contributing to a safer, healthier childhood globally.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vaccine Safety Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="lg:col-span-7 space-y-8">
+            <div class="space-y-4">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Clinical Safety</span>
+                <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Vaccines Are Safe And Effective</h2>
             </div>
             
             <div class="space-y-6">
-                <h5 class="inline-block px-4 py-1.5 rounded-full bg-cyan-100 text-modern-cyan font-bold tracking-widest text-sm mb-2 shadow-sm uppercase">Who We Are</h5>
-                <h3 class="font-headline font-black text-4xl md:text-5xl text-gray-900 tracking-tight leading-tight">Empowering Care Through <span class="text-primary">Innovation</span></h3>
-                <p class="text-gray-600 text-lg leading-relaxed font-medium">
-                    The KiddoVAX involves creating a user-friendly website with the goal of efficiently managing immunizations for youngsters up to the age of 18. The use of RFID technology for accurate data capture during visits will allow parents to easily plan, monitor, and organize immunization sessions. 
-                </p>
-                <p class="text-gray-600 text-lg leading-relaxed font-medium">
-                    Parents will be able to view their child's immunization record while the system protects the confidentiality and privacy of their personal information. The website will further give clinic locators, educational resources, contacts with medical specialists, and telemedicine services.
-                </p>
-                <div class="pt-4">
-                     <span class="inline-flex items-center gap-2 font-headline font-bold text-modern-cyan border-b-2 border-modern-cyan pb-1">Our initiative seeks to improve child health in general.</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features (How to Protect Yourself) -->
-        <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-cyan-50 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white transition-colors duration-500">
-                        <span class="material-symbols-outlined text-3xl">masks</span>
+                <!-- Card 1 -->
+                <div class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex gap-4 items-start">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-teal-50 text-primary flex-shrink-0 border border-teal-100">
+                        <span class="material-symbols-outlined text-2xl">verified_user</span>
                     </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Wear A Face Mask</h4>
-                    <p class="text-gray-500 font-medium">Safe for wear a face mask</p>
-                </div>
-                <!-- Feature 2 -->
-                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-teal-50 text-teal-600 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-500">
-                        <span class="material-symbols-outlined text-3xl">clean_hands</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Wash Your Hands</h4>
-                    <p class="text-gray-500 font-medium">Regularly wash your hands</p>
-                </div>
-                <!-- Feature 3 -->
-                <div class="group bg-white rounded-[2rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm mb-6 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-500">
-                        <span class="material-symbols-outlined text-3xl">social_distance</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-2xl text-gray-900 mb-2 tracking-tight">Avoid Close Contact</h4>
-                    <p class="text-gray-500 font-medium">To prevent infection</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Why Choose Us Grid -->
-        <section class="bg-white rounded-[3rem] p-12 md:p-20 shadow-xl border border-gray-100 my-20 animate__animated animate__fadeInUp relative overflow-hidden">
-            <!-- Background abstraction -->
-            <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-                <div class="lg:col-span-6 space-y-8">
-                    <h5 class="inline-block px-4 py-1.5 rounded-full bg-teal-100 text-teal-700 font-bold tracking-widest text-sm shadow-sm uppercase">Why Choose Us</h5>
-                    <h3 class="font-headline font-black text-4xl md:text-5xl text-gray-900 tracking-tight leading-tight">Safety brings first aid to the uninjured.</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-                        <div class="space-y-4">
-                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white shadow-lg">
-                                <span class="material-symbols-outlined">vaccines</span>
-                            </div>
-                            <h4 class="font-headline font-bold text-2xl text-gray-900">Vaccination</h4>
-                            <p class="text-gray-500 font-medium">Regularly vaccine to protect your body.</p>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-lg">
-                                <span class="material-symbols-outlined">sentiment_very_satisfied</span>
-                            </div>
-                            <h4 class="font-headline font-bold text-2xl text-gray-900">Happy Patient</h4>
-                            <p class="text-gray-500 font-medium">Patients are very happy to use our services.</p>
-                        </div>
+                    <div>
+                        <h4 class="font-headline font-bold text-lg text-text-main">WHO Recommended</h4>
+                        <p class="text-text-secondary text-sm mt-1 font-medium">All vaccine timelines are designed based on WHO and national health guidelines.</p>
                     </div>
                 </div>
                 
-                <div class="lg:col-span-6 grid grid-cols-2 gap-6">
-                    <div class="mt-12 rounded-[2rem] overflow-hidden shadow-2xl bento-hover">
-                        <img src="{% static 'patients/images/1.jpg' %}" alt="KiddoVax Facility" class="w-full h-full object-cover">
+                <!-- Card 2 -->
+                <div class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex gap-4 items-start">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-teal-50 text-primary flex-shrink-0 border border-teal-100">
+                        <span class="material-symbols-outlined text-2xl">health_and_safety</span>
                     </div>
-                    <div class="rounded-[2rem] overflow-hidden shadow-2xl bento-hover">
-                        <img src="{% static 'patients/images/2.jpg' %}" alt="KiddoVax Staff" class="w-full h-full object-cover">
+                    <div>
+                        <h4 class="font-headline font-bold text-lg text-text-main">Doctor Approved</h4>
+                        <p class="text-text-secondary text-sm mt-1 font-medium">Clinical pediatricians and healthcare networks endorse scheduled immunizations.</p>
                     </div>
                 </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Ultra-Modern Dark Footer (from home.html) -->
-    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
-        <!-- Abstract gradient blob in footer background -->
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
-            <div class="flex flex-col items-center md:items-start gap-6">
-                <!-- Footer Logo -->
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
-                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
+                
+                <!-- Card 3 -->
+                <div class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex gap-4 items-start">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-teal-50 text-primary flex-shrink-0 border border-teal-100">
+                        <span class="material-symbols-outlined text-2xl">science</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-bold text-lg text-text-main">Scientifically Proven</h4>
+                        <p class="text-text-secondary text-sm mt-1 font-medium">Extensive global testing and medical records prove vaccination efficacy and safety.</p>
+                    </div>
                 </div>
-                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
-                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
-                </p>
-            </div>
-            
-            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
-                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
-            </div>
-            
-            <div class="flex gap-4">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">public</span>
-                </button>
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">mail</span>
-                </button>
             </div>
         </div>
         
-        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
-            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
+        <div class="lg:col-span-5 flex flex-col gap-6">
+            <div class="rounded-[2rem] overflow-hidden shadow-md h-[240px]">
+                <img src="{% static 'patients/images/s1.jpg' %}" alt="Vaccine Clinic" class="w-full h-full object-cover">
+            </div>
+            <div class="rounded-[2rem] overflow-hidden shadow-md h-[240px]">
+                <img src="{% static 'patients/images/s3.jpg' %}" alt="Vaccine Protection" class="w-full h-full object-cover">
+            </div>
         </div>
-    </footer>
+    </section>
 
-</body>
-</html>
+    <!-- Trust Grid Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Platform Security</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Why Parents Trust KiddoVax</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Trust 1 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">description</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Digital Records</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Access digitized and verified immunization card copies securely from any device.</p>
+            </div>
+            
+            <!-- Trust 2 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">local_hospital</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Verified Hospitals</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Book slots with accredited clinics and certified medical professionals.</p>
+            </div>
+            
+            <!-- Trust 3 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">event_upcoming</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Appointment Tracking</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Coordinate, schedule, and view vaccine booking statuses transparently.</p>
+            </div>
+            
+            <!-- Trust 4 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">notifications_active</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Smart Reminders</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Receive automated dashboard notifications for vaccine age milestones.</p>
+            </div>
+            
+            <!-- Trust 5 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">shield</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Secure Platform</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Your personal health files are fully protected with standard security guidelines.</p>
+            </div>
+            
+            <!-- Trust 6 -->
+            <div class="group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">psychology</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Child Health Awareness</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Gain clinical awareness from curated educational guidelines.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How To Use Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Step-by-step Guide</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">How To Use KiddoVax</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <!-- Step 1 -->
+            <a href="{% url 'patient:registerpage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">01</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">person_add</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Register Account</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">Create your family portal profile.</p>
+            </a>
+            
+            <!-- Step 2 -->
+            <a href="{% url 'patient:profilepage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">02</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">child_care</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Add Child Profile</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">Input name, DOB, and blood group.</p>
+            </a>
+            
+            <!-- Step 3 -->
+            <a href="{% url 'patient:showdata' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">03</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">vaccines</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Browse Vaccines</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">View descriptions, costs, and details.</p>
+            </a>
+            
+            <!-- Step 4 -->
+            <a href="{% url 'patient:vaccinebooking' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">04</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">event_note</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Book Appointment</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">Choose child, hospital, and date.</p>
+            </a>
+            
+            <!-- Step 5 -->
+            <a href="{% url 'patient:profilepage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">05</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">assignment_turned_in</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Track History</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">View completed and due timelines.</p>
+            </a>
+            
+            <!-- Step 6 -->
+            <a href="{% url 'patient:profilepage' %}" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 decoration-transparent block">
+                <div class="space-y-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center mx-auto text-sm">06</div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-primary border border-teal-100 flex items-center justify-center mx-auto transition-transform duration-300 group-hover:scale-110">
+                        <span class="material-symbols-outlined">alarm_on</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-base text-text-main">Receive Reminders</h4>
+                </div>
+                <p class="text-text-secondary text-xs font-medium leading-relaxed pt-2 border-t border-slate-50">Get alerts for upcoming milestones.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Child Health Awareness Section -->
+    <section class="space-y-12 my-20 animate__animated animate__fadeInUp">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Parent Education</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Child Health Awareness</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Card 1 -->
+            <div class="group bg-white rounded-[2rem] p-10 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">schedule</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Vaccinate On Time</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Adhering to vaccination schedules prevents critical diseases and protects children early.</p>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="group bg-white rounded-[2rem] p-10 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">favorite</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Build Immunity</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Vaccines trigger the child's natural defenses to build safe immunity without contracting illnesses.</p>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="group bg-white rounded-[2rem] p-10 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">spa</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Protect Your Child's Future</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Immunized children have lower risks of complications, ensuring a healthier adult life.</p>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="group bg-white rounded-[2rem] p-10 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-teal-50 text-primary border border-teal-100 mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span class="material-symbols-outlined text-2xl">devices</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-text-main mb-3 tracking-tight">Track Health Digitally</h4>
+                <p class="text-text-secondary text-sm font-medium leading-relaxed">Maintaining digitized medical records ensures you have access to information at all times.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Benefits Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-20 animate__animated animate__fadeInUp">
+        <div class="relative rounded-[2rem] overflow-hidden shadow-md group h-[400px]">
+            <div class="absolute inset-0 bg-[#006565]/10 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
+            <img src="{% static 'patients/images/banner6.jpg' %}" alt="Platform Benefits" class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500">
+        </div>
+        <div class="space-y-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-primary font-bold tracking-widest text-xs uppercase">Advantages</span>
+            <h2 class="font-headline font-black text-3xl md:text-4xl text-text-main tracking-tight">Platform Benefits</h2>
+            <ul class="space-y-4">
+                <li class="flex items-center gap-3 text-text-secondary font-medium">
+                    <span class="w-6 h-6 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-primary text-sm flex-shrink-0">✓</span>
+                    Easy Booking
+                </li>
+                <li class="flex items-center gap-3 text-text-secondary font-medium">
+                    <span class="w-6 h-6 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-primary text-sm flex-shrink-0">✓</span>
+                    Digital Vaccine Records
+                </li>
+                <li class="flex items-center gap-3 text-text-secondary font-medium">
+                    <span class="w-6 h-6 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-primary text-sm flex-shrink-0">✓</span>
+                    Trusted Hospitals
+                </li>
+                <li class="flex items-center gap-3 text-text-secondary font-medium">
+                    <span class="w-6 h-6 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-primary text-sm flex-shrink-0">✓</span>
+                    Parent-Friendly Interface
+                </li>
+                <li class="flex items-center gap-3 text-text-secondary font-medium">
+                    <span class="w-6 h-6 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-primary text-sm flex-shrink-0">✓</span>
+                    Smart Notifications
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="rounded-[2rem] p-12 md:p-16 text-center text-white relative overflow-hidden shadow-lg my-20 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #006565, #06B6D4);">
+        <div class="absolute -right-6 -top-6 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -left-6 -bottom-6 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 max-w-2xl mx-auto space-y-8">
+            <h3 class="font-headline font-black text-3xl md:text-5xl text-white tracking-tight leading-tight">Ready To Protect Your Child?</h3>
+            <p class="text-teal-50 font-medium text-lg leading-relaxed max-w-lg mx-auto">
+                Join thousands of parents who trust KiddoVax to track and coordinate vaccine schedules securely.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                {% if request.session.CName is None %}
+                    <a href="{% url 'patient:registerpage' %}" class="bg-white text-primary font-bold px-8 py-3 rounded-full hover:bg-teal-50 shadow-md hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto decoration-transparent text-center">Register Now</a>
+                    <a href="{% url 'patient:vaccinebooking' %}" class="bg-primary-container/20 text-white border border-white/30 font-bold px-8 py-3 rounded-full hover:bg-white/10 shadow-md hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto decoration-transparent text-center">Book Appointment</a>
+                {% else %}
+                    <a href="{% url 'patient:vaccinebooking' %}" class="bg-white text-primary font-bold px-8 py-3 rounded-full hover:bg-teal-50 shadow-md hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto decoration-transparent text-center">Book Appointment</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -27,18 +27,20 @@ def Home(request):
         
     waiting_count = 0
     today_apps = 0
+    hospital_name = ""
     try:
-        gethId = Receptionisttbl.objects.filter(id=request.session.get('Cid')).values('hospitalid_id').first()
-        if gethId:
-            h_id = gethId['hospitalid_id']
-            waiting_count = Appointmenttbl.objects.filter(hospitalid=h_id, active=0).count()
-            today_apps = Appointmenttbl.objects.filter(hospitalid=h_id, aptdate=datetime.date.today()).count()
+        recep = Receptionisttbl.objects.select_related('hospitalid').get(id=request.session.get('Cid'))
+        hospital_name = recep.hospitalid.title
+        h_id = recep.hospitalid_id
+        waiting_count = Appointmenttbl.objects.filter(hospitalid=h_id, active=0).count()
+        today_apps = Appointmenttbl.objects.filter(hospitalid=h_id, aptdate=datetime.date.today()).count()
     except Exception as e:
         pass
         
     return render(request,'receptionistapp/home.html', {
         'waiting_count': waiting_count,
-        'today_apps': today_apps
+        'today_apps': today_apps,
+        'hospital_name': hospital_name
     })
 
 class ManagePatient(View):

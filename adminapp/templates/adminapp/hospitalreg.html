@@ -18,10 +18,12 @@
         theme: {
           extend: {
             colors: {
-              "admin-primary": "#4f46e5",    /* Indigo 600 */
-              "admin-secondary": "#4338ca",  /* Indigo 700 */
-              "background": "#f8fafc",
-              "on-surface": "#0f172a",       /* Slate 900 */
+              "admin-primary": "#22D3EE",    /* Cyan Accent */
+              "admin-secondary": "#06B6D4",  /* Darker Cyan */
+              "background": "#0F172A",       /* Dark Background */
+              "on-surface": "#F8FAFC",       /* Light Text */
+              "admin-card": "#1E293B",       /* Slate Card */
+              "admin-border": "rgba(255,255,255,0.08)"
             },
             fontFamily: {
               "headline": ["Manrope", "sans-serif"],
@@ -32,36 +34,103 @@
       }
     </script>
     <style>
-      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
+      body { -webkit-font-smoothing: antialiased; background-color: #0F172A; overflow-x: hidden; }
       
       .glass-nav {
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(79, 70, 229, 0.1);
+        border-bottom: 1px solid rgba(34, 211, 238, 0.1);
       }
       
       .glass-card {
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(30, 41, 59, 0.7);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
       
       .mesh-bg {
         background-image: 
-          radial-gradient(at 10% 20%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
-          radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-          radial-gradient(at 50% 50%, rgba(255, 255, 255, 1) 0px, transparent 100%);
+          radial-gradient(at 10% 20%, rgba(34, 211, 238, 0.08) 0px, transparent 50%),
+          radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+          radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
       }
       
       .glass-input {
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(203, 213, 225, 0.6);
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #F8FAFC;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .glass-input:focus {
-        background: #ffffff;
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        background: #1e293b;
+        border-color: #22D3EE;
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Manage Hospitals</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "admin-primary": "#22D3EE",    /* Cyan Accent */
+              "admin-secondary": "#06B6D4",  /* Darker Cyan */
+              "background": "#0F172A",       /* Dark Background */
+              "on-surface": "#F8FAFC",       /* Light Text */
+              "admin-card": "#1E293B",       /* Slate Card */
+              "admin-border": "rgba(255,255,255,0.08)"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"]
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      body { -webkit-font-smoothing: antialiased; background-color: #0F172A; overflow-x: hidden; }
+      
+      .glass-nav {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(34, 211, 238, 0.1);
+      }
+      
+      .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      
+      .mesh-bg {
+        background-image: 
+          radial-gradient(at 10% 20%, rgba(34, 211, 238, 0.08) 0px, transparent 50%),
+          radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+          radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
+      }
+      
+      .glass-input {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #F8FAFC;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .glass-input:focus {
+        background: #1e293b;
+        border-color: #22D3EE;
+        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
       }
     </style>
 </head>
@@ -72,29 +141,29 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <!-- Brand -->
             <a href="{% url 'adminapp:adminhome' %}" class="flex items-center decoration-transparent group">
-                <div class="flex items-center font-headline font-black text-3xl tracking-tighter text-[#006a6a]">
+                <div class="flex items-center font-headline font-black text-3xl tracking-tighter text-[#22D3EE]">
                     Kidd<img src="{% static 'patients/images/logo-icon.png' %}" alt="o" class="h-8 mx-0.5 object-contain">Vax
                 </div>
-                <span class="text-admin-primary/80 font-bold text-lg ml-3 tracking-widest uppercase border-l-2 border-slate-200 pl-3 flex items-center h-8">Admin</span>
+                <span class="text-admin-primary font-bold text-lg ml-3 tracking-widest uppercase border-l-2 border-white/10 pl-3 flex items-center h-8">Admin</span>
             </a>
             
             <!-- Context Links -->
             <nav class="hidden lg:flex items-center gap-6">
-                <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'adminapp:adminhome' %}">Dashboard Hub</a>
+                <a class="font-headline font-bold text-sm text-slate-400 hover:text-admin-primary transition-colors" href="{% url 'adminapp:adminhome' %}">Dashboard Hub</a>
                 <a class="font-headline font-bold text-sm text-admin-primary bg-admin-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'adminapp:addhospitals' %}">Hospitals</a>
-                <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'adminapp:city' %}">Cities</a>
-                <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'adminapp:area' %}">Areas</a>
+                <a class="font-headline font-bold text-sm text-slate-400 hover:text-admin-primary transition-colors" href="{% url 'adminapp:city' %}">Cities</a>
+                <a class="font-headline font-bold text-sm text-slate-400 hover:text-admin-primary transition-colors" href="{% url 'adminapp:area' %}">Areas</a>
             </nav>
 
             <!-- User Status & Logout -->
             <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-indigo-50">
-                    <div class="w-10 h-10 bg-gradient-to-br from-admin-primary to-admin-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-[#1E293B] shadow-sm border border-white/10">
+                    <div class="w-10 h-10 bg-gradient-to-br from-admin-primary to-admin-secondary text-[#0F172A] rounded-full flex items-center justify-center font-bold shadow-inner">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     </div>
-                    <span class="font-headline font-bold text-slate-800">{{ request.session.CName }}</span>
+                    <span class="font-headline font-bold text-slate-200">{{ request.session.CName }}</span>
                 </div>
-                <a href="{% url 'adminapp:logout' %}" title="Logout" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                <a href="{% url 'adminapp:logout' %}" title="Logout" class="w-10 h-10 rounded-full bg-red-950/40 text-red-400 border border-red-900/30 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
                     <svg class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 </a>
             </div>
@@ -104,15 +173,15 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-[1400px] mx-auto px-8 py-10 w-full animate__animated animate__fadeIn">
         
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200/60 pb-6 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-6 mb-8">
             <div>
-                <h1 class="font-headline font-black text-4xl text-slate-800 tracking-tight">Manage Partner Hospitals</h1>
-                <p class="text-slate-500 mt-2 font-medium">Register and overview vaccination centers inside the KiddoVax network.</p>
+                <h1 class="font-headline font-black text-4xl text-white tracking-tight">Manage Partner Hospitals</h1>
+                <p class="text-slate-400 mt-2 font-medium">Register and overview vaccination centers inside the KiddoVax network.</p>
             </div>
         </div>
 
         {% if messages %}
-        <div class="bg-green-50 text-green-700 border border-green-200 rounded-2xl p-4 mb-8 text-sm font-bold flex items-center gap-3 shadow-sm animate__animated animate__headShake">
+        <div class="bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 rounded-2xl p-4 mb-8 text-sm font-bold flex items-center gap-3 shadow-sm animate__animated animate__headShake">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
             <ul class="list-none p-0 m-0">
                 {% for message in messages %}
@@ -126,8 +195,8 @@
             
             <!-- Registration Form Card -->
             <div class="lg:col-span-4">
-                <div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] sticky top-28">
-                    <h2 class="font-headline font-bold text-2xl text-slate-800 mb-6 flex items-center gap-2">
+                <div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.2)] sticky top-28">
+                    <h2 class="font-headline font-bold text-2xl text-white mb-6 flex items-center gap-2">
                         <svg class="w-6 h-6 text-admin-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         Registration Details
                     </h2>
@@ -138,9 +207,9 @@
                         <div class="grid grid-cols-2 gap-4">
                             <!-- City Cascading Dropdown -->
                             <div class="space-y-1 relative">
-                                <label class="block text-sm font-bold text-slate-700 ml-1">{{form.cityId.label}}</label>
+                                <label class="block text-sm font-bold text-slate-300 ml-1">{{form.cityId.label}}</label>
                                 <div class="relative">
-                                    <select id="cityId" name="cityId" size="1" class="glass-input block w-full px-3 py-2.5 rounded-xl text-slate-800 focus:outline-none font-medium text-sm appearance-none" required>
+                                    <select id="cityId" name="cityId" size="1" class="glass-input block w-full px-3 py-2.5 rounded-xl text-slate-200 focus:outline-none font-medium text-sm appearance-none" required>
                                         <option value="">--Select City--</option>
                                         {% for item in cityData %}    
                                         <option value="{{item.id}}" {% if selectedCity and selectedCity.cityName in item.cityName %}Selected{% endif %}>    
@@ -156,9 +225,9 @@
 
                             <!-- Area Cascading Dropdown -->
                             <div class="space-y-1 relative">
-                                <label class="block text-sm font-bold text-slate-700 ml-1">{{form.areaId.label}}</label>
+                                <label class="block text-sm font-bold text-slate-300 ml-1">{{form.areaId.label}}</label>
                                 <div class="relative">
-                                    <select id="areaId" name="areaId" size="1" class="glass-input block w-full px-3 py-2.5 rounded-xl text-slate-800 focus:outline-none font-medium text-sm appearance-none" required>
+                                    <select id="areaId" name="areaId" size="1" class="glass-input block w-full px-3 py-2.5 rounded-xl text-slate-200 focus:outline-none font-medium text-sm appearance-none" required>
                                         <option value="">--Select Area--</option>
                                         {% for item in areaData %}    
                                         <option value="{{item.id}}" {% if selectedArea and selectedArea.areaName in item.areaName %}Selected{% endif %}>    
@@ -175,56 +244,56 @@
 
                         <!-- Title -->
                         <div class="space-y-1">
-                            <label class="block text-sm font-bold text-slate-700 ml-1">{{form.title.label}}</label>
+                            <label class="block text-sm font-bold text-slate-300 ml-1">{{form.title.label}}</label>
                             {{ form.title }}
                         </div>
                         
                         <!-- Dr Name / DCR Name -->
                         <div class="space-y-1">
-                            <label class="block text-sm font-bold text-slate-700 ml-1">{{form.dcrname.label}}</label>
+                            <label class="block text-sm font-bold text-slate-300 ml-1">{{form.dcrname.label}}</label>
                             {{ form.dcrname }}
                         </div>
 
                         <!-- Address -->
                         <div class="space-y-1">
-                            <label class="block text-sm font-bold text-slate-700 ml-1">{{form.address.label}}</label>
+                            <label class="block text-sm font-bold text-slate-300 ml-1">{{form.address.label}}</label>
                             {{ form.address }}
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <!-- Contact Number -->
                             <div class="space-y-1">
-                                <label class="block text-sm font-bold text-slate-700 ml-1">{{form.contactNo.label}}</label>
+                                <label class="block text-sm font-bold text-slate-300 ml-1">{{form.contactNo.label}}</label>
                                 {{ form.contactNo }}
                             </div>
 
                             <!-- Password -->
                             <div class="space-y-1">
-                                <label class="block text-sm font-bold text-slate-700 ml-1">{{form.password.label}}</label>
+                                <label class="block text-sm font-bold text-slate-300 ml-1">{{form.password.label}}</label>
                                 {{ form.password }}
                             </div>
                         </div>
 
                         <!-- Image -->
-                        <div class="space-y-2 pt-2 border-t border-slate-100">
-                            <label class="block text-sm font-bold text-slate-700 ml-1">{{form.img.label}}</label>
+                        <div class="space-y-2 pt-2 border-t border-white/10">
+                            <label class="block text-sm font-bold text-slate-300 ml-1">{{form.img.label}}</label>
                             <div class="flex items-center gap-4">
                                 {% if imgurl %}
-                                    <img src="{{imgurl.HospitalImageUrl}}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200">
+                                    <img src="{{imgurl.HospitalImageUrl}}" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-white/10">
                                 {% else %}
-                                    <div class="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                                    <div class="w-16 h-16 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400">
                                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                     </div>
                                 {% endif %}
-                                <input type="file" name="img" id="img" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-admin-primary hover:file:bg-indigo-100 cursor-pointer"/>
+                                <input type="file" name="img" id="img" class="block w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-950/40 file:text-admin-primary hover:file:bg-cyan-950 cursor-pointer"/>
                             </div>
                         </div>
 
-                        <div class="flex gap-3 pt-4 border-slate-100 mt-2">
-                            <button type="submit" id="btnsubmit" disabled class="flex-1 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-admin-primary hover:bg-admin-secondary disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-300">
+                        <div class="flex gap-3 pt-4 mt-2">
+                            <button type="submit" id="btnsubmit" disabled class="flex-1 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-[#0F172A] bg-admin-primary hover:bg-admin-secondary disabled:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed transition-all duration-300">
                                 Save Entry
                             </button>
-                            <button type="submit" name="btnreset" value="Reset" class="flex-1 py-3 px-4 border border-slate-200 rounded-xl shadow-sm text-sm font-bold text-slate-600 bg-white hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 transition-all duration-300">
+                            <button type="submit" name="btnreset" value="Reset" class="flex-1 py-3 px-4 border border-white/10 rounded-xl shadow-sm text-sm font-bold text-slate-300 bg-[#1E293B] hover:bg-slate-800 transition-all duration-300">
                                 Reset Form
                             </button>
                         </div>
@@ -234,12 +303,12 @@
 
             <!-- Existing Hospitals Table -->
             <div class="lg:col-span-8">
-                <div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] overflow-hidden">
+                <div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.2)] overflow-hidden">
                     {% if hospitalData %}
                     <div class="overflow-x-auto pb-4">
                         <table class="w-full text-left whitespace-nowrap">
                             <thead>
-                                <tr class="border-b border-slate-200">
+                                <tr class="border-b border-white/10">
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Hospital</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Representative</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">City</th>
@@ -247,25 +316,25 @@
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100/60">
+                            <tbody class="divide-y divide-white/5">
                                 {% for item in hospitalData %}
-                                <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <tr class="hover:bg-slate-800/40 transition-colors group">
                                     <td class="py-4 px-4">
                                         <div class="flex items-center gap-3">
-                                            <img src="../../../static/{{item.img}}" class="w-10 h-10 rounded-lg object-cover bg-slate-100 border border-slate-200"/>
-                                            <span class="font-bold text-sm text-slate-800">{{ item.title }}</span>
+                                            <img src="../../../static/{{item.img}}" class="w-10 h-10 rounded-lg object-cover bg-slate-800 border border-white/10"/>
+                                            <span class="font-bold text-sm text-slate-200">{{ item.title }}</span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-4 font-medium text-sm text-slate-600">{{ item.dcrname }}</td>
-                                    <td class="py-4 px-4 font-medium text-sm text-slate-600">
-                                        <span class="bg-indigo-50 text-admin-primary px-2 py-1 rounded-md text-xs font-bold uppercase">{{ item.cityId.cityName }}</span>
+                                    <td class="py-4 px-4 font-medium text-sm text-slate-300">{{ item.dcrname }}</td>
+                                    <td class="py-4 px-4 font-medium text-sm text-slate-300">
+                                        <span class="bg-cyan-950/40 text-admin-primary px-2 py-1 rounded-md text-xs font-bold uppercase">{{ item.cityId.cityName }}</span>
                                     </td>
-                                    <td class="py-4 px-4 text-sm font-medium text-slate-500">{{ item.contactNo }}</td>
+                                    <td class="py-4 px-4 text-sm font-medium text-slate-400">{{ item.contactNo }}</td>
                                     <td class="py-4 px-4 text-right space-x-2">
-                                        <a href="{% url 'adminapp:edithospitals' item.id %}" class="inline-flex items-center justify-center p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors" title="Edit">
+                                        <a href="{% url 'adminapp:edithospitals' item.id %}" class="inline-flex items-center justify-center p-2 rounded-lg bg-cyan-950/40 text-admin-primary hover:bg-admin-primary hover:text-[#0F172A] transition-colors" title="Edit">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                         </a>
-                                        <a href="{% url 'adminapp:deletehospitals' item.id %}" class="inline-flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors" title="Delete">
+                                        <a href="{% url 'adminapp:deletehospitals' item.id %}" class="inline-flex items-center justify-center p-2 rounded-lg bg-red-950/40 text-red-400 hover:bg-red-500 hover:text-white transition-colors" title="Delete">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </a>
                                     </td>
@@ -276,11 +345,11 @@
                     </div>
                     {% else %}
                     <div class="text-center py-12">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                        <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                            <svg class="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         </div>
-                        <h3 class="font-headline font-bold text-slate-800 text-xl">No Hospitals Registered</h3>
-                        <p class="text-slate-500 text-sm mt-2 max-w-sm mx-auto">Use the form on the left to provision core hospital accounts into the platform.</p>
+                        <h3 class="font-headline font-bold text-slate-300 text-xl">No Hospitals Registered</h3>
+                        <p class="text-slate-400 text-sm mt-2 max-w-sm mx-auto">Use the form on the left to provision core hospital accounts into the platform.</p>
                     </div>
                     {% endif %}
                 </div>
@@ -293,7 +362,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const inputs = document.querySelectorAll('input:not([type="hidden"]):not([type="file"]), textarea');
             inputs.forEach(input => {
-                input.classList.add('glass-input', 'block', 'w-full', 'px-3', 'py-2.5', 'rounded-xl', 'text-slate-800', 'placeholder-slate-400', 'focus:outline-none', 'font-medium', 'text-sm');
+                input.classList.add('glass-input', 'block', 'w-full', 'px-3', 'py-2.5', 'rounded-xl', 'text-slate-200', 'placeholder-slate-400', 'focus:outline-none', 'font-medium', 'text-sm');
                 if(input.name !== 'password') {
                     input.setAttribute('onkeypress', 'return isNumberKey(event)');
                 }

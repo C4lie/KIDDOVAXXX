@@ -20,8 +20,13 @@
         theme: {
           extend: {
             colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
+              "primary": "#0F4C81",     /* Clinical Blue Primary */
+              "secondary": "#3BAFDA",   /* Clinical Blue Secondary */
+              "background": "#F6F9FC",  /* Clinical Background */
+              "on-surface": "#1E293B",  /* Slate 800 */
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
             },
             fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
           }
@@ -30,10 +35,10 @@
     </script>
     <style>
       .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
       .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
     </style>
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
@@ -42,7 +47,7 @@
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
                     Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
                 </span>
             </a>
@@ -57,10 +62,10 @@
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner">
                         <span class="material-symbols-outlined">local_hospital</span>
                     </div>
-                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                    <span class="font-headline font-bold text-gray-800">{{ hospital.title }}</span>
                 </div>
                 <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
                     <span class="material-symbols-outlined text-xl">logout</span>
@@ -76,7 +81,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Hospital Insights</h1>
-                <p class="text-gray-500 font-medium mt-1 text-lg">Metrics for <strong class="text-primary">{{ current_month_name }}</strong></p>
+                <p class="text-gray-500 font-medium mt-1 text-lg">This is <strong class="text-primary">{{ hospital.title }}</strong> — Metrics for <strong class="text-primary">{{ current_month_name }}</strong></p>
             </div>
         </div>
 
@@ -105,10 +110,10 @@
             <!-- Metric 2 -->
             <div class="glass-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-transform duration-300">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-14 h-14 bg-teal-50 text-primary rounded-2xl flex items-center justify-center shadow-inner">
+                    <div class="w-14 h-14 bg-blue-50 text-primary rounded-2xl flex items-center justify-center shadow-inner">
                         <span class="material-symbols-outlined text-3xl">vaccines</span>
                     </div>
-                    <span class="text-xs font-bold text-primary uppercase tracking-widest bg-teal-100 px-3 py-1 rounded-full">{{ current_month_name }}</span>
+                    <span class="text-xs font-bold text-primary uppercase tracking-widest bg-blue-100 px-3 py-1 rounded-full">{{ current_month_name }}</span>
                 </div>
                 <h3 class="font-headline font-black text-5xl text-gray-800 tracking-tighter">{{ total_vaccines_this_month }}</h3>
                 <p class="text-gray-500 font-medium mt-2">Vaccines Given</p>
@@ -127,6 +132,22 @@
                 <p class="text-gray-500 font-medium mt-2 relative z-10">Children Vaccinated</p>
             </div>
         </div>
+
+        <!-- Stock Alerts -->
+        {% if low_stock_count > 0 %}
+        <div class="bg-red-50 border border-red-200 p-6 rounded-3xl flex items-center justify-between gap-4 shadow-sm animate__animated animate__fadeIn">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-500 flex items-center justify-center shadow-inner">
+                    <span class="material-symbols-outlined text-2xl">warning</span>
+                </div>
+                <div>
+                    <h4 class="font-headline font-bold text-lg text-red-800">Critical: Low Vaccine Inventory Detected</h4>
+                    <p class="text-sm text-red-600">There are currently {{ low_stock_count }} vaccines that have dropped below their minimum stock thresholds.</p>
+                </div>
+            </div>
+            <a href="{% url 'hospitalapp:vaccineregister' %}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all shadow-md decoration-transparent">Restock Vaccines</a>
+        </div>
+        {% endif %}
 
         <!-- Lower Section (Chart + Profile) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
@@ -192,12 +213,12 @@
                         label: '{{ current_month_name }} Metrics',
                         data: [vaccinesGiven, childrenVaccinated],
                         backgroundColor: [
-                            'rgba(0, 101, 101, 0.8)', // Primary Teal
-                            'rgba(249, 115, 22, 0.8)' // Orange 500
+                            'rgba(15, 76, 129, 0.8)', // Primary Clinical Blue
+                            'rgba(59, 175, 218, 0.8)' // Secondary
                         ],
                         borderColor: [
-                            'rgb(0, 101, 101)',
-                            'rgb(234, 88, 12)'
+                            'rgb(15, 76, 129)',
+                            'rgb(59, 175, 218)'
                         ],
                         borderWidth: 0,
                         borderRadius: 8,

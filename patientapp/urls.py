@@ -22,4 +22,8 @@ urlpatterns = [
     path('notifications/', views.get_notifications, name='get_notifications'),
     path('notifications/read/', views.mark_notifications_read, name='mark_notifications_read'),
     path('sms-response/', views.sms_response, name='sms_response'),
+    path('download-card/<int:child_id>/', views.download_vaccine_card, name='download_vaccine_card'),
+    path('upload-card/', views.upload_vaccine_card_ocr, name='upload_vaccine_card_ocr'),
+    path('confirm-ocr/', views.confirm_ocr_results, name='confirm_ocr_results'),
+    path('set-lang/', views.set_language, name='set_language'),
 ]

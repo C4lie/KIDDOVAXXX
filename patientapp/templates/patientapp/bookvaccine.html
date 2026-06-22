@@ -1,615 +1,1082 @@
+{% extends 'patientapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | Vaccine Booking</title>
-    
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020",
-              "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6", "modern-indigo": "#6366f1"
-            },
-            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
-            animation: { 'float': 'float 6s ease-in-out infinite', 'blob': 'blob 7s infinite', 'gradient-bg': 'gradientBG 15s ease infinite', 'pulse-glow': 'pulseGlow 3s infinite' },
-            keyframes: {
-              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-              pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' }, '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' } },
-              blob: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }, '100%': { transform: 'translate(0px, 0px) scale(1)' } },
-              gradientBG: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
-      .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); }
-      .hero-gradient { background: linear-gradient(-45deg, rgba(0, 101, 101, 0.92), rgba(14, 165, 233, 0.92), rgba(14, 165, 233, 0.92), rgba(0, 180, 216, 0.92)), url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop'); background-size: 400% 400%, cover; background-position: 0% 50%, center; position: relative; }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
-      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
-      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
-      
-      /* Select2 & Flatpickr Custom Tailwind Theme */
-      .select2-container .select2-selection--single { height: 3.25rem; border-radius: 0.75rem; border-color: rgba(20, 184, 166, 0.4); background-color: #f8fafc; padding: 0.6rem 0.5rem; }
-      .select2-container--default .select2-selection--single .select2-selection__arrow { height: 3.25rem; right: 10px; }
-      .select2-container--default .select2-selection--single .select2-selection__rendered { color: #374151; font-weight: 500; font-family: 'Inter', sans-serif; }
-      .select2-dropdown { border-radius: 1rem; border: 1px solid rgba(6, 182, 212, 0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; padding-top: 0.25rem; padding-bottom: 0.25rem; }
-      .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable { background-color: #06b6d4; color: white; }
-      .flatpickr-calendar { border-radius: 1.5rem !important; border: none !important; box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important; padding: 10px !important; font-family: 'Inter', sans-serif !important; }
-      .flatpickr-day.selected { background: #06b6d4 !important; border-color: #06b6d4 !important; }
-    </style>
-</head>
-<body class="text-on-surface font-body mesh-bg">
 
-    <!-- Standalone Tailwind Navbar -->
-    <header class="fixed top-0 w-full z-50 glass-nav shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
-            <!-- Brand Logo with original FontAwesome Icon -->
-            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
-                    Kidd<i class="fab fa-keycdn transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax
+{% block title %}Book Appointment{% endblock %}
+
+{% block extra_head %}
+<!-- Select2 CSS for styled selector dropdowns -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  /* Select2 Custom Premium Styling */
+  .select2-container .select2-selection--single {
+    height: 3.25rem;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    background-color: #F8FAFC;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3rem;
+    right: 12px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #0F172A;
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    padding-left: 0;
+  }
+  .select2-dropdown {
+    border-radius: 16px;
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    padding: 4px;
+    background-color: #FFFFFF;
+  }
+  .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: linear-gradient(135deg, #006565 0%, #06B6D4 100%) !important;
+    color: #FFFFFF !important;
+    border-radius: 8px;
+  }
+  .select2-container--default .select2-results__option--selectable {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+  }
+  
+  /* Custom scrollbar for appointments containers */
+  #upcoming-appointments-container::-webkit-scrollbar,
+  #history-appointments-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  #upcoming-appointments-container::-webkit-scrollbar-track,
+  #history-appointments-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #upcoming-appointments-container::-webkit-scrollbar-thumb,
+  #history-appointments-container::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 99px;
+  }
+  #upcoming-appointments-container::-webkit-scrollbar-thumb:hover,
+  #history-appointments-container::-webkit-scrollbar-thumb:hover {
+    background: #CBD5E1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-12">
+    <!-- Django Backend Status Messages -->
+    {% if messages %}
+    <div class="space-y-4 animate__animated animate__fadeIn mb-8">
+        {% for message in messages %}
+        <div class="p-4 rounded-2xl border {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3 text-sm font-bold">
+                <span class="material-symbols-outlined text-lg">
+                    {% if message.tags == 'error' %}cancel{% else %}check_circle{% endif %}
                 </span>
-            </a>
-            
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-10">
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:aboutpage' %}">About</a>
-                <a class="font-headline font-medium text-lg text-gray-500 hover:text-primary transition-all duration-300 decoration-transparent" href="{% url 'patient:contactpage' %}">Contact</a>
-            </nav>
-
-            <!-- Authentication / Profile Dropdown -->
-            <div class="flex items-center gap-4">
-                {% if request.session.CName is None %} 
-                    <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-8 py-2.5 rounded-full font-headline font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">Login</a>
-                {% else %}
-                    <!-- Notification Bell -->
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4 mr-2">
-                        <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">notifications</span>
-                            <!-- Dynamic Unread Badge -->
-                            <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center hidden border-2 border-white transform translate-x-1 -translate-y-1">0</span>
-                        </button>
-                        
-                        <!-- Notification Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden z-50 overflow-hidden transform origin-top-right">
-                            <div class="p-4 border-b border-gray-100/80 flex items-center justify-between bg-teal-50/30">
-                                <h4 class="font-headline font-bold text-gray-800 text-sm">Notifications</h4>
-                                <button id="mark-read-btn" class="text-[10px] font-bold text-modern-cyan hover:text-primary uppercase tracking-widest hidden">Mark Read</button>
-                            </div>
-                            <div id="notif-list" class="max-h-[300px] overflow-y-auto">
-                                <div class="p-6 text-center text-gray-400 font-medium text-xs">Loading alerts...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
-                        <button class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-                            <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
-                                <span class="material-symbols-outlined">person</span>
-                            </div>
-                            <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
-                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu absolute right-0 top-full -mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 hidden p-3 z-50">
-                            <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-primary bg-teal-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> My Appointments
-                            </a>
-                            <a href="{% url 'patient:showdata' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">vaccines</span></div> Vaccine List
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:profilepage' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-modern-blue rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-modern-blue text-sm">person_edit</span></div> My Profile
-                            </a>
-                            <a href="{% url 'patient:changeauth' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-500 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-orange-500 text-sm">vpn_key</span></div> Change Password
-                            </a>
-                            <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                            <a href="{% url 'patient:patientlogout' %}" class="flex items-center gap-4 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors decoration-transparent group/item">
-                                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-red-500 text-sm">logout</span></div> Logout
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
+                {{ message }}
             </div>
+            <button class="text-xs font-black uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity" onclick="this.parentElement.remove()">Dismiss</button>
         </div>
-    </header>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-    <!-- Main Content -->
-    <main class="pt-[140px] pb-20 max-w-7xl mx-auto px-8 space-y-16">
+    <section class="relative overflow-hidden rounded-[2.5rem] p-16 md:p-24 text-white shadow-xl animate__animated animate__fadeIn" style="background-image: linear-gradient(rgba(0, 101, 101, 0.8), rgba(0, 101, 101, 0.8)), url('{% static 'patients/images/hero_healthcare.png' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-3xl space-y-6 text-center mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-200 font-bold tracking-widest text-xs uppercase">Scheduling</span>
+            <h1 class="font-headline font-black text-4xl md:text-6xl tracking-tight text-white leading-tight">Vaccinations</h1>
+            <p class="text-lg md:text-xl text-teal-50 font-medium leading-relaxed opacity-95">
+                Manage your child's appointments and vaccination journey.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 1: Appointment Booking (Full Width) -->
+    <section id="booking-form-card" class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col gap-6 animate__animated animate__fadeIn">
+        <h3 class="font-headline font-bold text-lg text-slate-800 flex items-center gap-3 border-b border-slate-100 pb-4">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-full p-2">edit_calendar</span> Book Appointment
+        </h3>
         
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden rounded-[2.5rem] hero-gradient animate-gradient-bg p-12 md:p-24 text-white shadow-2xl animate__animated animate__zoomIn">
-            <div class="relative z-10 max-w-3xl space-y-8 text-center mx-auto">
-                <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4 justify-center">
-                    <span class="flex h-3 w-3 relative">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-                    </span>
-                    <span class="text-sm font-bold tracking-wider uppercase">Prevent the Spread</span>
-                </div>
-                
-                <h1 class="font-headline font-black text-6xl md:text-7xl leading-[1.05] tracking-tighter text-white">
-                    Vaccine <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white drop-shadow-sm">Booking.</span>
-                </h1>
-                
-                <p class="text-xl text-cyan-50 font-medium leading-relaxed opacity-90">
-                    Schedule and manage securely. Stay at home, stay safe.
-                </p>
-            </div>
-        </section>
-
-        <!-- Booking Interface -->
-        <div class="flex flex-col lg:flex-row gap-8">
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="childname" id="childname">
             
-            <!-- Booking Form Column (Left) -->
-            <div class="w-full lg:w-[35%] space-y-8 animate__animated animate__fadeInLeft animate__delay-1s lg:sticky lg:top-28 lg:self-start">
-                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-50 rounded-full blur-2xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
-                    
-                    <h3 class="font-headline font-bold text-2xl text-gray-900 mb-6 flex items-center gap-3 relative z-10">
-                        <span class="material-symbols-outlined text-modern-cyan">edit_calendar</span>
-                        New Appointment
-                    </h3>
-                    
-                    {% for message in messages %}
-                    <div class="relative z-10 bg-green-50 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-3 border border-green-200">
-                        <span class="material-symbols-outlined text-green-500">check_circle</span>
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-
-                    <form method="POST" class="space-y-5 relative z-10">
-                        {% csrf_token %}
-                        <!-- Child Name -->
-                        <div class="space-y-2">
-                            <label for="child_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Select Child</label>
-                            {% if children %}
-                            <div class="relative">
-                                <select id="child_select" name="child_id" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
-                                    <option value="">-- Choose Registered Child --</option>
-                                    {% for child in children %}
-                                    <option value="{{ child.id }}" data-childname="{{ child.childname }}">{{ child.childname }} {% if child.age > 0 %}({{ child.age }} yr){% endif %}</option>
-                                    {% endfor %}
-                                </select>
-                                {# Hidden input keeps childname for backward-compat with Appointmenttbl.childname #}
-                                <input type="hidden" id="childname" name="childname" value="">
-                            </div>
-                            </div>
-                            <div class="mt-2 text-right">
-                                <a href="{% url 'patient:profilepage' %}" class="inline-flex items-center gap-1 text-[10px] font-bold text-modern-cyan hover:text-primary transition-colors uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-[12px]">person_add</span> Add Another Child
-                                </a>
-                            </div>
-                            <!-- ⚠️ Missed Vaccines Alert Panel -->
-                            <div id="booking-missed-alert" class="hidden mt-3 rounded-xl border p-4 shadow-sm transition-all mb-2"></div>
-                            {% else %}
-                            <div class="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-700 text-sm font-medium flex items-center justify-between shadow-sm">
-                                <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined text-orange-500">warning</span>
-                                    <span>No children registered.</span>
-                                </div>
-                                <a href="{% url 'patient:profilepage' %}" class="px-4 py-2 bg-white rounded-lg shadow-sm text-sm font-bold text-orange-600 hover:bg-orange-600 hover:text-white transition-colors border border-orange-200">Add Child</a>
-                            </div>
-                            <select id="child_select" name="child_id" required class="hidden"><option value=""></option></select>
-                            <input type="hidden" id="childname" name="childname" value="">
-                            {% endif %}
-                        </div>
-                        <!-- Hospital -->
-                        <div class="space-y-2">
-                            <label for="hospitalid" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Hospital Clinic</label>
-                            <div class="relative">
-                                <select id="hospitalid" name="hospitalid" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
-                                    <option value="">-- Select Hospital --</option>
-                                    {% for item in hospitalData %}    
-                                    <option value="{{item.id}}">{{item.title}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Vaccine -->
-                        <div class="space-y-2">
-                            <label for="vaccineid" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Vaccine</label>
-
-                            <!-- Smart Recommendation Banner -->
-                            <div id="recommendation-container" class="hidden mb-4">
-                                <h4 class="font-headline font-bold text-xs uppercase tracking-widest text-gray-500 mb-2 pl-1">Recommended Vaccines</h4>
-                                
-                                <div class="bg-slate-50 border border-teal-100/60 rounded-xl p-4 shadow-sm min-h-[80px] flex flex-col justify-center">
-                                    <!-- Loading State -->
-                                    <div id="rec-loading" class="flex justify-center items-center gap-2 text-primary font-bold text-sm hidden">
-                                        <span class="material-symbols-outlined animate-spin text-modern-cyan">sync</span> Fetching recommendations...
-                                    </div>
-                                    
-                                    <!-- Empty State -->
-                                    <div id="rec-empty" class="flex justify-center items-center gap-2 text-gray-400 font-bold text-[13px] hidden">
-                                        <span class="material-symbols-outlined text-lg">check_circle</span> No vaccines due at this time.
-                                    </div>
-                                    
-                                    <!-- Cards Container -->
-                                    <div id="recommendation-cards" class="w-full grid grid-cols-1 gap-3 hidden">
-                                        <!-- UI cards injected by JS -->
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <select id="vaccineid" name="vaccineid" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-pointer">
-                                    <option value="">-- Select Vaccine --</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Date -->
-                        <div class="space-y-2">
-                            <label for="aptdate" class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Appointment Date</label>
-                            <!-- Notice the ID here is strictly "aptdate" which hooks directly into the JS constraint script -->
-                            <input type="date" id="aptdate" name="aptdate" required class="w-full bg-slate-50 border border-teal-100/60 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-modern-cyan/50 focus:border-modern-cyan focus:bg-white transition-all shadow-sm cursor-text uppercase tracking-widest font-mono text-sm">
-                        </div>
-
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-modern-cyan text-white py-4 rounded-[1rem] font-bold font-headline tracking-wide hover:shadow-[0_10px_20px_rgba(6,182,212,0.3)] hover:-translate-y-1 transition-all flex justify-center items-center gap-2 group">
-                                Confirm Booking <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                            </button>
-                        </div>
-                    </form>
-            </div>
-
-            <!-- Booking History Column (Right) -->
-            <div class="w-full lg:w-[65%] animate__animated animate__fadeInRight animate__delay-1s">
-                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 overflow-hidden">
-                    <h3 class="font-headline font-bold text-2xl text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="material-symbols-outlined text-modern-blue">history</span>
-                        Booking History
-                    </h3>
-
-                    <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-                        <table class="w-full text-left border-collapse whitespace-nowrap">
-                            <thead>
-                                <tr class="bg-gray-50 border-b border-gray-100">
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider"># ID</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Date</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Child Name</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Hospital</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider">Vaccine</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Status</th>
-                                    <th class="py-4 px-5 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 bg-white">
-                                {% for bookingitem in bindData %}
-                                <tr class="hover:bg-cyan-50/20 transition-colors group/row">
-                                    <td class="py-4 px-5 text-sm font-bold text-cyan-200 group-hover/row:text-cyan-400 transition-colors">#{{bookingitem.id}}</td>
-                                    <td class="py-4 px-5 font-medium text-gray-800">{{bookingitem.aptdate|date:"d M Y"}}</td>
-                                    <td class="py-4 px-5 font-bold text-primary">{{bookingitem.childname}}</td>
-                                    <td class="py-4 px-5 text-gray-500 text-sm font-medium">{{bookingitem.hospitalid.title}}</td>
-                                    <td class="py-4 px-5 text-gray-500 text-sm font-medium">{{bookingitem.vaccineid.vaccineName}}</td>
-                                    
-                                    <td class="py-4 px-5 text-center">
-                                        {% if bookingitem.active == 0 %}
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-amber-100 text-amber-700 ring-1 ring-amber-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending</span>
-                                        {% elif bookingitem.active == 1 %} 
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-blue-100 text-blue-700 ring-1 ring-blue-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Waiting</span>
-                                        {% elif bookingitem.active == 2 %} 
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Success</span>
-                                        {% endif %}
-                                    </td>
-                                    
-                                    <td class="py-4 px-5 text-center">
-                                        {% if bookingitem.active == 0 %}
-                                            <a href="{% url 'patient:deleteappointment' bookingitem.id %}" class="inline-flex items-center justify-center p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white hover:shadow-lg hover:-translate-y-0.5 transition-all" title="Cancel Appointment">
-                                                <span class="material-symbols-outlined text-sm">close</span>
-                                            </a>
-                                        {% else %}
-                                            <span class="inline-flex p-2 rounded-xl bg-gray-50 text-gray-300" title="No action available">
-                                                <span class="material-symbols-outlined text-sm">remove</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7" class="py-16 text-center text-gray-400 font-medium bg-gray-50/50">
-                                        <div class="flex flex-col items-center justify-center gap-3">
-                                            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
-                                                <span class="material-symbols-outlined text-3xl">inbox</span>
-                                            </div>
-                                            <span>No upcoming appointments found.</span>
-                                        </div>
-                                    </td>
-                                </tr>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Left Column: Booking Credentials (lg:col-span-7) -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Child Profile Select -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Child Profile</label>
+                            <select id="child_select" name="child_id" required>
+                                <option value="">-- Choose child --</option>
+                                {% for child in children %}
+                                <option value="{{ child.id }}" 
+                                        data-childname="{{ child.childname }}"
+                                        data-completed="{{ child.vaccination_records.count }}">
+                                    {{ child.childname }}
+                                </option>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                            </select>
+                        </div>
+
+                        <!-- Hospital Center Select -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Medical Center</label>
+                            <select id="hospitalid" name="hospitalid" required>
+                                <option value="">-- Choose hospital --</option>
+                                {% for item in hospitalData %}    
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Missed vaccine dynamic alerts -->
+                    <div id="booking-missed-alert" class="hidden"></div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Vaccines Dropdown (Cascaded via AJAX) -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Vaccine Dose</label>
+                            <select id="vaccineid" name="vaccineid" required>
+                                <option value="">-- Select hospital first --</option>
+                            </select>
+                        </div>
+
+                        <!-- Date Picker -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Appointment Date</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none">calendar_today</span>
+                                <input type="text" id="aptdate" name="aptdate" required 
+                                       class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm"
+                                       placeholder="Select scheduling date">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-start pt-4">
+                        <button type="submit" class="w-full sm:w-auto sm:px-12 btn-primary-custom flex items-center justify-center gap-2 py-4 rounded-xl font-bold font-headline tracking-wide shadow-md hover:shadow-xl transition-all">
+                            Schedule Appointment <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Smart Suggestions (lg:col-span-5) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <!-- Recommendation Placeholder Card (shown when no recommendations are active) -->
+                    <div id="recommendation-placeholder" class="space-y-3 bg-slate-50 border border-slate-200/60 p-6 rounded-2xl flex flex-col items-center justify-center text-center min-h-[220px] transition-all">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
+                            <span class="material-symbols-outlined text-2xl font-bold text-slate-400">tips_and_updates</span>
+                        </div>
+                        <h5 class="text-xs font-bold text-slate-700">Smart Suggestions</h5>
+                        <p class="text-[10px] text-slate-400 font-semibold leading-normal max-w-[220px]">Select a child profile and medical center to load recommended vaccine doses instantly.</p>
+                    </div>
+
+                    <!-- Smart Recommendations Card Container -->
+                    <div id="recommendation-container" class="hidden space-y-3 bg-teal-50/20 border border-teal-100/50 p-4 rounded-2xl animate__animated animate__fadeIn">
+                        <h4 class="font-headline font-bold text-xs text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                            <span class="material-symbols-outlined text-sm font-bold animate-pulse">tips_and_updates</span> Smart Suggestions
+                        </h4>
+                        <div id="rec-loading" class="text-xs text-slate-400 font-semibold p-4 text-center">Identifying target doses...</div>
+                        <div id="rec-empty" class="hidden text-xs text-slate-500 font-semibold p-4 text-center bg-slate-50 border border-slate-100 rounded-xl">All recommended vaccinations are registered!</div>
+                        <div id="recommendation-cards" class="hidden grid grid-cols-1 gap-2.5 max-h-[320px] overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- Section 2: Appointment Timeline (Full Width) -->
+    <section class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 animate__animated animate__fadeInUp">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+            <h3 class="font-headline font-bold text-lg text-slate-800 flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-2xl font-bold">timeline</span> Appointment Timeline
+            </h3>
+        </div>
+        
+        <div class="space-y-8">
+            <!-- Upcoming Appointments Block -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-50 pb-2">
+                    <h4 class="font-headline font-bold text-sm text-slate-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 text-lg">calendar_month</span> Upcoming Appointments
+                    </h4>
+                    <div class="badge-custom bg-blue-50 text-blue-600 border border-blue-200 font-bold" id="upcoming-badge">
+                        0 Scheduled
+                    </div>
+                </div>
+                
+                <div id="upcoming-appointments-container" class="max-h-[400px] overflow-y-auto pr-2 space-y-4">
+                    {% if bindData %}
+                        {% for apt in bindData %}
+                            {% if apt.active == 0 or apt.active == 1 %}
+                                <div class="apt-card bg-slate-50 hover:bg-white rounded-2xl border border-slate-100 hover:border-slate-200 p-5 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4" 
+                                     data-child-id="{{ apt.child_id|default:'' }}"
+                                     data-status="{{ apt.active }}"
+                                     data-date="{{ apt.aptdate|date:'Y-m-d' }}"
+                                     data-vaccine="{{ apt.vaccineid.vaccineName }}"
+                                     data-hospital="{{ apt.hospitalid.title }}"
+                                     data-id="{{ apt.id }}">
+                                    <div class="flex gap-4 items-start">
+                                        <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm flex-shrink-0 mt-0.5">
+                                            <span class="material-symbols-outlined text-[22px]">calendar_month</span>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-headline font-bold text-base text-slate-900 leading-tight">
+                                                {{ apt.vaccineid.vaccineName }}
+                                            </h4>
+                                            <p class="text-xs font-semibold text-slate-500">Child Profile: <span class="text-slate-800 font-bold">{{ apt.childname }}</span></p>
+                                            <p class="text-[11px] text-slate-400 font-medium">{{ apt.hospitalid.title }} · Scheduled: {{ apt.aptdate|date:"d M Y" }}</p>
+                                            <p class="text-[10px] font-semibold text-slate-400">Clinic Hours: 09:00 AM - 05:00 PM</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between md:justify-end gap-4 md:border-l border-slate-150 md:pl-6">
+                                        <div class="flex flex-col gap-2 items-start md:items-end">
+                                            {% if apt.active == 0 %}
+                                                <span class="badge-custom bg-amber-50 text-amber-600 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Pending</span>
+                                            {% elif apt.active == 1 %}
+                                                <span class="badge-custom bg-blue-50 text-blue-600 border border-blue-200"><span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> Waiting</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex flex-col gap-1.5">
+                                            <button onclick="openDetailModal('{{ apt.childname }}', '{{ apt.vaccineid.vaccineName }}', '{{ apt.hospitalid.title }}', '{{ apt.aptdate|date:"d M Y" }}', '{{ apt.active }}')" 
+                                                    class="text-primary hover:text-primary-hover font-bold text-[10px] tracking-wider uppercase bg-white hover:bg-teal-50 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200">
+                                                View Details
+                                            </button>
+                                            {% if apt.active == 0 %}
+                                                <a href="{% url 'patient:deleteappointment' apt.id %}" 
+                                                   class="text-red-400 hover:text-red-650 font-bold text-[10px] tracking-wider uppercase bg-white hover:bg-red-50 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200 decoration-none text-center w-full"
+                                                   onclick="return confirm('Confirm cancellation of appointment on {{ apt.aptdate|date:"d M Y" }} for {{ apt.childname }}?');">
+                                                    Cancel
+                                                </a>
+                                            {% else %}
+                                                <span class="text-slate-350 text-[10px] font-bold uppercase tracking-wider bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 text-center w-full">Closed</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- Empty states for upcoming list -->
+                    <div id="upcoming-empty-state" class="hidden p-12 text-center border-2 border-dashed border-slate-150 rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-350 mb-2">event_busy</span>
+                        <h4 class="text-base font-headline font-bold text-slate-800 mb-1">No Upcoming Appointments</h4>
+                        <p class="text-slate-400 text-xs font-semibold">Select child profile above to schedule pediatric clinical visits.</p>
+                        <button class="btn-primary-custom mt-4 text-xs py-2 px-4 h-auto rounded-xl flex items-center gap-1.5" onclick="scrollToBookingForm()">
+                            Schedule First Appointment
+                        </button>
                     </div>
                 </div>
             </div>
             
-        </div>
-    </main>
-
-    <!-- Ultra-Modern Dark Footer (from home.html) -->
-    <footer class="w-full rounded-t-[3rem] mt-20 relative overflow-hidden bg-slate-900 text-slate-300">
-        <!-- Abstract gradient blob in footer background -->
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-modern-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-12 py-20 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10 border-b border-slate-800">
-            <div class="flex flex-col items-center md:items-start gap-6">
-                <!-- Footer Logo -->
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-cyan-400 text-4xl">health_and_safety</span>
-                    <span class="font-headline font-black text-white text-3xl tracking-tight italic">KiddoVax<span class="text-cyan-400">.</span></span>
+            <!-- Previous Appointments Block -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-50 pb-2">
+                    <h4 class="font-headline font-bold text-sm text-slate-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-slate-500 text-lg">history</span> Previous Appointments
+                    </h4>
+                    <div class="badge-custom bg-slate-50 text-slate-500 border border-slate-200 font-bold" id="history-badge">
+                        0 Bookings
+                    </div>
                 </div>
-                <p class="font-body text-sm font-medium tracking-wide text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
-                    Pioneering the future of pediatric health tracking. Safe, secure, and built for modern families.
-                </p>
-            </div>
-            
-            <div class="flex flex-wrap justify-center gap-x-10 gap-y-4">
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Privacy Policy</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Terms of Service</a>
-                <a class="font-body text-sm font-semibold tracking-wide hover:text-cyan-400 transition-colors decoration-transparent" href="#">Support Desk</a>
-                <a class="font-body text-sm font-semibold tracking-wide text-red-400 hover:text-red-300 transition-colors decoration-transparent" href="#">Emergency Contact</a>
-            </div>
-            
-            <div class="flex gap-4">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">public</span>
-                </button>
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-white shadow-lg hover:-translate-y-1 transition-all border border-slate-700 hover:border-cyan-400">
-                    <span class="material-symbols-outlined">mail</span>
-                </button>
+                
+                <div id="history-appointments-container" class="max-h-[400px] overflow-y-auto pr-2 space-y-4">
+                    {% if bindData %}
+                        {% for apt in bindData %}
+                            {% if apt.active == 2 or apt.active == 3 %}
+                                <div class="history-card bg-slate-50 hover:bg-white rounded-2xl border border-slate-100 hover:border-slate-200 p-5 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                                     data-child-id="{{ apt.child_id|default:'' }}"
+                                     data-status="{{ apt.active }}">
+                                    <div class="flex gap-4 items-start">
+                                        <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shadow-sm flex-shrink-0 mt-0.5">
+                                            <span class="material-symbols-outlined text-[22px]">history</span>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-headline font-bold text-base text-slate-900 leading-tight">
+                                                {{ apt.vaccineid.vaccineName }}
+                                            </h4>
+                                            <p class="text-xs font-semibold text-slate-500">Child Profile: <span class="text-slate-800 font-bold">{{ apt.childname }}</span></p>
+                                            <p class="text-[11px] text-slate-400 font-medium">{{ apt.hospitalid.title }} · Scheduled: {{ apt.aptdate|date:"d M Y" }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between md:justify-end gap-4 md:border-l border-slate-150 md:pl-6">
+                                        <div>
+                                            {% if apt.active == 2 %}
+                                                <span class="badge-custom bg-emerald-50 text-emerald-600 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Completed</span>
+                                            {% elif apt.active == 3 %}
+                                                <span class="badge-custom bg-red-50 text-red-600 border border-red-200"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Cancelled</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div id="history-empty-state" class="hidden p-12 text-center border-2 border-dashed border-slate-150 rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-350 mb-2">history_toggle_off</span>
+                        <h4 class="text-base font-headline font-bold text-slate-800 mb-1">No Past Records</h4>
+                        <p class="text-slate-400 text-xs font-semibold">Any previous clinical vaccination sessions will appear here.</p>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="text-center py-8 relative z-10 text-slate-500 font-medium text-sm">
-            © 2024 KiddoVax Clinical Hospital System. <span class="text-slate-600">Built with precision.</span>
-        </div>
-    </footer>
+    </section>
 
-    <!-- jQuery & Custom Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize sleek Flatpickr calendar with minimum date constraint
-            flatpickr("#aptdate", {
-                minDate: "today",
-                dateFormat: "Y-m-d",
-                disableMobile: "true"
+    <div class="space-y-8">
+        <!-- Section 4: Vaccination Summary -->
+        <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm flex flex-col gap-6 animate__animated animate__fadeInUp">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 class="font-headline font-bold text-lg text-slate-800 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">insights</span> Vaccination Summary
+                </h3>
+                <span class="text-xs font-bold text-slate-400" id="progress-text-label">All children's summary</span>
+            </div>
+            
+            <!-- Progress Bar Widget -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6">
+                <div class="flex justify-between items-end mb-2">
+                    <span class="font-headline font-black text-2xl text-slate-800" id="progress-nums">0/16</span>
+                    <span class="text-xs font-bold text-teal-650 bg-teal-50 px-2.5 py-1 rounded-lg" id="progress-percent">0% Completed</span>
+                </div>
+                <div class="w-full h-3 bg-amber-100 rounded-full overflow-hidden flex">
+                    <div id="progress-bar-completed" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p class="text-[10px] font-semibold text-slate-400 leading-normal mt-2.5" id="progress-desc-text">Select a child profile to view progress and reminders.</p>
+            </div>
+            
+            <!-- 2-column Grid of Metrics (Desktop/Tablet), 1-column (Mobile) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Card 1: Completed -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:shadow-sm transition-all duration-350">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shadow-sm">
+                        <span class="material-symbols-outlined text-[22px]">verified</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-extrabold text-2xl text-slate-800 tracking-tight animate__animated animate__fadeIn" id="summary-completed">0</h4>
+                        <p class="text-[9px] font-bold text-slate-450 uppercase tracking-widest mt-0.5">Completed Vaccines</p>
+                    </div>
+                </div>
+                <!-- Card 2: Pending -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:shadow-sm transition-all duration-350">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shadow-sm">
+                        <span class="material-symbols-outlined text-[22px]">pending_actions</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-extrabold text-2xl text-slate-800 tracking-tight animate__animated animate__fadeIn" id="summary-upcoming">0</h4>
+                        <p class="text-[9px] font-bold text-slate-450 uppercase tracking-widest mt-0.5">Pending Vaccines</p>
+                    </div>
+                </div>
+                <!-- Card 3: Missed -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:shadow-sm transition-all duration-350">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold shadow-sm">
+                        <span class="material-symbols-outlined text-[22px]">warning</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-extrabold text-2xl text-slate-800 tracking-tight animate__animated animate__fadeIn" id="summary-missed">0</h4>
+                        <p class="text-[9px] font-bold text-slate-450 uppercase tracking-widest mt-0.5">Missed Vaccines</p>
+                    </div>
+                </div>
+                <!-- Card 4: Total -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:shadow-sm transition-all duration-350">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-primary flex items-center justify-center font-bold shadow-sm">
+                        <span class="material-symbols-outlined text-[22px]">assignment</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline font-extrabold text-2xl text-slate-800 tracking-tight animate__animated animate__fadeIn" id="summary-total">0</h4>
+                        <p class="text-[9px] font-bold text-slate-450 uppercase tracking-widest mt-0.5">Total Vaccines</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row: Quick Actions & Health Tips (Side-by-Side) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <!-- Section 5: Quick Actions -->
+        <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm space-y-6 h-full">
+            <h3 class="font-headline font-bold text-lg text-slate-800 border-b border-slate-100 pb-4 flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">dashboard</span> Quick Actions
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Action 1: Catalogue -->
+                <a href="{% url 'patient:showdata' %}" class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 decoration-transparent flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-lg bg-teal-50 text-primary flex items-center justify-center shadow-inner group-hover:scale-105 transition-all">
+                        <span class="material-symbols-outlined text-lg">vaccines</span>
+                    </div>
+                    <div class="mt-6">
+                        <h5 class="text-xs font-bold text-slate-800 leading-tight">Vaccine Catalogue</h5>
+                        <p class="text-[9px] font-semibold text-slate-400 leading-normal mt-1">Explore definitions and prices.</p>
+                    </div>
+                </a>
+                <!-- Action 2: Profile -->
+                <a href="{% url 'patient:profilepage' %}" class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 decoration-transparent flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-lg bg-teal-50 text-primary flex items-center justify-center shadow-inner group-hover:scale-105 transition-all">
+                        <span class="material-symbols-outlined text-lg">person_add</span>
+                    </div>
+                    <div class="mt-6">
+                        <h5 class="text-xs font-bold text-slate-800 leading-tight">Add Child Profile</h5>
+                        <p class="text-[9px] font-semibold text-slate-400 leading-normal mt-1">Register another child.</p>
+                    </div>
+                </a>
+                <!-- Action 3: Notifications -->
+                <div onclick="triggerNotifications()" class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-lg bg-teal-50 text-primary flex items-center justify-center shadow-inner group-hover:scale-105 transition-all">
+                        <span class="material-symbols-outlined text-lg">notifications</span>
+                    </div>
+                    <div class="mt-6">
+                        <h5 class="text-xs font-bold text-slate-800 leading-tight">View Notifications</h5>
+                        <p class="text-[9px] font-semibold text-slate-400 leading-normal mt-1">Check warnings and updates.</p>
+                    </div>
+                </div>
+                <!-- Action 4: Download Vaccine Card -->
+                <a id="download-card-action" href="{% url 'patient:profilepage' %}" class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 decoration-transparent flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-lg bg-teal-50 text-primary flex items-center justify-center shadow-inner group-hover:scale-105 transition-all">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                    </div>
+                    <div class="mt-6">
+                        <h5 class="text-xs font-bold text-slate-800 leading-tight">Download Vaccine Card</h5>
+                        <p class="text-[9px] font-semibold text-slate-400 leading-normal mt-1" id="download-action-text">Download child QR summary card.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section 6: Child Health Tips -->
+        <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm space-y-6 h-full">
+            <h3 class="font-headline font-bold text-lg text-slate-800 border-b border-slate-100 pb-4 flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">healing</span> Child Health Tips
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Tip 1 -->
+                <div class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col gap-4">
+                    <span class="material-symbols-outlined text-teal-600 bg-white p-3 rounded-xl border border-slate-100 shadow-sm w-12 h-12 flex items-center justify-center">event</span>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-bold text-slate-800">Vaccinate On Time</h5>
+                        <p class="text-[10px] font-medium text-slate-500 leading-normal">Immunization helps protect children from life-threatening diseases.</p>
+                    </div>
+                </div>
+                <!-- Tip 2 -->
+                <div class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col gap-4">
+                    <span class="material-symbols-outlined text-teal-600 bg-white p-3 rounded-xl border border-slate-100 shadow-sm w-12 h-12 flex items-center justify-center">inventory_2</span>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-bold text-slate-800">Maintain Records</h5>
+                        <p class="text-[10px] font-medium text-slate-500 leading-normal">Keep track of physical and digital records for easy school admissions.</p>
+                    </div>
+                </div>
+                <!-- Tip 3 -->
+                <div class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col gap-4">
+                    <span class="material-symbols-outlined text-teal-600 bg-white p-3 rounded-xl border border-slate-100 shadow-sm w-12 h-12 flex items-center justify-center">clinical_notes</span>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-bold text-slate-800">Follow Doctor Advice</h5>
+                        <p class="text-[10px] font-medium text-slate-500 leading-normal">Always consult with pediatricians for personalized vaccine guides.</p>
+                    </div>
+                </div>
+                <!-- Tip 4 -->
+                <div class="group bg-slate-50 border border-slate-100 hover:border-teal-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col gap-4">
+                    <span class="material-symbols-outlined text-teal-600 bg-white p-3 rounded-xl border border-slate-100 shadow-sm w-12 h-12 flex items-center justify-center">favorite</span>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-bold text-slate-800">Build Strong Immunity</h5>
+                        <p class="text-[10px] font-medium text-slate-500 leading-normal">Good nutrition and timely vaccine doses reinforce natural antibody defenses.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300 relative mx-4">
+            <button onclick="closeDetailModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+                <span class="material-symbols-outlined text-[18px] font-bold">close</span>
+            </button>
+            <h3 class="font-headline font-bold text-lg text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">info</span> Appointment Details
+            </h3>
+            <div class="space-y-4 text-sm">
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Child Profile:</span>
+                    <span class="font-bold text-slate-800" id="modal-child-name">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Vaccine Dose:</span>
+                    <span class="font-bold text-slate-800" id="modal-vaccine-name">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Medical Center:</span>
+                    <span class="font-semibold text-slate-800" id="modal-hospital-name">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Scheduled Date:</span>
+                    <span class="font-bold text-slate-800" id="modal-apt-date">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Clinic Hours:</span>
+                    <span class="font-medium text-slate-600">09:00 AM - 05:00 PM</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Status:</span>
+                    <span id="modal-status-badge">-</span>
+                </div>
+            </div>
+            <button onclick="closeDetailModal()" class="w-full btn-primary-custom justify-center py-2.5 rounded-xl font-bold tracking-wide mt-6">
+                Close Details
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- select2 custom script -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    // Global references for caching AJAX responses
+    window.lastMissedData = null;
+    window.lastRecommendations = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#aptdate", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disableMobile: true
+        });
+    });
+
+    function scrollToBookingForm() {
+        $('html, body').animate({
+            scrollTop: $('#booking-form-card').offset().top - 120
+        }, 500);
+        // Focus child select if not selected
+        if (!$('#child_select').val()) {
+            setTimeout(function() {
+                $('#child_select').select2('open');
+            }, 600);
+        }
+    }
+
+    function triggerNotifications() {
+        var notifBtn = $('#notif-btn');
+        if (notifBtn.length > 0) {
+            $('html, body').animate({
+                scrollTop: 0
+            }, 300, function() {
+                notifBtn.trigger('click');
+            });
+        }
+    }
+
+    function openDetailModal(child, vaccine, hospital, date, active) {
+        $('#modal-child-name').text(child);
+        $('#modal-vaccine-name').text(vaccine);
+        $('#modal-hospital-name').text(hospital);
+        $('#modal-apt-date').text(date);
+        
+        var statusBadgeHtml = "";
+        if (active === '0') {
+            statusBadgeHtml = '<span class="badge-custom bg-amber-50 text-amber-600 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Pending</span>';
+        } else if (active === '1') {
+            statusBadgeHtml = '<span class="badge-custom bg-blue-50 text-blue-600 border border-blue-200"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Waiting</span>';
+        } else if (active === '2') {
+            statusBadgeHtml = '<span class="badge-custom bg-emerald-50 text-emerald-600 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Completed</span>';
+        } else if (active === '3') {
+            statusBadgeHtml = '<span class="badge-custom bg-red-50 text-red-650 border border-red-200"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Cancelled</span>';
+        }
+        
+        $('#modal-status-badge').html(statusBadgeHtml);
+        
+        var modal = $('#detail-modal');
+        modal.removeClass('hidden').addClass('flex');
+        setTimeout(function() {
+            modal.removeClass('opacity-0').addClass('opacity-100');
+            modal.find('.transform').removeClass('scale-95').addClass('scale-100');
+        }, 50);
+    }
+
+    function closeDetailModal() {
+        var modal = $('#detail-modal');
+        modal.removeClass('opacity-100').addClass('opacity-0');
+        modal.find('.transform').removeClass('scale-100').addClass('scale-95');
+        setTimeout(function() {
+            modal.removeClass('flex').addClass('hidden');
+        }, 300);
+    }
+
+    function scrollToBookingFormAndSelect(vaccineName) {
+        scrollToBookingForm();
+        var hospitalVal = $('#hospitalid').val();
+        if (!hospitalVal) {
+            setTimeout(function() {
+                $('#hospitalid').select2('open');
+            }, 600);
+        } else {
+            var found = false;
+            $('#vaccineid option').each(function() {
+                var text = $(this).text().toLowerCase();
+                if (text.indexOf(vaccineName.toLowerCase()) !== -1) {
+                    $('#vaccineid').val($(this).val()).trigger('change');
+                    found = true;
+                    return false; // break loop
+                }
+            });
+            if (!found) {
+                setTimeout(function() {
+                    $('#vaccineid').select2('open');
+                }, 600);
+            }
+        }
+    }
+
+    function updateDashboard() {
+        var cid = $('#child_select').val();
+        var selected = $('#child_select option:selected');
+        
+        if (cid) {
+            // Child Selected mode
+            var childName = (selected.data('childname') || selected.text()).trim();
+            var completed = parseInt(selected.data('completed')) || 0;
+            
+            // Count upcoming appointments for this child
+            var upcoming = 0;
+            $('.apt-card').each(function() {
+                if ($(this).data('child-id') == cid) {
+                    upcoming++;
+                    $(this).removeClass('hidden');
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+            
+            // Count history appointments for this child
+            var historyCount = 0;
+            $('.history-card').each(function() {
+                if ($(this).data('child-id') == cid) {
+                    historyCount++;
+                    $(this).removeClass('hidden');
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+            
+            // Badges
+            $('#upcoming-badge').text(upcoming + ' Scheduled');
+            $('#history-badge').text(historyCount + ' Bookings');
+            
+            // Toggle empty states
+            if (upcoming === 0) {
+                $('#upcoming-empty-state').removeClass('hidden');
+            } else {
+                $('#upcoming-empty-state').addClass('hidden');
+            }
+            
+            if (historyCount === 0) {
+                $('#history-empty-state').removeClass('hidden');
+            } else {
+                $('#history-empty-state').addClass('hidden');
+            }
+            
+            // Download card action update
+            var downloadUrl = "/download-card/" + cid + "/";
+            $('#download-card-action').attr('href', downloadUrl);
+            $('#download-action-text').text("Download " + childName + "'s QR card.");
+            
+            // Progress Bar
+            $('#progress-text-label').text(childName);
+            $('#progress-nums').text(completed + '/16');
+            var percent = Math.min(100, Math.round((completed / 16) * 100));
+            $('#progress-percent').text(percent + '% Completed');
+            $('#progress-bar-completed').css('width', percent + '%');
+            $('#progress-desc-text').text("Milestone tracker for " + childName);
+            
+            // Update summary metrics
+            $('#summary-completed').text(completed);
+            $('#summary-upcoming').text(upcoming);
+            $('#summary-total').text(completed + upcoming);
+            
+        } else {
+            // Default: All Children combined mode
+            var totalCompleted = 0;
+            $('#child_select option').each(function() {
+                var val = $(this).val();
+                if (val) {
+                    totalCompleted += parseInt($(this).data('completed')) || 0;
+                }
+            });
+            
+            var totalUpcoming = 0;
+            $('.apt-card').each(function() {
+                totalUpcoming++;
+                $(this).removeClass('hidden');
+            });
+            
+            var totalHistory = 0;
+            $('.history-card').each(function() {
+                totalHistory++;
+                $(this).removeClass('hidden');
+            });
+            
+            // Badges
+            $('#upcoming-badge').text(totalUpcoming + ' Scheduled');
+            $('#history-badge').text(totalHistory + ' Bookings');
+            
+            // Empty states
+            if (totalUpcoming === 0) {
+                $('#upcoming-empty-state').removeClass('hidden');
+            } else {
+                $('#upcoming-empty-state').addClass('hidden');
+            }
+            
+            if (totalHistory === 0) {
+                $('#history-empty-state').removeClass('hidden');
+            } else {
+                $('#history-empty-state').addClass('hidden');
+            }
+            
+            // Download action reset
+            $('#download-card-action').attr('href', "{% url 'patient:profilepage' %}");
+            $('#download-action-text').text("Download child QR summary card.");
+            
+            // Progress Bar reset
+            $('#progress-text-label').text("All children's summary");
+            $('#progress-nums').text(totalCompleted + '/16');
+            var percent = Math.min(100, Math.round((totalCompleted / 16) * 100));
+            $('#progress-percent').text(percent + '% Completed');
+            $('#progress-bar-completed').css('width', percent + '%');
+            $('#progress-desc-text').text("Select a child profile to view progress and reminders.");
+            
+            // Update summary metrics
+            $('#summary-completed').text(totalCompleted);
+            $('#summary-upcoming').text(totalUpcoming);
+            $('#summary-total').text(totalCompleted + totalUpcoming);
+            $('#summary-missed').text('-');
+            
+            // Reset Next Due Card to default
+            $('#next-due-name').text("Select child profile");
+            $('#next-due-detail').text("Details will load dynamically.");
+            $('#next-due-action-btn').off('click').on('click', function() { scrollToBookingForm(); });
+            $('#next-due-action-btn').html('Book Now <span class="material-symbols-outlined text-sm">chevron_right</span>');
+            
+            // Reset Reminders
+            $('#reminders-list').html(
+                '<div class="flex items-center gap-3 p-4 rounded-2xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold">' +
+                '<span class="material-symbols-outlined text-lg font-bold">check_circle</span> Welcome to your vaccination manager dashboard.' +
+                '</div>'
+            );
+        }
+    }
+
+    function updateNextDueAndReminders(cid, missedData) {
+        if (!cid) return;
+        
+        var selected = $('#child_select option:selected');
+        var childName = (selected.data('childname') || selected.text()).trim();
+        var upcomingAppointments = [];
+        
+        $('.apt-card[data-child-id="' + cid + '"]').each(function() {
+            upcomingAppointments.push({
+                id: $(this).data('id'),
+                vaccine: $(this).data('vaccine'),
+                hospital: $(this).data('hospital'),
+                dateStr: $(this).data('date'),
+                dateObj: new Date($(this).data('date'))
             });
         });
-
-        $(document).ready(function() {
-            // Initialize Select2 custom UI with theme
-            $('#hospitalid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-            $('#vaccineid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-            $('#child_select').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-
-            // Sync hidden childname field from child_select so Appointmenttbl.childname is always populated
-            $('#child_select').on('change', function() {
-                var selected = $(this).find('option:selected');
-                var cid = $(this).val();
-                $('#childname').val(selected.data('childname') || '');
-                
-                // 1. Fetch Missed Vaccines Alert
-                var alertPanel = $('#booking-missed-alert');
-                if (!cid) {
-                    alertPanel.addClass('hidden').empty();
-                } else {
-                    $.ajax({
-                        url: "{% url 'patient:missed_vaccines' %}",
-                        data: { 'child_id': cid },
-                        success: function(res) {
-                            var missed = res.missed || [];
-                            
-                            if (missed.length === 0) {
-                                // Green State - All good
-                                alertPanel.removeClass('hidden')
-                                          .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 bg-emerald-50 border-emerald-200')
-                                          .html('<div class="flex items-center gap-2 text-emerald-700 font-bold text-sm"><span class="material-symbols-outlined">verified</span> All vaccinations are up to date!</div>');
-                                return;
-                            }
-                            
-                            var sv = res.overall_severity || 'low';
-                            var style = {
-                                'high':   { border: 'border-red-200',    bg: 'bg-red-50',    text: 'text-red-800', badge: 'bg-red-100 text-red-700' },
-                                'medium': { border: 'border-orange-200', bg: 'bg-orange-50', text: 'text-orange-800', badge: 'bg-orange-100 text-orange-700' },
-                                'low':    { border: 'border-yellow-200', bg: 'bg-yellow-50', text: 'text-yellow-800', badge: 'bg-yellow-100 text-yellow-700' },
-                            }[sv] || { border: 'border-gray-200', bg: 'bg-gray-50', text: 'text-gray-800', badge: 'bg-gray-200 text-gray-700' };
-                            
-                            var header = '<div class="flex flex-col gap-1 mb-2">' +
-                                '<div class="flex items-center gap-2 ' + style.text + ' font-bold text-sm">' +
-                                '<span class="material-symbols-outlined text-lg">warning</span> ⚠️ Your child has missed ' + res.total_missed + ' vaccines' +
-                                '</div>' +
-                                '<p class="text-[11px] opacity-80 ' + style.text + '">These should ideally be booked as soon as possible.</p>' +
-                                '</div>';
-                                
-                            var items = missed.map(function(v) {
-                                return '<div class="flex items-center justify-between py-1 border-t ' + style.border + ' first:border-0">' +
-                                    '<span class="font-bold text-[12px] ' + style.text + ' flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">vaccines</span> ' + v.name + '</span>' +
-                                    '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold ' + style.badge + '">' + v.due_age_range + '</span>' +
-                                    '</div>';
-                            }).join('');
-                            
-                            alertPanel.removeClass('hidden')
-                                      .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 ' + style.bg + ' ' + style.border)
-                                      .html(header + items);
-                        }
+        
+        // Sort upcoming by date ascending
+        upcomingAppointments.sort(function(a, b) {
+            return a.dateObj - b.dateObj;
+        });
+        
+        var missedList = (missedData && missedData.missed) ? missedData.missed : [];
+        var missedCount = (missedData && missedData.total_missed) ? missedData.total_missed : 0;
+        
+        // 1. Update summary missed count
+        $('#summary-missed').text(missedCount);
+        
+        // 2. Determine Next Due Vaccine
+        if (upcomingAppointments.length > 0) {
+            var nextApt = upcomingAppointments[0];
+            var daysDiff = Math.ceil((nextApt.dateObj - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
+            var msg = "";
+            if (daysDiff === 0) {
+                msg = "Appointment is TODAY!";
+            } else if (daysDiff === 1) {
+                msg = "Appointment is TOMORROW!";
+            } else if (daysDiff > 1) {
+                msg = "Appointment in " + daysDiff + " days (" + nextApt.dateStr + ")";
+            } else {
+                msg = "Scheduled on " + nextApt.dateStr;
+            }
+            
+            $('#next-due-name').text(nextApt.vaccine);
+            $('#next-due-detail').text(nextApt.hospital + " · " + msg);
+            $('#next-due-action-btn').off('click').on('click', function() {
+                var targetCard = $('.apt-card[data-id="' + nextApt.id + '"]');
+                if (targetCard.length > 0) {
+                    $('html, body').animate({
+                        scrollTop: targetCard.offset().top - 120
+                    }, 500);
+                    targetCard.addClass('ring-2 ring-primary/50').delay(1500).queue(function(next) {
+                        $(this).removeClass('ring-2 ring-primary/50');
+                        next();
                     });
                 }
-
-                // 2. Re-trigger vaccine load to filter for the newly selected child
-                var hid = $('#hospitalid').val();
-                if (hid) { $('#hospitalid').trigger('change'); }
             });
-
-            // Original AJAX backend logic seamlessly preserved — now also sends child_id
-            $("#hospitalid").change(function () {
-                var hid = $(this).val();
-                var cid = $('#child_select').val();
-                // UX: clear choices and display loading string via select2 update
-                $("#vaccineid").empty().append('<option value="">-- Loading available vaccines... --</option>').trigger('change');
-                // Hide old banner logic is replaced by the new state system
-                
-                if (!hid) {
-                    $('#recommendation-container').addClass('hidden');
-                    return;
+            $('#next-due-action-btn').html('View Appointment <span class="material-symbols-outlined text-sm">chevron_right</span>');
+        } else if (missedCount > 0) {
+            var nextMissed = missedList[0];
+            $('#next-due-name').text(nextMissed.name);
+            $('#next-due-detail').text("Vaccine is overdue! " + nextMissed.due_age_range);
+            $('#next-due-action-btn').off('click').on('click', function() {
+                scrollToBookingFormAndSelect(nextMissed.name);
+            });
+            $('#next-due-action-btn').html('Book Overdue Dose <span class="material-symbols-outlined text-sm">chevron_right</span>');
+        } else if (window.lastRecommendations && window.lastRecommendations.length > 0) {
+            var nextRec = window.lastRecommendations[0];
+            $('#next-due-name').text(nextRec.name);
+            $('#next-due-detail').text("Recommended for child's age band.");
+            $('#next-due-action-btn').off('click').on('click', function() {
+                scrollToBookingFormAndSelect(nextRec.name);
+            });
+            $('#next-due-action-btn').html('Book Now <span class="material-symbols-outlined text-sm">chevron_right</span>');
+        } else {
+            $('#next-due-name').text("All Up-to-Date");
+            $('#next-due-detail').text("No active appointments or overdue vaccines.");
+            $('#next-due-action-btn').off('click').on('click', function() { scrollToBookingForm(); });
+            $('#next-due-action-btn').html('Book New Vaccine <span class="material-symbols-outlined text-sm">chevron_right</span>');
+        }
+        
+        // 3. Build Smart Reminders List
+        var remindersHTML = "";
+        
+        // Red alert: Missed vaccine warning
+        if (missedCount > 0) {
+            remindersHTML += '<div class="flex items-start gap-3 p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 text-xs font-semibold">' +
+                '<span class="material-symbols-outlined text-lg font-bold text-red-600 flex-shrink-0">warning</span>' +
+                '<div class="space-y-0.5">' +
+                '<div class="font-bold">Overdue Vaccination Alert</div>' +
+                '<div>' + childName + ' has missed ' + missedCount + ' scheduled vaccine dose(s). Please book a clinic visit immediately.</div>' +
+                '</div>' +
+                '</div>';
+        }
+        
+        // Amber alerts: Upcoming appointments
+        if (upcomingAppointments.length > 0) {
+            upcomingAppointments.forEach(function(apt) {
+                var daysDiff = Math.ceil((apt.dateObj - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
+                if (daysDiff === 1) {
+                    remindersHTML += '<div class="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold">' +
+                        '<span class="material-symbols-outlined text-lg font-bold text-amber-600 flex-shrink-0">event_busy</span>' +
+                        '<div class="space-y-0.5">' +
+                        '<div class="font-bold">Appointment Tomorrow!</div>' +
+                        '<div>Visit ' + apt.hospital + ' tomorrow for ' + childName + '\'s ' + apt.vaccine + ' dose.</div>' +
+                        '</div>' +
+                        '</div>';
+                } else if (daysDiff >= 0 && daysDiff <= 5) {
+                    remindersHTML += '<div class="flex items-start gap-3 p-4 rounded-2xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold">' +
+                        '<span class="material-symbols-outlined text-lg font-bold text-teal-600 flex-shrink-0">schedule</span>' +
+                        '<div class="space-y-0.5">' +
+                        '<div class="font-bold">Upcoming Vaccine Scheduled</div>' +
+                        '<div>' + apt.vaccine + ' scheduled in ' + daysDiff + ' days on ' + apt.dateStr + ' at ' + apt.hospital + '.</div>' +
+                        '</div>' +
+                        '</div>';
                 }
+            });
+        }
+        
+        // Green alert: Up-to-date
+        if (missedCount === 0 && upcomingAppointments.length === 0) {
+            remindersHTML += '<div class="flex items-start gap-3 p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">' +
+                '<span class="material-symbols-outlined text-lg font-bold text-emerald-600 flex-shrink-0">check_circle</span>' +
+                '<div class="space-y-0.5">' +
+                '<div class="font-bold">Vaccinations Up-to-Date</div>' +
+                '<div>' + childName + '\'s core pediatric milestones are fully up-to-date. Good job!</div>' +
+                '</div>' +
+                '</div>';
+        }
+        
+        if (remindersHTML === "") {
+            remindersHTML = '<div class="flex items-center gap-3 p-4 rounded-2xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold">' +
+                '<span class="material-symbols-outlined text-lg font-bold">check_circle</span> All systems clear. No active alerts for ' + childName + '.' +
+                '</div>';
+        }
+        
+        $('#reminders-list').html(remindersHTML);
+    }
 
-                // Show container and loading state
-                if (cid) {
-                    $('#recommendation-container').removeClass('hidden');
-                    $('#rec-loading').removeClass('hidden');
-                    $('#rec-empty').addClass('hidden');
-                    $('#recommendation-cards').addClass('hidden').empty();
-                } else {
-                    $('#recommendation-container').addClass('hidden');
-                }
+    $(document).ready(function() {
+        // Initialize Select2 styled elements
+        $('#hospitalid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
+        $('#vaccineid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
+        $('#child_select').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
 
-                // 1. Load filtered vaccines (existing logic)
-                $.ajax({                       
-                    url: "{% url 'patient:load_vaccines' %}",       
-                    data: { 'h_id': hid, 'child_id': cid },
-                    success: function (data) {   
-                        $("#vaccineid").html(data).trigger('change');  
-                        
-                        // 2. Load smart recommendations (new UX) AFTER options are inserted
-                        if (cid) {
-                            $.ajax({
-                                url: "{% url 'patient:recommend_vaccines' %}",
-                                data: { 'child_id': cid, 'hospital_id': hid },
-                                success: function(res) {
-                                    $('#rec-loading').addClass('hidden');
-                                    
-                                    var vaccines = res.vaccines || [];
-                                    if (vaccines.length === 0) {
-                                        $('#rec-empty').removeClass('hidden');
-                                        return;
-                                    }
-                                    
-                                    var cards = vaccines.map(function(v) {
-                                        var badge = '<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">verified</span> Recommended</span>';
-                                        var desc = v.description || 'Routine age-appropriate vaccination due for your child.';
-                                        return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-lg border border-teal-200 bg-white hover:border-modern-cyan transition-all cursor-pointer relative overflow-hidden group">' +
-                                            '<div class="absolute top-0 left-0 w-1 h-full bg-modern-cyan scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
-                                            '<div class="flex justify-between items-start mb-1.5">' +
-                                                '<h5 class="font-headline font-bold text-[13px] text-gray-800">' + v.name + '</h5>' +
-                                                badge +
-                                            '</div>' +
-                                            '<p class="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">' + desc + '</p>' +
-                                        '</div>';
-                                    }).join('');
-                                    
-                                    $('#recommendation-cards').html(cards).removeClass('hidden');
+        // Run default initialization
+        updateDashboard();
 
-                                    // Pre-select the FIRST recommended vaccine automatically
-                                    var firstVid = vaccines[0].id.toString();
-                                    setTimeout(function() {
-                                        $('#vaccineid').val(firstVid).trigger('change');
-                                        $('.rec-card').first().addClass('ring-1 ring-modern-cyan shadow-sm');
-                                    }, 50);
-
-                                    // Clicking a card manually selects it
-                                    $('.rec-card').on('click', function() {
-                                        var vid = $(this).data('vaccine-id').toString();
-                                        $('#vaccineid').val(vid).trigger('change');
-                                        $('.rec-card').removeClass('ring-1 ring-modern-cyan shadow-sm');
-                                        $(this).addClass('ring-1 ring-modern-cyan shadow-sm');
-                                    });
-                                },
-                                error: function() {
-                                    // On network error, just hide loading
-                                    $('#rec-loading').addClass('hidden');
-                                    $('#recommendation-container').addClass('hidden');
-                                }
-                            });
-                        }
-                    }
-                });
-            });  // end #hospitalid.change
-
-            // Notifications System Logic
-            function loadNotifications() {
+        // Update hidden field childname and check missed vaccines
+        $('#child_select').on('change', function() {
+            var selected = $(this).find('option:selected');
+            var cid = $(this).val();
+            $('#childname').val(selected.data('childname') || '');
+            
+            var alertPanel = $('#booking-missed-alert');
+            if (!cid) {
+                alertPanel.addClass('hidden').empty();
+                window.lastMissedData = null;
+                window.lastRecommendations = [];
+                updateDashboard();
+            } else {
                 $.ajax({
-                    url: "{% url 'patient:get_notifications' %}",
+                    url: "{% url 'patient:missed_vaccines' %}",
+                    data: { 'child_id': cid },
                     success: function(res) {
-                        var notifs = res.notifications || [];
-                        var count = res.unread_count || 0;
+                        window.lastMissedData = res;
                         
-                        // Update Badge
-                        if(count > 0) {
-                            $('#notif-badge').text(count).removeClass('hidden');
-                            $('#mark-read-btn').removeClass('hidden');
-                        } else {
-                            $('#notif-badge').addClass('hidden');
-                            $('#mark-read-btn').addClass('hidden');
-                        }
+                        var missed = res.missed || [];
+                        updateDashboard();
+                        updateNextDueAndReminders(cid, res);
                         
-                        // Render List
-                        var listContainer = $('#notif-list');
-                        if (notifs.length === 0) {
-                            listContainer.html('<div class="p-8 text-center flex flex-col items-center gap-2"><span class="material-symbols-outlined text-gray-300 text-3xl">notifications_paused</span><span class="text-gray-400 font-medium text-xs">You\'re all caught up!</span></div>');
+                        if (missed.length === 0) {
+                            alertPanel.removeClass('hidden')
+                                      .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 bg-emerald-50 border-emerald-200')
+                                      .html('<div class="flex items-center gap-2 text-emerald-700 font-bold text-xs"><span class="material-symbols-outlined text-[16px] font-bold">verified</span> All vaccines up to date!</div>');
                             return;
                         }
                         
-                        var items = notifs.map(function(n) {
-                            var icon = n.type === 'vaccine' ? 'vaccines' : 'calendar_month';
-                            var iconColor = n.type === 'vaccine' ? 'text-orange-500 bg-orange-100' : 'text-blue-500 bg-blue-100';
-                            var bg = n.is_read ? 'bg-white' : 'bg-teal-50/50';
-                            var dot = n.is_read ? '' : '<span class="w-2 h-2 rounded-full bg-modern-cyan flex-shrink-0 mt-1.5"></span>';
+                        var sv = res.overall_severity || 'low';
+                        var style = {
+                            'high':   { border: 'border-red-200', bg: 'bg-red-50/50', text: 'text-red-800', badge: 'bg-red-100 text-red-700' },
+                            'medium': { border: 'border-orange-200', bg: 'bg-orange-50/50', text: 'text-orange-850', badge: 'bg-orange-100 text-orange-700' },
+                            'low':    { border: 'border-yellow-250', bg: 'bg-yellow-50/40', text: 'text-yellow-800', badge: 'bg-yellow-100 text-yellow-750' },
+                        }[sv] || { border: 'border-slate-200', bg: 'bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-200 text-slate-700' };
+                        
+                        var header = '<div class="flex flex-col gap-0.5 mb-2">' +
+                            '<div class="flex items-center gap-2 ' + style.text + ' font-bold text-xs">' +
+                            '<span class="material-symbols-outlined text-[16px] font-bold">warning</span> Child has missed ' + res.total_missed + ' vaccines' +
+                            '</div>' +
+                            '</div>';
                             
-                            return '<div class="p-4 border-b border-gray-50 flex items-start gap-3 hover:bg-slate-50 transition-colors ' + bg + '">' +
-                                '<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ' + iconColor + '"><span class="material-symbols-outlined text-[16px]">' + icon + '</span></div>' +
-                                '<div class="flex-1">' +
-                                '<p class="text-[11px] text-gray-700 leading-snug font-medium">' + n.message + '</p>' +
-                                '<span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">' + n.date + '</span>' +
-                                '</div>' + dot +
+                        var items = missed.map(function(v) {
+                            return '<div class="flex items-center justify-between py-1.5 border-t ' + style.border + ' first:border-0">' +
+                                '<span class="font-bold text-[11px] ' + style.text + ' flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] font-bold">syringe</span> ' + v.name + '</span>' +
+                                '<span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold ' + style.badge + '">' + v.due_age_range + '</span>' +
                                 '</div>';
                         }).join('');
                         
-                        listContainer.html(items);
+                        alertPanel.removeClass('hidden')
+                                  .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 ' + style.bg + ' ' + style.border)
+                                  .html(header + items);
                     }
                 });
             }
-            
-            // Mark all read
-            $('#mark-read-btn').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $.ajax({
-                    url: "{% url 'patient:mark_notifications_read' %}",
-                    type: "POST",
-                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-                    success: function() {
-                        loadNotifications();
-                    }
-                });
-            });
 
-            // Initial Load
-            loadNotifications();
-        });  // end $(document).ready
-    </script>
-</body>
-</html>
+            var hid = $('#hospitalid').val();
+            if (hid) { $('#hospitalid').trigger('change'); }
+        });
+
+        // Cascading vaccine selectors
+        $("#hospitalid").change(function () {
+            var hid = $(this).val();
+            var cid = $('#child_select').val();
+            
+            $("#vaccineid").empty().append('<option value="">-- Loading available vaccines... --</option>').trigger('change');
+            
+            if (!hid) {
+                $('#recommendation-container').addClass('hidden');
+                $('#recommendation-placeholder').removeClass('hidden');
+                return;
+            }
+
+            if (cid) {
+                $('#recommendation-container').removeClass('hidden');
+                $('#recommendation-placeholder').addClass('hidden');
+                $('#rec-loading').removeClass('hidden');
+                $('#rec-empty').addClass('hidden');
+                $('#recommendation-cards').addClass('hidden').empty();
+            } else {
+                $('#recommendation-container').addClass('hidden');
+                $('#recommendation-placeholder').removeClass('hidden');
+            }
+
+            // Load cascaded vaccines AJAX list
+            $.ajax({                       
+                url: "{% url 'patient:load_vaccines' %}",       
+                data: { 'h_id': hid, 'child_id': cid },
+                success: function (data) {   
+                    $("#vaccineid").html(data).trigger('change');  
+                    
+                    // Fetch smart recommendation cards (Phase 8 suggestions)
+                    if (cid) {
+                        $.ajax({
+                            url: "{% url 'patient:recommend_vaccines' %}",
+                            data: { 'child_id': cid, 'hospital_id': hid },
+                            success: function(res) {
+                                $('#rec-loading').addClass('hidden');
+                                
+                                var vaccines = res.vaccines || [];
+                                window.lastRecommendations = vaccines;
+                                
+                                // Trigger update for Next Due Card
+                                updateNextDueAndReminders(cid, window.lastMissedData);
+                                
+                                if (vaccines.length === 0) {
+                                    $('#rec-empty').removeClass('hidden');
+                                    return;
+                                }
+                                
+                                var cards = vaccines.map(function(v) {
+                                    var badge = '<span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px] font-bold">verified</span> Recommended</span>';
+                                    var desc = v.description || 'Routine vaccination dose due for child.';
+                                    return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-xl border border-teal-200 bg-white hover:border-secondary transition-all cursor-pointer relative overflow-hidden group shadow-sm">' +
+                                        '<div class="absolute top-0 left-0 w-1 h-full bg-secondary scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
+                                        '<div class="flex justify-between items-start mb-1">' +
+                                            '<h5 class="font-headline font-bold text-xs text-slate-800">' + v.name + '</h5>' +
+                                            badge +
+                                        '</div>' +
+                                        '<p class="text-[10px] text-slate-500 leading-normal line-clamp-1">' + desc + '</p>' +
+                                    '</div>';
+                                }).join('');
+                                
+                                $('#recommendation-cards').html(cards).removeClass('hidden');
+
+                                // Pre-select first recommendation
+                                var firstVid = vaccines[0].id.toString();
+                                setTimeout(function() {
+                                    $('#vaccineid').val(firstVid).trigger('change');
+                                    $('.rec-card').first().addClass('ring-2 ring-secondary/60');
+                                }, 50);
+
+                                // Select recommendations manually by clicking cards
+                                $('.rec-card').on('click', function() {
+                                    var vid = $(this).data('vaccine-id').toString();
+                                    $('#vaccineid').val(vid).trigger('change');
+                                    $('.rec-card').removeClass('ring-2 ring-secondary/60');
+                                    $(this).addClass('ring-2 ring-secondary/60');
+                                });
+                            },
+                            error: function() {
+                                $('#rec-loading').addClass('hidden');
+                                $('#recommendation-container').addClass('hidden');
+                                $('#recommendation-placeholder').removeClass('hidden');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

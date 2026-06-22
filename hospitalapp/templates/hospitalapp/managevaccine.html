@@ -15,14 +15,30 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script>
-      tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#006565", "secondary": "#0c6780", "background": "#f8fafc", "on-surface": "#002020", "modern-cyan": "#06b6d4", "modern-blue": "#3b82f6" }, fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] }, } } }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",     /* Clinical Blue Primary */
+              "secondary": "#3BAFDA",   /* Clinical Blue Secondary */
+              "background": "#F6F9FC",  /* Clinical Background */
+              "on-surface": "#1E293B",  /* Slate 800 */
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
     </script>
     <style>
       .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-      body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
-      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 101, 101, 0.1); }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
       .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
-      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(14, 165, 233, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
     </style>
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
@@ -31,7 +47,7 @@
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
-                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #006565;">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
                     Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
                 </span>
             </a>
@@ -46,7 +62,7 @@
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
                     <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
                 </div>
                 <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm"><span class="material-symbols-outlined text-xl">logout</span></a>
@@ -99,6 +115,17 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Stock Quantity</label>
+                            {{ form.stock_quantity }}
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Min Threshold</label>
+                            {{ form.minimum_quantity }}
+                        </div>
+                    </div>
+
                     <div class="pt-4 flex gap-4">
                         <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-[0_8px_20px_rgba(6,182,212,0.3)] hover:-translate-y-0.5 transition-all outline-none">Publish Vaccine</button>
                         <button type="reset" name="btnreset" class="px-6 bg-slate-100 text-gray-600 font-headline font-bold py-3 rounded-xl hover:bg-slate-200 transition-all outline-none">Classify</button>
@@ -114,6 +141,7 @@
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Title</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Description</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Price</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Stock Status</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider text-right">Action</th>
                         </tr>
                     </thead>
@@ -123,6 +151,14 @@
                             <td class="py-4 px-4 font-bold text-gray-800">{{ item.vaccineName }}</td>
                             <td class="py-4 px-4 text-sm text-gray-500 whitespace-normal min-w-[300px]">{{ item.vaccineDescr }}</td>
                             <td class="py-4 px-4 text-sm font-black text-primary">₹{{ item.price }}</td>
+                            <td class="py-4 px-4">
+                                <div class="inline-flex items-center gap-1.5 font-bold text-sm {% if item.stock_quantity < item.minimum_quantity %}text-red-500 bg-red-50 px-2.5 py-1 rounded-lg border border-red-100{% else %}text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100{% endif %}">
+                                    <span>{{ item.stock_quantity }} (Min: {{ item.minimum_quantity }})</span>
+                                    {% if item.stock_quantity < item.minimum_quantity %}
+                                    <span class="text-[9px] uppercase font-black tracking-wider">⚠️ Low Stock</span>
+                                    {% endif %}
+                                </div>
+                            </td>
                             <td class="py-4 px-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{% url 'hospitalapp:editvaccine' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-modern-blue hover:bg-modern-blue hover:text-white transition-all">
@@ -143,7 +179,7 @@
     </main>
 
     <script>
-        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
         inputs.forEach(input => {
             if(input.id === 'id_price') {
                 input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'pl-9', 'pr-4', 'py-3', 'text-gray-800', 'font-monaco', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
@@ -151,6 +187,22 @@
                 input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'px-4', 'py-3', 'text-gray-800', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
             }
         });
+
+        // Auto-fill descriptions from predefined vaccine choices
+        const vaccineDescriptions = {{ vaccine_descriptions_json|safe }};
+        const vaccineNameSelect = document.getElementById('id_vaccineName');
+        const vaccineDescrInput = document.getElementById('id_vaccineDescr');
+        
+        if (vaccineNameSelect && vaccineDescrInput) {
+            vaccineNameSelect.addEventListener('change', function() {
+                const selectedVaccine = this.value;
+                if (vaccineDescriptions[selectedVaccine]) {
+                    vaccineDescrInput.value = vaccineDescriptions[selectedVaccine];
+                } else if (selectedVaccine === '') {
+                    vaccineDescrInput.value = '';
+                }
+            });
+        }
     </script>
 </body>
 </html>

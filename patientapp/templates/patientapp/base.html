@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | {% block title %}Portal{% endblock %}</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Tailwind CSS with dynamic configurations -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#006565",
+              "primary-hover": "#004F4F",
+              "soft-teal": "#0D9488",
+              "secondary": "#06B6D4",
+              "hover-cyan": "#0891B2",
+              "background": "#F8FAFC",
+              "background-secondary": "#F1F5F9",
+              "surface-card": "#FFFFFF",
+              "text-main": "#0F172A",
+              "text-secondary": "#475569",
+              "text-muted": "#64748B",
+              "placeholder-text": "#94A3B8",
+              "border-primary": "#E2E8F0",
+              "border-secondary": "#CBD5E1",
+              "success": "#059669",
+              "success-bg": "#ECFDF5",
+              "success-border": "#A7F3D0",
+              "warning": "#D97706",
+              "warning-bg": "#FFFBEB",
+              "warning-border": "#FCD34D",
+              "danger": "#DC2626",
+              "danger-bg": "#FEF2F2",
+              "danger-border": "#FECACA",
+              "info": "#2563EB",
+              "info-bg": "#EFF6FF",
+              "info-border": "#BFDBFE",
+              "modern-cyan": "#06b6d4",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"]
+            },
+            animation: {
+              'gradient-bg': 'gradientBG 15s ease infinite',
+              'pulse-glow': 'pulseGlow 3s infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'float-delayed': 'float 8s ease-in-out infinite 2s',
+              'blob': 'blob 7s infinite'
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
+                '50%': { boxShadow: '0 0 30px rgba(6, 182, 212, 0.8)' }
+              },
+              gradientBG: {
+                '0%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+                '100%': { backgroundPosition: '0% 50%' }
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' }
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Custom CSS Overrides -->
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #F8FAFC;
+        color: #0F172A;
+        overflow-x: hidden;
+      }
+      
+      /* Glassmorphic Navbar styles */
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+      
+      /* Animated Underline for Navigation Links */
+      .nav-link {
+        position: relative;
+        color: #475569;
+        transition: color 0.3s ease;
+      }
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #006565;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .nav-link:hover::after, .nav-link.active::after {
+        transform: scaleX(1);
+      }
+      .nav-link:hover, .nav-link.active {
+        color: #006565;
+      }
+      
+      /* Mesh backgrounds */
+      .mesh-bg {
+        background-image: radial-gradient(at 40% 20%, rgba(6, 182, 212, 0.04) 0px, transparent 50%),
+                          radial-gradient(at 80% 0%, rgba(0, 101, 101, 0.04) 0px, transparent 50%),
+                          radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.04) 0px, transparent 50%);
+      }
+      
+      .dropdown:hover .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
+      .dropdown-menu { opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out; }
+      
+      /* Spacing and border radius definitions matching the Parent Portal spec */
+      .card-premium {
+        background-color: #FFFFFF;
+        border-radius: 24px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .card-premium:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      
+      .btn-primary-custom {
+        height: 48px;
+        border-radius: 16px;
+        background-color: #006565;
+        color: #FFFFFF;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+      
+      .btn-primary-custom:hover {
+        background-color: #004F4F;
+        transform: translateY(-2px);
+      }
+      
+      .btn-secondary-custom {
+        height: 48px;
+        border-radius: 16px;
+        border: 1px solid #CBD5E1;
+        color: #0F172A;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        background-color: #FFFFFF;
+      }
+      
+      .btn-secondary-custom:hover {
+        background-color: #F1F5F9;
+        transform: translateY(-2px);
+      }
+      
+      .input-custom {
+        border-radius: 16px;
+        border: 1px solid #CBD5E1;
+        background-color: #FFFFFF;
+        padding: 0.75rem 1rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+      }
+      
+      .input-custom:focus {
+        border-color: #06B6D4;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        outline: none;
+      }
+      
+      .badge-custom {
+        border-radius: 999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+      
+      /* Global Alert Styles based on theme.md */
+      .alert-success {
+        background-color: #ECFDF5;
+        color: #059669;
+        border: 1px solid #A7F3D0;
+      }
+      .alert-warning {
+        background-color: #FFFBEB;
+        color: #D97706;
+        border: 1px solid #FCD34D;
+      }
+      .alert-danger {
+        background-color: #FEF2F2;
+        color: #DC2626;
+        border: 1px solid #FECACA;
+      }
+      .alert-info {
+        background-color: #EFF6FF;
+        color: #2563EB;
+        border: 1px solid #BFDBFE;
+      }
+      
+      .container-max {
+        max-w-7xl mx-auto px-8;
+      }
+      
+      /* Flatpickr input styling */
+      .flatpickr-input {
+        cursor: pointer;
+      }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="text-text-main font-body mesh-bg min-h-screen flex flex-col">
+
+    {% block header %}
+        {% include 'patientapp/menu.html' %}
+    {% endblock %}
+
+    <main class="flex-grow pt-[110px] pb-16 max-w-7xl mx-auto w-full px-4 md:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer_include %}
+        {% include 'patientapp/footer.html' %}
+    {% endblock %}
+
+    <!-- Global Javascript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script>
+      // Global utility configurations and layout triggers
+      $(document).ready(function() {
+          // Language selector drop down trigger can be bound here if required
+          // Any other global UI hooks
+      });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

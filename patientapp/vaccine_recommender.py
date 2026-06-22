@@ -156,10 +156,13 @@ def get_missed_vaccines(child_id: int) -> dict:
                 # Check if any received vaccine name contains this keyword
                 already_got = any(kw in rname for rname in received_names)
                 if not already_got:
+                    import datetime
+                    tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%d %B, %Y')
                     missed.append({
                         "name": kw.title(),           # e.g. "Bcg" → titlified display
                         "due_age_range": label,
                         "overdue_since": f"Should have been given at {label} (child is now {age} yr old)",
+                        "catch_up_date": f"Recommended Date: {tomorrow}"
                     })
 
         # Assign per-item severity and compute overall

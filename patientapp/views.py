@@ -369,7 +369,8 @@ class PatientProfile(View):
                 patient_id=request.session.get('Cid'),
                 childname=request.POST.get('childname'),
                 dob=request.POST.get('dob'),
-                gender=request.POST.get('gender')
+                gender=request.POST.get('gender'),
+                blood_group=request.POST.get('blood_group')
             )
             messages.info(request, "Child profile added successfully!")
             return redirect('patient:profilepage')
@@ -408,7 +409,7 @@ class ViewVaccineList(View):
         if request.session.get('CName') is None:
             return redirect('patient:loginpage')
         bindHospital = Hospitaltbl.objects.all().order_by('-id')
-        bindData = Vaccinetbl.objects.select_related("hospitalId").all().order_by('id')
+        bindData = Vaccinetbl.objects.select_related("hospitalId").prefetch_related("education_info").all().order_by('id')
         context={
                 'hospitalData' : bindHospital,
                 'bindData' : bindData,
@@ -421,11 +422,10 @@ def loadVaccines(request,h_id=None):
     h_id = request.GET.get("h_id")
    
     if int(h_id) >0:
-       
-        vlist = Vaccinetbl.objects.filter(hospitalId=h_id).order_by('id')
+        vlist = Vaccinetbl.objects.filter(hospitalId=h_id).prefetch_related("education_info").order_by('id')
         return render(request, 'patientapp/loadvaccinerecord.html', {'bindData': vlist})                     
     else:
-        vlist = Vaccinetbl.objects.select_related("hospitalId").all().order_by('id')
+        vlist = Vaccinetbl.objects.select_related("hospitalId").prefetch_related("education_info").all().order_by('id')
         return render(request, 'patientapp/loadvaccinerecord.html', {'bindData': vlist})
 
 
@@ -441,3 +441,133 @@ class ChildVaccinationHistory(View):
             'child': child,
             'records': records
         })
+
+
+from django.http import HttpResponse
+
+def download_vaccine_card(request, child_id):
+    if request.session.get('CName') is None:
+        return redirect('patient:loginpage')
+    from patientapp.pdf_service import generate_vaccine_card_pdf
+    child = get_object_or_404(Childtbl, id=child_id, patient_id=request.session.get('Cid'))
+    pdf_bytes = generate_vaccine_card_pdf(child)
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="vaccine_card_{child.childname.replace(" ", "_")}.pdf"'
+    return response
+
+
+def upload_vaccine_card_ocr(request):
+    if request.method != 'POST' or request.session.get('Cid') is None:
+        return JsonResponse({'status': 'error', 'message': 'Unauthorized request'}, status=400)
+    
+    child_id = request.POST.get('child_id')
+    card_image = request.FILES.get('card_image')
+    if not child_id or not card_image:
+        return JsonResponse({'status': 'error', 'message': 'Missing parameters'}, status=400)
+        
+    child = get_object_or_404(Childtbl, id=child_id, patient_id=request.session.get('Cid'))
+    
+    from patientapp.models import VaccineCardUpload
+    upload_record = VaccineCardUpload.objects.create(
+        patient_id=request.session.get('Cid'),
+        image=card_image
+    )
+    
+    from patientapp.ocr_service import extract_vaccine_data_from_image
+    extracted = extract_vaccine_data_from_image(upload_record.image.path, child.dob)
+    
+    # Save the extracted JSON data to the record
+    upload_record.extracted_data = extracted
+    upload_record.save()
+    
+    return JsonResponse({
+        'status': 'success',
+        'upload_id': upload_record.id,
+        'child_id': child.id,
+        'extracted': extracted
+    })
+
+
+import datetime
+
+def confirm_ocr_results(request):
+    if request.method != 'POST' or request.session.get('Cid') is None:
+        return JsonResponse({'status': 'error', 'message': 'Unauthorized request'}, status=400)
+        
+    child_id = request.POST.get('child_id')
+    vaccines_json = request.POST.get('vaccines') # JSON array of {name, date, status}
+    if not child_id or not vaccines_json:
+        return JsonResponse({'status': 'error', 'message': 'Missing parameters'}, status=400)
+        
+    child = get_object_or_404(Childtbl, id=child_id, patient_id=request.session.get('Cid'))
+    
+    import json
+    try:
+        vaccines = json.loads(vaccines_json)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
+        
+    from hospitalapp.models import Hospitaltbl, Vaccinetbl
+    from patientapp.models import Appointmenttbl, VaccinationRecord
+    
+    # Find any default hospital to link appointments
+    default_hospital = Hospitaltbl.objects.first()
+    if not default_hospital:
+        return JsonResponse({'status': 'error', 'message': 'No registered hospital found to log records.'}, status=400)
+        
+    created_count = 0
+    for item in vaccines:
+        vaccine_name = item.get('name')
+        date_str = item.get('date')
+        if not vaccine_name or not date_str:
+            continue
+            
+        try:
+            admin_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            continue
+            
+        # 1. Check or find/create a generic vaccine at default hospital matching vaccineName
+        vaccine = Vaccinetbl.objects.filter(vaccineName__icontains=vaccine_name).first()
+        if not vaccine:
+            # Create a mock vaccine row at default hospital
+            vaccine = Vaccinetbl.objects.create(
+                hospitalId=default_hospital,
+                vaccineName=vaccine_name,
+                vaccineDescr=f"Auto-recovered from historical vaccination card upload.",
+                price=0
+            )
+            
+        # 2. Check if a VaccinationRecord already exists for this child & vaccine
+        if VaccinationRecord.objects.filter(child=child, vaccine=vaccine).exists():
+            continue
+            
+        # 3. Create a completed appointment
+        appointment = Appointmenttbl.objects.create(
+            hospitalid=default_hospital,
+            vaccineid=vaccine,
+            patientid_id=request.session.get('Cid'),
+            childname=child.childname,
+            child=child,
+            aptdate=admin_date,
+            active=2 # Completed
+        )
+        
+        # 4. Create VaccinationRecord
+        VaccinationRecord.objects.create(
+            child=child,
+            vaccine=vaccine,
+            appointment=appointment
+        )
+        created_count += 1
+        
+    return JsonResponse({
+        'status': 'success',
+        'message': f'Successfully recovered and saved {created_count} vaccination records!'
+    })
+
+
+def set_language(request):
+    lang = request.GET.get('lang', 'en')
+    request.session['django_language'] = lang
+    return redirect(request.META.get('HTTP_REFERER', '/'))
