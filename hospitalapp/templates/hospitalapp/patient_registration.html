@@ -1,0 +1,321 @@
+{% extends 'hospitalapp/base.html' %} {% load static %} {% block contents %}
+<div class="row">
+  <div class="col-md-12">
+    <h3 class="title1">Patient Registration & RFID Assignment</h3>
+    <div class="panel-body widget-shadow">
+      <h4>Pending Registrations</h4>
+
+      <!-- Search Box -->
+      <form
+        method="GET"
+        class="form-inline mb-4"
+        style="margin-bottom: 20px"
+      >
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            name="q"
+            value="{{ search_query }}"
+            placeholder="Search by name or contact..."
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          <i class="fa fa-search"></i> Search
+        </button>
+      </form>
+
+      <!-- Pending Patients Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Contact No</th>
+              <th>City</th>
+              <th>Area</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for patient in pending_patients %}
+            <tr>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.contactNo }}</td>
+              <td>{{ patient.cityId.cityName }}</td>
+              <td>{{ patient.areaId.areaName }}</td>
+              <td>
+                <span class="label label-warning">{{ patient.status }}</span>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-info btn-sm"
+                  onclick="selectPatient('{{ patient.id }}', '{{ patient.name }}', '{{ patient.contactNo }}')"
+                >
+                  <i class="fa fa-hand-pointer-o"></i> Select
+                </button>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td
+                colspan="6"
+                class="text-center"
+              >
+                No pending registrations found.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RFID Assignment Section (Hidden by default, shown when patient selected) -->
+      <div
+        id="rfidAssignmentCard"
+        class="card mt-4"
+        style="
+          display: none;
+          border: 1px solid #ccc;
+          padding: 20px;
+          border-radius: 5px;
+          margin-top: 20px;
+        "
+      >
+        <h4>
+          Assign RFID to
+          <span
+            id="selectedPatientName"
+            class="text-primary"
+          ></span>
+        </h4>
+        <div
+          id="alertMessage"
+          style="display: none"
+          class="alert"
+        ></div>
+
+        <form
+          id="rfidForm"
+          method="POST"
+          action="{% url 'hospitalapp:assign_rfid_api' %}"
+        >
+          {% csrf_token %}
+          <input
+            type="hidden"
+            id="patientId"
+            name="patient_id"
+            value=""
+          />
+
+          <div
+            class="form-group row"
+            style="margin-bottom: 15px"
+          >
+            <label
+              for="rfidNumber"
+              class="col-sm-2 control-label"
+              >RFID Number</label
+            >
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                id="rfidNumber"
+                name="rfid_number"
+                placeholder="Scan or type RFID card number"
+                required
+              />
+            </div>
+            <div class="col-sm-2">
+              <button
+                type="button"
+                id="btnGenerateRfid"
+                class="btn btn-warning w-100"
+              >
+                <i class="fa fa-refresh"></i> Generate New
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-10 col-sm-offset-2">
+              <button
+                type="submit"
+                class="btn btn-success"
+              >
+                <i class="fa fa-check"></i> Assign RFID
+              </button>
+              <button
+                type="button"
+                class="btn btn-default"
+                onclick="cancelSelection()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div
+          class="card mt-4"
+          style="border: 1px solid #eee; padding: 15px; border-radius: 5px"
+        >
+          <h4>Confirm Portal Access</h4>
+          <div
+            id="verificationMessage"
+            class="alert"
+            style="display: none"
+          ></div>
+          <div
+            class="form-group row"
+            style="margin-bottom: 15px"
+          >
+            <label
+              for="phoneNumber"
+              class="col-sm-2 control-label"
+              >Phone Number</label
+            >
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                id="phoneNumber"
+                name="phone_number"
+                placeholder="Enter registered patient phone number"
+              />
+            </div>
+            <div class="col-sm-2">
+              <button
+                type="button"
+                id="btnVerifyRegistration"
+                class="btn btn-primary w-100"
+              >
+                <i class="fa fa-user-check"></i> Verify & Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function selectPatient(id, name, contact) {
+    document.getElementById('patientId').value = id;
+    document.getElementById('selectedPatientName').textContent =
+      name + ' (' + contact + ')';
+    document.getElementById('rfidAssignmentCard').style.display = 'block';
+    document.getElementById('rfidNumber').focus();
+
+    // Scroll to the assignment card
+    document
+      .getElementById('rfidAssignmentCard')
+      .scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function cancelSelection() {
+    document.getElementById('patientId').value = '';
+    document.getElementById('selectedPatientName').textContent = '';
+    document.getElementById('rfidNumber').value = '';
+    document.getElementById('rfidAssignmentCard').style.display = 'none';
+    document.getElementById('alertMessage').style.display = 'none';
+  }
+
+  document
+    .getElementById('btnGenerateRfid')
+    .addEventListener('click', function () {
+      fetch('/hospital/api/generate-rfid/', {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')
+            .value,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const generated = data.rfid || data.card_number || data.rfid_number;
+          if (generated) {
+            document.getElementById('rfidNumber').value = generated;
+            showAlert('RFID generated successfully.', 'alert-success');
+          } else {
+            showAlert('Failed to generate RFID.', 'alert-danger');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          showAlert('Failed to generate RFID.', 'alert-danger');
+        });
+    });
+
+  document
+    .getElementById('btnVerifyRegistration')
+    .addEventListener('click', function () {
+      const patientId = document.getElementById('patientId').value;
+      const phone = document.getElementById('phoneNumber').value.trim();
+      const verificationBox = document.getElementById('verificationMessage');
+
+      if (!patientId) {
+        verificationBox.className = 'alert alert-warning';
+        verificationBox.textContent = 'Please select a patient first.';
+        verificationBox.style.display = 'block';
+        return;
+      }
+
+      if (!phone) {
+        verificationBox.className = 'alert alert-warning';
+        verificationBox.textContent =
+          'A phone number is required for verification.';
+        verificationBox.style.display = 'block';
+        return;
+      }
+
+      fetch('/hospital/api/verify-registration/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')
+            .value,
+        },
+        body: JSON.stringify({
+          patient_id: patientId,
+          phone_number: phone,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            verificationBox.className = 'alert alert-success';
+          } else {
+            verificationBox.className = 'alert alert-danger';
+          }
+          verificationBox.textContent = data.message || 'Verification failed.';
+          verificationBox.style.display = 'block';
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          verificationBox.className = 'alert alert-danger';
+          verificationBox.textContent = 'Verification request failed.';
+          verificationBox.style.display = 'block';
+        });
+    });
+
+  function showAlert(message, type) {
+    var alertDiv = document.getElementById('alertMessage');
+    alertDiv.textContent = message;
+    alertDiv.className = 'alert ' + type;
+    alertDiv.style.display = 'block';
+    setTimeout(function () {
+      alertDiv.style.display = 'none';
+    }, 3000);
+  }
+</script>
+{% endblock %}

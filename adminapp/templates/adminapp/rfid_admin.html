@@ -1,0 +1,133 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="title1">RFID Administration</h3>
+        
+        <!-- Summary Cards -->
+        <div class="row mb-4" style="margin-bottom: 20px;">
+            <div class="col-md-3">
+                <div class="widget-shadow p-3 text-center" style="padding: 20px; background: #fff; border-radius: 5px;">
+                    <h4 class="text-primary"><i class="fa fa-id-card"></i> Total Cards</h4>
+                    <h2>{{ total_cards|default:"0" }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget-shadow p-3 text-center" style="padding: 20px; background: #fff; border-radius: 5px;">
+                    <h4 class="text-success"><i class="fa fa-check-circle"></i> Active</h4>
+                    <h2>{{ active_cards|default:"0" }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget-shadow p-3 text-center" style="padding: 20px; background: #fff; border-radius: 5px;">
+                    <h4 class="text-danger"><i class="fa fa-ban"></i> Inactive</h4>
+                    <h2>{{ inactive_cards|default:"0" }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget-shadow p-3 text-center" style="padding: 20px; background: #fff; border-radius: 5px;">
+                    <h4 class="text-info"><i class="fa fa-calendar"></i> Today</h4>
+                    <h2>{{ today_cards|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body widget-shadow">
+            <h4>All RFID Cards</h4>
+            
+            <!-- Search Box -->
+            <form method="GET" class="form-inline mb-4" style="margin-bottom: 20px; margin-top: 20px;">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" value="{{ search_query }}" placeholder="Search RFID, Patient, Hospital..." style="width: 300px;">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+            </form>
+
+            <!-- RFID Cards Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>RFID Number</th>
+                            <th>Patient Name</th>
+                            <th>Hospital</th>
+                            <th>Status</th>
+                            <th>Assigned Date</th>
+                            <th>Staff</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rfid in rfid_cards %}
+                        <tr>
+                            <td><strong>{{ rfid.rfid_number }}</strong></td>
+                            <td>{{ rfid.patient.name }}</td>
+                            <td>{{ rfid.hospital.title }}</td>
+                            <td>
+                                {% if rfid.is_active %}
+                                    <span class="label label-success">Active</span>
+                                {% else %}
+                                    <span class="label label-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ rfid.assigned_date|date:"M d, Y H:i" }}</td>
+                            <td>{{ rfid.assigned_by.name|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No RFID cards found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Audit Log Section -->
+        <div class="panel-body widget-shadow mt-4" style="margin-top: 30px;">
+            <h4>Assignment Audit Log</h4>
+            <div class="table-responsive" style="margin-top: 20px;">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>RFID Number</th>
+                            <th>Patient</th>
+                            <th>Action</th>
+                            <th>Staff</th>
+                            <th>Hospital</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in audit_logs %}
+                        <tr>
+                            <td>{{ log.rfid_card.rfid_number }}</td>
+                            <td>{{ log.patient.name }}</td>
+                            <td>
+                                {% if log.action == 'ASSIGNED' %}
+                                    <span class="label label-success">ASSIGNED</span>
+                                {% elif log.action == 'DEACTIVATED' %}
+                                    <span class="label label-danger">DEACTIVATED</span>
+                                {% elif log.action == 'REASSIGNED' %}
+                                    <span class="label label-warning">REASSIGNED</span>
+                                {% else %}
+                                    <span class="label label-default">{{ log.action }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ log.performed_by.name }}</td>
+                            <td>{{ log.hospital.title }}</td>
+                            <td>{{ log.timestamp|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No audit logs found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

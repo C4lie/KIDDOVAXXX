@@ -5,22 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>KiddoVax | Receptionist Dashboard</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
+
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              "admin-primary": "#4f46e5",    /* Indigo 600 */
-              "admin-secondary": "#4338ca",  /* Indigo 700 */
+              "admin-primary": "#4f46e5",
+              "admin-secondary": "#4338ca",
               "background": "#f8fafc",
-              "on-surface": "#0f172a",       /* Slate 900 */
+              "on-surface": "#0f172a",
             },
             fontFamily: {
               "headline": ["Manrope", "sans-serif"],
@@ -32,50 +32,26 @@
     </script>
     <style>
       body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; overflow-x: hidden; }
-      
-      .glass-nav {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(79, 70, 229, 0.1);
-      }
-      
-      .glass-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-      
-      .mesh-bg {
-        background-image: 
-          radial-gradient(at 10% 20%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
-          radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-          radial-gradient(at 50% 50%, rgba(255, 255, 255, 1) 0px, transparent 100%);
-      }
-      
-      .stagger-1 { animation-delay: 100ms; }
-      .stagger-2 { animation-delay: 200ms; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 10% 20%, rgba(79, 70, 229, 0.08) 0px, transparent 50%), radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(255, 255, 255, 1) 0px, transparent 100%); }
     </style>
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
-
-    <!-- Admin Navbar -->
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm animate__animated animate__fadeInDown">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
-            <!-- Brand -->
             <a href="{% url 'receptionist:receptionisthome' %}" class="flex items-center decoration-transparent group">
                 <div class="flex items-center font-headline font-black text-3xl tracking-tighter text-[#006a6a]">
                     Kidd<img src="{% static 'patients/images/logo-icon.png' %}" alt="o" class="h-8 mx-0.5 object-contain">Vax
                 </div>
                 <span class="text-admin-primary/80 font-bold text-lg ml-3 tracking-widest uppercase border-l-2 border-slate-200 pl-3 flex items-center h-8">Receptionist</span>
             </a>
-            
-            <!-- Context Links -->
+
             <nav class="hidden lg:flex items-center gap-6">
                 <a class="font-headline font-bold text-sm text-admin-primary bg-admin-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'receptionist:receptionisthome' %}">Dashboard Hub</a>
                 <a class="font-headline font-bold text-sm text-slate-500 hover:text-admin-primary transition-colors" href="{% url 'receptionist:managepatients' %}">Bookings</a>
             </nav>
 
-            <!-- User Status & Logout -->
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-indigo-50">
                     <div class="w-10 h-10 bg-gradient-to-br from-admin-primary to-admin-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner text-sm">
@@ -90,23 +66,21 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-8 py-12 w-full space-y-12">
-        
-        <!-- Welcome Hero -->
-        <div class="text-center space-y-4 animate__animated animate__fadeInUp">
-            {% if hospital_name %}
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 font-headline font-bold text-sm uppercase tracking-wider shadow-sm mb-2">
-                <span class="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                {{ hospital_name }}
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full animate__animated animate__fadeIn">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200/60 pb-6 mb-8">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-slate-800 tracking-tight">Clinical Check-in Hub</h1>
+                {% if hospital_name %}
+                <div class="mt-3 inline-flex items-center px-4 py-2 rounded-full bg-red-50 border border-red-200 text-red-700 font-bold text-sm">
+                    <span class="mr-2">🏥</span> {{ hospital_name }}
+                </div>
+                {% endif %}
+                <p class="text-slate-500 mt-2 font-medium">Manage daily patient flows, track queue waiting times, and verify RFID tags securely.</p>
             </div>
-            {% endif %}
-            <h1 class="font-headline font-black text-5xl text-slate-800 tracking-tight">Clinical Check-in Hub</h1>
-            <p class="text-slate-500 font-medium text-lg max-w-2xl mx-auto">Manage daily patient flows, verify RFID tags, and mark vaccines as administered securely.</p>
         </div>
 
         {% if messages %}
-        <div class="max-w-2xl mx-auto bg-green-50 text-green-700 border border-green-200 rounded-2xl p-4 text-sm font-bold flex justify-center items-center gap-3 shadow-sm animate__animated animate__headShake">
+        <div class="bg-green-50 text-green-700 border border-green-200 rounded-2xl p-4 mb-8 text-sm font-bold flex items-center gap-3 shadow-sm animate__animated animate__headShake">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
             <ul class="list-none p-0 m-0">
                 {% for message in messages %}
@@ -116,41 +90,48 @@
         </div>
         {% endif %}
 
-        <!-- Navigation Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 content-center justify-center max-w-5xl mx-auto">
-            
-            <!-- Realtime Metrics (Wait Count) -->
-            <div class="block group animate__animated animate__fadeInUp stagger-1 cursor-default">
-                <div class="glass-card rounded-[2rem] p-8 h-full transition-all duration-300 border border-slate-200 relative overflow-hidden flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-orange-500/10 opacity-50"></div>
-                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-400 rounded-full blur-3xl opacity-20"></div>
-                    
-                    <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4 shadow-inner relative z-10 border-4 border-amber-50">
-                        <span class="font-black text-3xl font-headline tracking-tighter">{{ waiting_count|default:"0" }}</span>
-                    </div>
-                    <h3 class="font-headline font-black text-2xl text-slate-800 mb-1 z-10 relative">Waiting</h3>
-                    <p class="text-slate-500 font-bold text-sm leading-relaxed uppercase tracking-wider z-10 relative">Patients Currently</p>
-                </div>
+        {% include 'receptionistapp/rfid_scan_panel.html' %}
+
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 my-8">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">Total Appointments</div>
+                <div class="mt-2 text-2xl font-black text-slate-700">{{ queue_data.total_appointments|default:"0" }}</div>
             </div>
-
-            <!-- Manage Bookings -->
-            <a href="{% url 'receptionist:managepatients' %}" class="block group animate__animated animate__fadeInUp stagger-2 lg:col-span-2">
-                <div class="glass-card rounded-[2rem] p-8 h-full transition-all duration-300 hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.3)] hover:-translate-y-2 border border-slate-200 hover:border-indigo-300 relative overflow-hidden flex items-center justify-between">
-                    <div class="absolute -right-6 -bottom-6 w-48 h-48 bg-indigo-100 rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
-                    <div class="relative z-10 max-w-xs">
-                        <div class="w-14 h-14 bg-indigo-50 text-admin-primary rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-admin-primary group-hover:text-white transition-colors duration-300">
-                            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                        </div>
-                        <h3 class="font-headline font-bold text-2xl text-slate-800 mb-2">Patient Check-In Table</h3>
-                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Map RFID cards to waiting patients or complete active vaccine appointments. This queue contains the {{ today_apps|default:"0" }} scheduled appointments for today.</p>
-                    </div>
-                    <div class="hidden sm:block text-admin-primary/20 group-hover:text-admin-primary/40 transition-colors duration-300 pr-4">
-                        <svg class="w-32 h-32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    </div>
-                </div>
-            </a>
-
+            <div class="rounded-2xl border border-sky-100 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-sky-600 uppercase tracking-wider">Checked In</div>
+                <div class="mt-2 text-2xl font-black text-sky-700">{{ queue_data.checked_in_count|default:"0" }}</div>
+            </div>
+            <div class="rounded-2xl border border-amber-100 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-amber-600 uppercase tracking-wider">Waiting</div>
+                <div class="mt-2 text-2xl font-black text-amber-700">{{ queue_data.waiting_count|default:"0" }}</div>
+            </div>
+            <div class="rounded-2xl border border-indigo-100 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-indigo-600 uppercase tracking-wider">In Progress</div>
+                <div class="mt-2 text-2xl font-black text-indigo-700">{{ queue_data.in_progress_count|default:"0" }}</div>
+            </div>
+            <div class="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-emerald-600 uppercase tracking-wider">Completed</div>
+                <div class="mt-2 text-2xl font-black text-emerald-700">{{ queue_data.completed_count|default:"0" }}</div>
+            </div>
+            <div class="rounded-2xl border border-rose-100 bg-white p-4 text-center shadow-sm">
+                <div class="text-[11px] font-black text-rose-600 uppercase tracking-wider">No-Show</div>
+                <div class="mt-2 text-2xl font-black text-rose-700">{{ queue_data.no_show_count|default:"0" }}</div>
+            </div>
         </div>
+
+        {% if queue_data.ai_insights %}
+        <div class="glass-card rounded-3xl p-6 border-l-4 border-amber-500">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-amber-600">lightbulb</span>
+                <h3 class="font-headline font-black text-xl text-amber-800">AI Operational Insights</h3>
+            </div>
+            <ul class="list-disc pl-5 text-slate-600 text-sm font-medium space-y-2">
+                {% for insight in queue_data.ai_insights %}
+                <li>{{ insight }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </main>
 </body>
 </html>

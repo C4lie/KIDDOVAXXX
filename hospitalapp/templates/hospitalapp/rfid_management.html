@@ -1,0 +1,98 @@
+{% extends 'hospitalapp/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="title1">RFID Card Management</h3>
+        <div class="panel-body widget-shadow">
+            
+            <!-- Search Box -->
+            <form method="GET" class="form-inline mb-4" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" value="{{ search_query }}" placeholder="Search by RFID or patient name..." style="width: 300px;">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+            </form>
+
+            <!-- RFID Cards Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>RFID Number</th>
+                            <th>Patient Name</th>
+                            <th>Status</th>
+                            <th>Assigned Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rfid in rfid_cards %}
+                        <tr>
+                            <td><strong>{{ rfid.rfid_number }}</strong></td>
+                            <td>{{ rfid.patient.name }}</td>
+                            <td>
+                                {% if rfid.is_active %}
+                                    <span class="label label-success">Active</span>
+                                {% else %}
+                                    <span class="label label-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ rfid.assigned_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'hospitalapp:rfid_history' rfid.id %}" class="btn btn-info btn-xs" title="View History">
+                                    <i class="fa fa-history"></i> History
+                                </a>
+                                {% if rfid.is_active %}
+                                <button type="button" class="btn btn-danger btn-xs" onclick="confirmDeactivate('{{ rfid.id }}', '{{ rfid.rfid_number }}')" title="Deactivate">
+                                    <i class="fa fa-ban"></i> Deactivate
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No RFID cards found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Deactivate Modal -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="deactivateModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="deactivateForm" method="POST" action="{% url 'hospitalapp:deactivate_rfid' %}">
+          {% csrf_token %}
+          <input type="hidden" id="deactivateRfidId" name="rfid_id" value="">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="deactivateModalLabel">Confirm Deactivation</h4>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to deactivate RFID card <strong><span id="deactivateRfidNumber"></span></strong>?
+            <p class="text-danger mt-2"><small>This action cannot be fully undone. The patient will need a new RFID assignment.</small></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Deactivate Card</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    function confirmDeactivate(id, number) {
+        document.getElementById('deactivateRfidId').value = id;
+        document.getElementById('deactivateRfidNumber').textContent = number;
+        $('#deactivateModal').modal('show');
+    }
+</script>
+{% endblock %}

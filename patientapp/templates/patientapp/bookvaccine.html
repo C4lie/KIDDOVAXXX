@@ -4,50 +4,27 @@
 {% block title %}Book Appointment{% endblock %}
 
 {% block extra_head %}
-<!-- Select2 CSS for styled selector dropdowns -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Flatpickr CSS & JS CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <style>
-  /* Select2 Custom Premium Styling */
-  .select2-container .select2-selection--single {
-    height: 3.25rem;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    background-color: #F8FAFC;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
+  /* Flatpickr Custom Styling & High Z-Index */
+  .flatpickr-calendar {
+    z-index: 999999 !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15) !important;
+    border: 1px solid #E2E8F0 !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 8px !important;
   }
-  .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 3rem;
-    right: 12px;
+  .flatpickr-day.selected, .flatpickr-day.selected:hover {
+    background: #006565 !important;
+    border-color: #006565 !important;
   }
-  .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #0F172A;
-    font-weight: 600;
-    font-size: 0.875rem;
-    font-family: 'Inter', sans-serif;
-    padding-left: 0;
+  .flatpickr-day.today {
+    border-color: #06B6D4 !important;
   }
-  .select2-dropdown {
-    border-radius: 16px;
-    border: 1px solid rgba(6, 182, 212, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    padding: 4px;
-    background-color: #FFFFFF;
-  }
-  .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: linear-gradient(135deg, #006565 0%, #06B6D4 100%) !important;
-    color: #FFFFFF !important;
-    border-radius: 8px;
-  }
-  .select2-container--default .select2-results__option--selectable {
-    padding: 8px 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 8px;
-  }
-  
+
   /* Custom scrollbar for appointments containers */
   #upcoming-appointments-container::-webkit-scrollbar,
   #history-appointments-container::-webkit-scrollbar {
@@ -99,7 +76,7 @@
     </section>
 
     <!-- Section 1: Appointment Booking (Full Width) -->
-    <section id="booking-form-card" class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col gap-6 animate__animated animate__fadeIn">
+    <section id="booking-form-card" class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col gap-6 overflow-hidden animate__animated animate__fadeIn">
         <h3 class="font-headline font-bold text-lg text-slate-800 flex items-center gap-3 border-b border-slate-100 pb-4">
             <span class="material-symbols-outlined text-primary bg-teal-50 rounded-full p-2">edit_calendar</span> Book Appointment
         </h3>
@@ -108,14 +85,14 @@
             {% csrf_token %}
             <input type="hidden" name="childname" id="childname">
             
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start overflow-hidden">
                 <!-- Left Column: Booking Credentials (lg:col-span-7) -->
-                <div class="lg:col-span-7 space-y-6">
+                <div class="lg:col-span-7 space-y-6 min-w-0">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Child Profile Select -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5 min-w-0">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Child Profile</label>
-                            <select id="child_select" name="child_id" required>
+                            <select id="child_select" name="child_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm cursor-pointer min-h-[48px]">
                                 <option value="">-- Choose child --</option>
                                 {% for child in children %}
                                 <option value="{{ child.id }}" 
@@ -128,14 +105,24 @@
                         </div>
 
                         <!-- Hospital Center Select -->
-                        <div class="space-y-1.5">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Medical Center</label>
-                            <select id="hospitalid" name="hospitalid" required>
+                        <div class="space-y-1.5 min-w-0">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate">Select Medical Center</label>
+                                <button type="button" onclick="detectUserLocation()" class="text-[10px] font-bold text-primary hover:underline flex items-center gap-1 shrink-0">
+                                    <span class="material-symbols-outlined text-xs">my_location</span> Detect Nearest
+                                </button>
+                            </div>
+                            <select id="hospitalid" name="hospitalid" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm cursor-pointer min-h-[48px]">
                                 <option value="">-- Choose hospital --</option>
-                                {% for item in hospitalData %}    
-                                <option value="{{ item.id }}">{{ item.title }}</option>
+                                {% for item in recommended_hospitals %}    
+                                <option value="{{ item.hospital.id }}" {% if item.is_nearest %}selected{% endif %}>
+                                    {{ item.hospital.title }} {% if item.distance_km %} ({{ item.distance_km }} km away){% endif %}{% if item.is_nearest %} ★ Nearest{% endif %}
+                                </option>
                                 {% endfor %}
                             </select>
+                            <div id="nearest-hospital-badge" class="mt-1 text-[11px] text-teal-700 font-bold flex items-center gap-1 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100">
+                                <span class="material-symbols-outlined text-sm">stars</span> Recommended by proximity & eligibility
+                            </div>
                         </div>
                     </div>
 
@@ -144,21 +131,68 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Vaccines Dropdown (Cascaded via AJAX) -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5 min-w-0">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Vaccine Dose</label>
-                            <select id="vaccineid" name="vaccineid" required>
-                                <option value="">-- Select hospital first --</option>
+                            <select id="vaccineid" name="vaccineid" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm cursor-pointer min-h-[48px]">
+                                <option value="">-- Choose vaccine dose --</option>
+                                {% for v in initial_vaccines %}
+                                <option value="{{ v.pk }}" {% if v.is_prefilled %}selected{% endif %}>
+                                    {{ v.vaccineName }}
+                                </option>
+                                {% endfor %}
                             </select>
                         </div>
 
                         <!-- Date Picker -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5 min-w-0">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Appointment Date</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none">calendar_today</span>
-                                <input type="text" id="aptdate" name="aptdate" required 
-                                       class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm"
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none z-10">calendar_today</span>
+                                <input type="date" id="aptdate" name="aptdate" required 
+                                       onclick="try{this.showPicker()}catch(e){}"
+                                       onfocus="try{this.showPicker()}catch(e){}"
+                                       class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm min-h-[48px] cursor-pointer"
                                        placeholder="Select scheduling date">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Time Slots Picker (Select + Quick Pills) -->
+                    <div id="time-slot-container" class="space-y-2 pt-2">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Available Time Slot</label>
+                        <select id="apttime" name="apttime" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm cursor-pointer min-h-[48px]">
+                            <option value="">-- Choose appointment time slot --</option>
+                            <option value="09:00:00">09:00 AM</option>
+                            <option value="09:30:00">09:30 AM</option>
+                            <option value="10:00:00">10:00 AM</option>
+                            <option value="10:30:00">10:30 AM</option>
+                            <option value="11:00:00">11:00 AM</option>
+                            <option value="11:30:00">11:30 AM</option>
+                            <option value="13:00:00">01:00 PM</option>
+                            <option value="13:30:00">01:30 PM</option>
+                            <option value="14:00:00">02:00 PM</option>
+                            <option value="14:30:00">02:30 PM</option>
+                            <option value="15:00:00">03:00 PM</option>
+                            <option value="15:30:00">03:30 PM</option>
+                            <option value="16:00:00">04:00 PM</option>
+                            <option value="16:30:00">04:30 PM</option>
+                        </select>
+                        <div id="time-slot-loading" class="hidden text-xs text-slate-400 font-semibold py-1">Checking slot availability...</div>
+                        <div id="time-slot-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1 max-h-[160px] overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <div id="selected-schedule-summary" class="hidden rounded-2xl border border-teal-100 bg-teal-50/60 p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Selected Schedule</div>
+                                <div class="mt-1 flex items-center gap-2 text-sm font-headline font-black text-slate-800">
+                                    <span class="material-symbols-outlined text-primary text-base">event</span>
+                                    <span id="selected-date-text">No date selected</span>
+                                </div>
+                                <div class="mt-1 flex items-center gap-2 text-sm font-headline font-black text-slate-800">
+                                    <span class="material-symbols-outlined text-primary text-base">schedule</span>
+                                    <span id="selected-time-text">No time selected</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,23 +205,14 @@
                 </div>
 
                 <!-- Right Column: Smart Suggestions (lg:col-span-5) -->
-                <div class="lg:col-span-5 space-y-4">
-                    <!-- Recommendation Placeholder Card (shown when no recommendations are active) -->
-                    <div id="recommendation-placeholder" class="space-y-3 bg-slate-50 border border-slate-200/60 p-6 rounded-2xl flex flex-col items-center justify-center text-center min-h-[220px] transition-all">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
-                            <span class="material-symbols-outlined text-2xl font-bold text-slate-400">tips_and_updates</span>
-                        </div>
-                        <h5 class="text-xs font-bold text-slate-700">Smart Suggestions</h5>
-                        <p class="text-[10px] text-slate-400 font-semibold leading-normal max-w-[220px]">Select a child profile and medical center to load recommended vaccine doses instantly.</p>
-                    </div>
-
-                    <!-- Smart Recommendations Card Container -->
-                    <div id="recommendation-container" class="hidden space-y-3 bg-teal-50/20 border border-teal-100/50 p-4 rounded-2xl animate__animated animate__fadeIn">
+                <div class="lg:col-span-5 space-y-4 min-w-0">
+                    <!-- Smart Recommendations Card Container (Always Visible) -->
+                    <div id="recommendation-container" class="space-y-3 bg-teal-50/20 border border-teal-100/50 p-5 rounded-2xl animate__animated animate__fadeIn">
                         <h4 class="font-headline font-bold text-xs text-primary flex items-center gap-1.5 uppercase tracking-wider">
                             <span class="material-symbols-outlined text-sm font-bold animate-pulse">tips_and_updates</span> Smart Suggestions
                         </h4>
-                        <div id="rec-loading" class="text-xs text-slate-400 font-semibold p-4 text-center">Identifying target doses...</div>
-                        <div id="rec-empty" class="hidden text-xs text-slate-500 font-semibold p-4 text-center bg-slate-50 border border-slate-100 rounded-xl">All recommended vaccinations are registered!</div>
+                        <div id="rec-loading" class="hidden text-xs text-slate-400 font-semibold p-4 text-center">Identifying target doses...</div>
+                        <div id="rec-empty" class="text-xs text-slate-500 font-semibold p-4 text-center bg-slate-50 border border-slate-100 rounded-xl">No recommendations available for the selected options.</div>
                         <div id="recommendation-cards" class="hidden grid grid-cols-1 gap-2.5 max-h-[320px] overflow-y-auto pr-1"></div>
                     </div>
                 </div>
@@ -235,8 +260,12 @@
                                                 {{ apt.vaccineid.vaccineName }}
                                             </h4>
                                             <p class="text-xs font-semibold text-slate-500">Child Profile: <span class="text-slate-800 font-bold">{{ apt.childname }}</span></p>
-                                            <p class="text-[11px] text-slate-400 font-medium">{{ apt.hospitalid.title }} · Scheduled: {{ apt.aptdate|date:"d M Y" }}</p>
-                                            <p class="text-[10px] font-semibold text-slate-400">Clinic Hours: 09:00 AM - 05:00 PM</p>
+                                            <p class="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                                                <span class="material-symbols-outlined text-[15px] text-slate-400">domain</span> {{ apt.hospitalid.title }}
+                                            </p>
+                                            <p class="text-[11px] font-bold text-teal-800 flex items-center gap-1">
+                                                <span class="material-symbols-outlined text-[15px] text-secondary">schedule</span> Scheduled Time: {{ apt.aptdate|date:"d M Y" }}{% if apt.apttime %} at {{ apt.apttime|time:"h:i A" }}{% endif %}
+                                            </p>
                                         </div>
                                     </div>
                                     
@@ -249,7 +278,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="flex flex-col gap-1.5">
-                                            <button onclick="openDetailModal('{{ apt.childname }}', '{{ apt.vaccineid.vaccineName }}', '{{ apt.hospitalid.title }}', '{{ apt.aptdate|date:"d M Y" }}', '{{ apt.active }}')" 
+                                            <button onclick="openDetailModal('{{ apt.childname }}', '{{ apt.vaccineid.vaccineName }}', '{{ apt.hospitalid.title }}', '{{ apt.aptdate|date:"d M Y" }}', '{{ apt.apttime|time:"h:i A"|default:"-" }}', '{{ apt.active }}')" 
                                                     class="text-primary hover:text-primary-hover font-bold text-[10px] tracking-wider uppercase bg-white hover:bg-teal-50 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200">
                                                 View Details
                                             </button>
@@ -308,7 +337,7 @@
                                                 {{ apt.vaccineid.vaccineName }}
                                             </h4>
                                             <p class="text-xs font-semibold text-slate-500">Child Profile: <span class="text-slate-800 font-bold">{{ apt.childname }}</span></p>
-                                            <p class="text-[11px] text-slate-400 font-medium">{{ apt.hospitalid.title }} · Scheduled: {{ apt.aptdate|date:"d M Y" }}</p>
+                                            <p class="text-[11px] text-slate-400 font-medium">{{ apt.hospitalid.title }} · Scheduled: {{ apt.aptdate|date:"d M Y" }}{% if apt.apttime %} at {{ apt.apttime|time:"h:i A" }}{% endif %}</p>
                                         </div>
                                     </div>
                                     
@@ -524,6 +553,10 @@
                     <span class="font-bold text-slate-800" id="modal-apt-date">-</span>
                 </div>
                 <div class="flex justify-between border-b border-slate-50 pb-2">
+                    <span class="font-bold text-slate-400">Scheduled Time:</span>
+                    <span class="font-bold text-slate-800" id="modal-apt-time">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-50 pb-2">
                     <span class="font-bold text-slate-400">Clinic Hours:</span>
                     <span class="font-medium text-slate-600">09:00 AM - 05:00 PM</span>
                 </div>
@@ -548,13 +581,202 @@
     window.lastMissedData = null;
     window.lastRecommendations = [];
 
+    function formatSelectedTime(timeValue) {
+        if (!timeValue) return 'No time selected';
+        var parts = String(timeValue).split(':');
+        if (parts.length < 2) return timeValue;
+        var hour = parseInt(parts[0], 10);
+        var minute = parseInt(parts[1], 10);
+        if (Number.isNaN(hour) || Number.isNaN(minute)) return timeValue;
+
+        var time = new Date();
+        time.setHours(hour, minute, 0, 0);
+        return time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function updateScheduleSummary() {
+        var dateStr = $('#aptdate').val();
+        var timeStr = $('#apttime').val();
+        var summary = $('#selected-schedule-summary');
+        if (dateStr || timeStr) {
+            summary.removeClass('hidden');
+        } else {
+            summary.addClass('hidden');
+        }
+
+        $('#selected-date-text').text(dateStr || 'No date selected');
+        $('#selected-time-text').text(formatSelectedTime(timeStr));
+    }
+
+    function loadHospitalsForDate(dateStr) {
+        if (!dateStr) return;
+        
+        var currentHospVal = $('#hospitalid').val();
+        
+        $.get("{% url 'patient:get_hospitals_for_date' %}", { date: dateStr }, function(data) {
+            var hospitals = data.hospitals || [];
+            var options = '<option value="">-- Choose hospital --</option>';
+            
+            if (hospitals.length === 0) {
+                options = '<option value="">No hospitals or appointment slots are available on this date.</option>';
+                $('#hospitalid').html(options);
+                $('#time-slot-container').addClass('hidden');
+                return;
+            }
+            
+            hospitals.forEach(function(item) {
+                var selected = (currentHospVal == item.id || item.is_nearest) ? 'selected' : '';
+                var distText = item.distance_km ? ' (' + item.distance_km + ' km away)' : '';
+                var starText = item.is_nearest ? ' ★ Nearest' : '';
+                options += '<option value="' + item.id + '" ' + selected + '>' + item.title + distText + starText + '</option>';
+            });
+            
+            $('#hospitalid').html(options).trigger('change');
+            loadTimeSlots();
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#aptdate", {
-            minDate: "today",
-            dateFormat: "Y-m-d",
-            disableMobile: true
+        var todayStr = new Date().toISOString().split('T')[0];
+        $('#aptdate').attr('min', todayStr);
+
+        $('#aptdate').on('change input', function() {
+            var dateStr = $(this).val();
+            updateScheduleSummary();
+            if (dateStr) {
+                loadHospitalsForDate(dateStr);
+                loadTimeSlots();
+            }
+        });
+
+        $('form').on('submit', function(e) {
+            var cid = $('#child_select').val();
+            var hid = $('#hospitalid').val();
+            var vid = $('#vaccineid').val();
+            var dateVal = $('#aptdate').val();
+            var timeVal = $('#apttime').val();
+
+            if (!cid) {
+                e.preventDefault();
+                alert('Please select a child profile before scheduling.');
+                $('#child_select').focus();
+                return false;
+            }
+            if (!hid) {
+                e.preventDefault();
+                alert('Please select a medical center before scheduling.');
+                $('#hospitalid').focus();
+                return false;
+            }
+            if (!vid) {
+                e.preventDefault();
+                alert('Please select a vaccine dose before scheduling.');
+                $('#vaccineid').focus();
+                return false;
+            }
+            if (!dateVal) {
+                e.preventDefault();
+                alert('Please select an appointment date before scheduling.');
+                $('#aptdate').focus();
+                return false;
+            }
+            if (!timeVal) {
+                e.preventDefault();
+                alert('Please select an available appointment time slot before scheduling.');
+                return false;
+            }
         });
     });
+
+    function detectUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                // Save to server
+                $.post("{% url 'patient:update_location' %}", {
+                    latitude: lat,
+                    longitude: lng,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function() {
+                    // Reload page with coordinates
+                    window.location.href = "{% url 'patient:vaccinebooking' %}?lat=" + lat + "&lng=" + lng;
+                });
+            }, function(error) {
+                alert("Location permission denied or unavailable. Using default area sorting.");
+            });
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    }
+
+    function loadTimeSlots() {
+        var hId = $('#hospitalid').val();
+        var dateStr = $('#aptdate').val();
+        
+        if (!hId || !dateStr) {
+            $('#time-slot-loading').addClass('hidden');
+            return;
+        }
+
+        $('#time-slot-loading').removeClass('hidden');
+
+        $.get("{% url 'patient:get_available_slots' %}", { h_id: hId, date: dateStr }, function(data) {
+            $('#time-slot-loading').addClass('hidden');
+            if (data.slots && data.slots.length > 0) {
+                var currentVal = $('#apttime').val();
+                var optionsHTML = '<option value="">-- Choose appointment time slot --</option>';
+                $('#time-slot-grid').empty();
+
+                data.slots.forEach(function(slot) {
+                    var disabled = false;
+                    var label = slot.time_str;
+                    var optText = slot.time_str;
+                    var btnClass = "py-2 px-2.5 rounded-xl font-headline font-bold text-xs transition-all border text-center ";
+
+                    if (slot.status === 'AVAILABLE') {
+                        btnClass += (currentVal === slot.time_val) ? "bg-primary text-white border-primary shadow-md" : "bg-white border-slate-200 hover:border-primary hover:bg-primary/5 text-slate-800 cursor-pointer shadow-sm";
+                        optText += " (Available)";
+                    } else if (slot.status === 'FULL') {
+                        btnClass += "bg-red-50 border-red-200 text-red-500 font-bold cursor-not-allowed shadow-none";
+                        disabled = true;
+                        label += " (FULL)";
+                        optText += " (FULL - 5/5 Booked)";
+                    } else if (slot.status === 'BREAK') {
+                        btnClass += "bg-amber-50 border-amber-200 text-amber-600 font-bold cursor-not-allowed shadow-none";
+                        disabled = true;
+                        label += " (BREAK)";
+                        optText += " (Hospital Break)";
+                    } else if (slot.status === 'HOLIDAY') {
+                        btnClass += "bg-slate-100 border-slate-200 text-slate-400 font-bold cursor-not-allowed shadow-none";
+                        disabled = true;
+                        label = "CLOSED";
+                        optText += " (Closed)";
+                    }
+
+                    if (slot.time_val) {
+                        optionsHTML += '<option value="' + slot.time_val + '" ' + (disabled ? 'disabled class="text-slate-400 bg-slate-50"' : '') + (currentVal === slot.time_val ? ' selected' : '') + '>' + optText + '</option>';
+                    }
+
+                    var btn = $('<button type="button" class="' + btnClass + '" ' + (disabled ? 'disabled' : '') + '>' + label + '</button>');
+                    
+                    if (!disabled) {
+                        btn.on('click', function() {
+                            $('#time-slot-grid button').removeClass('bg-primary text-white border-primary shadow-md').addClass('bg-white border-slate-200 text-slate-800');
+                            $(this).removeClass('bg-white border-slate-200 text-slate-800').addClass('bg-primary text-white border-primary shadow-md');
+                            $('#apttime').val(slot.time_val).trigger('change');
+                        });
+                    }
+
+                    $('#time-slot-grid').append(btn);
+                });
+
+                $('#apttime').html(optionsHTML);
+            }
+        }).fail(function() {
+            $('#time-slot-loading').addClass('hidden');
+        });
+    }
 
     function scrollToBookingForm() {
         $('html, body').animate({
@@ -563,7 +785,7 @@
         // Focus child select if not selected
         if (!$('#child_select').val()) {
             setTimeout(function() {
-                $('#child_select').select2('open');
+                $('#child_select').focus();
             }, 600);
         }
     }
@@ -579,11 +801,12 @@
         }
     }
 
-    function openDetailModal(child, vaccine, hospital, date, active) {
+    function openDetailModal(child, vaccine, hospital, date, time, active) {
         $('#modal-child-name').text(child);
         $('#modal-vaccine-name').text(vaccine);
         $('#modal-hospital-name').text(hospital);
         $('#modal-apt-date').text(date);
+        $('#modal-apt-time').text(time || 'Not specified');
         
         var statusBadgeHtml = "";
         if (active === '0') {
@@ -620,7 +843,7 @@
         var hospitalVal = $('#hospitalid').val();
         if (!hospitalVal) {
             setTimeout(function() {
-                $('#hospitalid').select2('open');
+                $('#hospitalid').focus();
             }, 600);
         } else {
             var found = false;
@@ -634,7 +857,7 @@
             });
             if (!found) {
                 setTimeout(function() {
-                    $('#vaccineid').select2('open');
+                    $('#vaccineid').focus();
                 }, 600);
             }
         }
@@ -914,15 +1137,11 @@
                 '</div>';
         }
         
-        $('#reminders-list').html(remindersHTML);
-    }
+    const PREFILL_VACCINE = "{{ prefill_vaccine|escapejs }}";
+    const PREFILL_CHILD_ID = "{{ prefill_child_id|escapejs }}";
+    const PREFILL_HOSPITAL_ID = "{{ prefill_hospital_id|escapejs }}";
 
     $(document).ready(function() {
-        // Initialize Select2 styled elements
-        $('#hospitalid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-        $('#vaccineid').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-        $('#child_select').select2({ width: '100%', dropdownCssClass: 'shadow-2xl font-body', minimumResultsForSearch: Infinity });
-
         // Run default initialization
         updateDashboard();
 
@@ -987,12 +1206,156 @@
             if (hid) { $('#hospitalid').trigger('change'); }
         });
 
+    function loadSmartSuggestions() {
+        var cid = $('#child_select').val();
+        var hid = $('#hospitalid').val();
+        var vid = $('#vaccineid').val();
+
+        if (!cid || !hid) {
+            $('#rec-loading').addClass('hidden');
+            $('#recommendation-cards').addClass('hidden').empty();
+            $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+            return;
+        }
+
+        $('#rec-loading').removeClass('hidden');
+        $('#rec-empty').addClass('hidden');
+        $('#recommendation-cards').addClass('hidden').empty();
+
+        $.ajax({
+            url: "{% url 'patient:recommend_vaccines' %}",
+            data: { 'child_id': cid, 'hospital_id': hid, 'vaccine_id': vid },
+            success: function(res) {
+                $('#rec-loading').addClass('hidden');
+                
+                var vaccines = res.vaccines || [];
+                window.lastRecommendations = vaccines;
+                
+                if (window.lastMissedData) {
+                    updateNextDueAndReminders(cid, window.lastMissedData);
+                }
+                
+                if (vaccines.length === 0) {
+                    $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+                    return;
+                }
+                
+                var cards = vaccines.map(function(v) {
+                    var badge = '<span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px] font-bold">verified</span> Recommended</span>';
+                    var desc = v.description || 'Routine vaccination dose due for child.';
+                    return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-xl border border-teal-200 bg-white hover:border-secondary transition-all cursor-pointer relative overflow-hidden group shadow-sm">' +
+                        '<div class="absolute top-0 left-0 w-1 h-full bg-secondary scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
+                        '<div class="flex justify-between items-start mb-1">' +
+                            '<h5 class="font-headline font-bold text-xs text-slate-800">' + v.name + '</h5>' +
+                            badge +
+                        '</div>' +
+                        '<p class="text-[10px] text-slate-500 leading-normal line-clamp-1">' + desc + '</p>' +
+                    '</div>';
+                }).join('');
+                
+                $('#recommendation-cards').html(cards).removeClass('hidden');
+
+                // Select recommendations manually by clicking cards
+                $('.rec-card').on('click', function() {
+                    var clickVid = $(this).data('vaccine-id').toString();
+                    $('#vaccineid').val(clickVid).trigger('change');
+                    $('.rec-card').removeClass('ring-2 ring-secondary/60');
+                    $(this).addClass('ring-2 ring-secondary/60');
+                });
+            },
+            error: function() {
+                $('#rec-loading').addClass('hidden');
+                $('#recommendation-cards').addClass('hidden').empty();
+                $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Run default initialization
+        updateDashboard();
+
+        // Bind vaccine selection change to update Smart Suggestions & time slots
+        $('#vaccineid').on('change', function() {
+            loadSmartSuggestions();
+            var dateVal = $('#aptdate').val();
+            if (dateVal) {
+                loadTimeSlots();
+            }
+        });
+
+        $('#apttime').on('change', function() {
+            updateScheduleSummary();
+        });
+
+        // Update hidden field childname and check missed vaccines
+        $('#child_select').on('change', function() {
+            var selected = $(this).find('option:selected');
+            var cid = $(this).val();
+            $('#childname').val(selected.data('childname') || '');
+            
+            var alertPanel = $('#booking-missed-alert');
+            if (!cid) {
+                alertPanel.addClass('hidden').empty();
+                window.lastMissedData = null;
+                window.lastRecommendations = [];
+                updateDashboard();
+            } else {
+                $.ajax({
+                    url: "{% url 'patient:missed_vaccines' %}",
+                    data: { 'child_id': cid },
+                    success: function(res) {
+                        window.lastMissedData = res;
+                        
+                        var missed = res.missed || [];
+                        updateDashboard();
+                        updateNextDueAndReminders(cid, res);
+                        
+                        if (missed.length === 0) {
+                            alertPanel.removeClass('hidden')
+                                      .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 bg-emerald-50 border-emerald-200')
+                                      .html('<div class="flex items-center gap-2 text-emerald-700 font-bold text-xs"><span class="material-symbols-outlined text-[16px] font-bold">verified</span> All vaccines up to date!</div>');
+                            return;
+                        }
+                        
+                        var sv = res.overall_severity || 'low';
+                        var style = {
+                            'high':   { border: 'border-red-200', bg: 'bg-red-50/50', text: 'text-red-800', badge: 'bg-red-100 text-red-700' },
+                            'medium': { border: 'border-orange-200', bg: 'bg-orange-50/50', text: 'text-orange-850', badge: 'bg-orange-100 text-orange-700' },
+                            'low':    { border: 'border-yellow-250', bg: 'bg-yellow-50/40', text: 'text-yellow-800', badge: 'bg-yellow-100 text-yellow-750' },
+                        }[sv] || { border: 'border-slate-200', bg: 'bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-200 text-slate-700' };
+                        
+                        var header = '<div class="flex flex-col gap-0.5 mb-2">' +
+                            '<div class="flex items-center gap-2 ' + style.text + ' font-bold text-xs">' +
+                            '<span class="material-symbols-outlined text-[16px] font-bold">warning</span> Child has missed ' + res.total_missed + ' vaccines' +
+                            '</div>' +
+                            '</div>';
+                            
+                        var items = missed.map(function(v) {
+                            return '<div class="flex items-center justify-between py-1.5 border-t ' + style.border + ' first:border-0">' +
+                                '<span class="font-bold text-[11px] ' + style.text + ' flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] font-bold">syringe</span> ' + v.name + '</span>' +
+                                '<span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold ' + style.badge + '">' + v.due_age_range + '</span>' +
+                                '</div>';
+                        }).join('');
+                        
+                        alertPanel.removeClass('hidden')
+                                  .attr('class', 'mt-3 rounded-xl border p-3 shadow-sm transition-all mb-2 ' + style.bg + ' ' + style.border)
+                                  .html(header + items);
+                    }
+                });
+            }
+
+            var hid = $('#hospitalid').val();
+            if (hid) { $('#hospitalid').trigger('change'); }
+            loadSmartSuggestions();
+        });
+
         // Cascading vaccine selectors
         $("#hospitalid").change(function () {
             var hid = $(this).val();
             var cid = $('#child_select').val();
             
-            $("#vaccineid").empty().append('<option value="">-- Loading available vaccines... --</option>').trigger('change');
+            $("#vaccineid").empty().append('<option value="">-- Loading available vaccines... --</option>');
             
             if (!hid) {
                 $('#recommendation-container').addClass('hidden');
@@ -1000,83 +1363,41 @@
                 return;
             }
 
-            if (cid) {
-                $('#recommendation-container').removeClass('hidden');
-                $('#recommendation-placeholder').addClass('hidden');
-                $('#rec-loading').removeClass('hidden');
-                $('#rec-empty').addClass('hidden');
-                $('#recommendation-cards').addClass('hidden').empty();
-            } else {
-                $('#recommendation-container').addClass('hidden');
-                $('#recommendation-placeholder').removeClass('hidden');
-            }
-
             // Load cascaded vaccines AJAX list
             $.ajax({                       
                 url: "{% url 'patient:load_vaccines' %}",       
-                data: { 'h_id': hid, 'child_id': cid },
+                data: { 'h_id': hid, 'child_id': cid, 'vaccine': PREFILL_VACCINE },
                 success: function (data) {   
-                    $("#vaccineid").html(data).trigger('change');  
-                    
-                    // Fetch smart recommendation cards (Phase 8 suggestions)
-                    if (cid) {
-                        $.ajax({
-                            url: "{% url 'patient:recommend_vaccines' %}",
-                            data: { 'child_id': cid, 'hospital_id': hid },
-                            success: function(res) {
-                                $('#rec-loading').addClass('hidden');
-                                
-                                var vaccines = res.vaccines || [];
-                                window.lastRecommendations = vaccines;
-                                
-                                // Trigger update for Next Due Card
-                                updateNextDueAndReminders(cid, window.lastMissedData);
-                                
-                                if (vaccines.length === 0) {
-                                    $('#rec-empty').removeClass('hidden');
-                                    return;
-                                }
-                                
-                                var cards = vaccines.map(function(v) {
-                                    var badge = '<span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px] font-bold">verified</span> Recommended</span>';
-                                    var desc = v.description || 'Routine vaccination dose due for child.';
-                                    return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-xl border border-teal-200 bg-white hover:border-secondary transition-all cursor-pointer relative overflow-hidden group shadow-sm">' +
-                                        '<div class="absolute top-0 left-0 w-1 h-full bg-secondary scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
-                                        '<div class="flex justify-between items-start mb-1">' +
-                                            '<h5 class="font-headline font-bold text-xs text-slate-800">' + v.name + '</h5>' +
-                                            badge +
-                                        '</div>' +
-                                        '<p class="text-[10px] text-slate-500 leading-normal line-clamp-1">' + desc + '</p>' +
-                                    '</div>';
-                                }).join('');
-                                
-                                $('#recommendation-cards').html(cards).removeClass('hidden');
+                    $("#vaccineid").html(data);  
 
-                                // Pre-select first recommendation
-                                var firstVid = vaccines[0].id.toString();
-                                setTimeout(function() {
-                                    $('#vaccineid').val(firstVid).trigger('change');
-                                    $('.rec-card').first().addClass('ring-2 ring-secondary/60');
-                                }, 50);
-
-                                // Select recommendations manually by clicking cards
-                                $('.rec-card').on('click', function() {
-                                    var vid = $(this).data('vaccine-id').toString();
-                                    $('#vaccineid').val(vid).trigger('change');
-                                    $('.rec-card').removeClass('ring-2 ring-secondary/60');
-                                    $(this).addClass('ring-2 ring-secondary/60');
-                                });
-                            },
-                            error: function() {
-                                $('#rec-loading').addClass('hidden');
-                                $('#recommendation-container').addClass('hidden');
-                                $('#recommendation-placeholder').removeClass('hidden');
+                    // Auto prefill target vaccine if passed from Journey assistant
+                    if (PREFILL_VACCINE) {
+                        $("#vaccineid option").each(function() {
+                            var txt = $(this).text().toLowerCase();
+                            if (txt.includes(PREFILL_VACCINE.toLowerCase())) {
+                                $("#vaccineid").val($(this).val());
+                                return false;
                             }
                         });
                     }
+
+                    loadSmartSuggestions();
+                    loadTimeSlots();
                 }
             });
         });
+
+        // Auto trigger initial load on page ready
+        if (PREFILL_CHILD_ID) {
+            $('#child_select').val(PREFILL_CHILD_ID);
+        }
+        if (PREFILL_HOSPITAL_ID) {
+        if ($('#hospitalid').val()) {
+            $('#hospitalid').trigger('change');
+        } else if ($('#child_select').val()) {
+            $('#child_select').trigger('change');
+        }
+        loadTimeSlots();
     });
 </script>
 {% endblock %}

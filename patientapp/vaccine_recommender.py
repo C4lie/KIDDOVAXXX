@@ -12,6 +12,7 @@ How it works:
 
 from django.apps import apps  # type: ignore[import]  # pyre-ignore
 from .models import Childtbl, Appointmenttbl  # type: ignore[import]  # pyre-ignore
+from hospitalapp.models import Vaccinetbl
 
 # ---------------------------------------------------------------------------
 # Vaccine Schedule
@@ -43,16 +44,9 @@ def _name_matches_any(vaccine_name: str, keywords: set) -> bool:
     return any(kw in name_lower for kw in keywords)
 
 
-def get_recommended_vaccines(child_id: int, hospital_id: int):
+def get_recommended_vaccines(child_id: int, hospital_id: int = None):
     """
     Returns a Vaccinetbl queryset of recommended vaccines for the child.
-
-    Logic:
-      - Determine due vaccines by age.
-      - Remove vaccines the child already has an active booking or completion for.
-      - Filter remaining by what is actually offered at the specified hospital.
-
-    Returns an empty list on any error so the booking flow is never broken.
     """
     try:
         child = Childtbl.objects.get(pk=child_id)
@@ -68,13 +62,14 @@ def get_recommended_vaccines(child_id: int, hospital_id: int):
             .values_list('vaccineid_id', flat=True)
         )
 
-        # All vaccines offered at this hospital
-        Vaccinetbl = apps.get_model('hospitalapp', 'Vaccinetbl')
-        hospital_vaccines = Vaccinetbl.objects.filter(hospitalId=hospital_id)
+        qs = Vaccinetbl.objects.exclude(id__in=already_booked_ids)
+        if hospital_id:
+            candidate_vaccines = Vaccinetbl.objects.filter(hospitalId_id=hospital_id)
+        else:
+            candidate_vaccines = Vaccinetbl.objects.all()
 
-        # Final filter: name matches a due keyword AND not already booked
         recommendations = [
-            v for v in hospital_vaccines
+            v for v in candidate_vaccines
             if _name_matches_any(v.vaccineName, due_keywords)
             and v.pk not in already_booked_ids
         ]

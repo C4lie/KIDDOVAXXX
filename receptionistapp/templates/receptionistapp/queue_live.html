@@ -1,0 +1,163 @@
+<div class="panel widget-shadow mt-4" style="margin-top: 30px;">
+    <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="panel-title"><i class="fa fa-television"></i> Today's Digital Queue</h3>
+        <span class="label label-info" id="last-updated">Updating...</span>
+    </div>
+    <div class="panel-body" style="background-color: #f8f9fa;">
+        
+        <div class="row">
+            <!-- WAITING COLUMN -->
+            <div class="col-md-4">
+                <div class="queue-column" style="background: #fff; border-top: 4px solid #f0ad4e; padding: 15px; border-radius: 5px; min-height: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h4 class="text-center text-warning" style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <i class="fa fa-hourglass-half"></i> WAITING
+                    </h4>
+                    <div id="queue-waiting-container" style="max-height: 350px; overflow-y: auto;">
+                        <div class="text-center text-muted" style="padding: 20px;">Loading queue...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IN PROGRESS COLUMN -->
+            <div class="col-md-4">
+                <div class="queue-column" style="background: #fff; border-top: 4px solid #337ab7; padding: 15px; border-radius: 5px; min-height: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h4 class="text-center text-primary" style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <i class="fa fa-user-md"></i> IN PROGRESS
+                    </h4>
+                    <div id="queue-inprogress-container" style="max-height: 350px; overflow-y: auto;">
+                        <div class="text-center text-muted" style="padding: 20px;">Loading queue...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPLETED COLUMN -->
+            <div class="col-md-4">
+                <div class="queue-column" style="background: #fff; border-top: 4px solid #5cb85c; padding: 15px; border-radius: 5px; min-height: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h4 class="text-center text-success" style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <i class="fa fa-check-circle"></i> COMPLETED
+                    </h4>
+                    <div id="queue-completed-container" style="max-height: 350px; overflow-y: auto;">
+                        <div class="text-center text-muted" style="padding: 20px;">Loading queue...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOT ARRIVED SECTION -->
+        <div class="row mt-4" style="margin-top: 20px;">
+            <div class="col-md-12">
+                <div class="panel panel-default mb-0">
+                    <div class="panel-heading" style="background-color: #f5f5f5;">
+                        <h4 class="panel-title" style="font-size: 14px;">
+                            <a data-toggle="collapse" href="#collapseNotArrived" class="text-muted">
+                                <i class="fa fa-calendar-times-o"></i> Not Arrived Yet (Scheduled for Today) <i class="fa fa-angle-down pull-right"></i>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseNotArrived" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Child Name</th>
+                                            <th>Vaccine</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="queue-notarrived-container">
+                                        <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function refreshQueue() {
+        const d = new Date();
+        document.getElementById('last-updated').textContent = 'Updating...';
+        
+        fetch('/receptionist/api/queue/', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            renderQueue(data);
+            document.getElementById('last-updated').textContent = 'Updated: ' + d.toLocaleTimeString();
+        })
+        .catch(err => {
+            console.error('Failed to load queue data', err);
+            document.getElementById('last-updated').textContent = 'Update Failed';
+        });
+    }
+
+    function renderQueue(data) {
+        // Example structure of data:
+        // data.waiting, data.in_progress, data.completed, data.not_arrived
+        
+        const renderCards = (containerId, items, badgeClass) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (!items || items.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted" style="padding: 20px;">No patients</div>';
+                return;
+            }
+
+            items.forEach(item => {
+                const card = `
+                    <div class="card" style="border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-bottom: 10px; background: #fafafa;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span class="label ${badgeClass}" style="font-size: 12px;">Q# ${item.queue_number}</span>
+                            <small class="text-muted"><i class="fa fa-clock-o"></i> ${item.appointment_time}</small>
+                        </div>
+                        <h5 style="margin: 5px 0;"><strong>${item.child_name}</strong></h5>
+                        <p class="text-muted" style="margin: 0; font-size: 12px;">Parent: ${item.parent_name}</p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px;"><strong>${item.vaccine}</strong></p>
+                        ${item.waiting_time ? `<div style="margin-top: 5px; font-size: 11px; color: #777;"><i class="fa fa-hourglass-start"></i> Wait time: ${item.waiting_time}</div>` : ''}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+        };
+
+        renderCards('queue-waiting-container', data.waiting, 'label-warning');
+        renderCards('queue-inprogress-container', data.in_progress, 'label-primary');
+        renderCards('queue-completed-container', data.completed, 'label-success');
+
+        // Render Not Arrived table
+        const notArrivedContainer = document.getElementById('queue-notarrived-container');
+        notArrivedContainer.innerHTML = '';
+        if (!data.not_arrived || data.not_arrived.length === 0) {
+            notArrivedContainer.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No pending arrivals</td></tr>';
+        } else {
+            data.not_arrived.forEach(item => {
+                notArrivedContainer.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td>${item.appointment_time}</td>
+                        <td><strong>${item.child_name}</strong></td>
+                        <td>${item.vaccine}</td>
+                        <td><span class="label label-default">Booked</span></td>
+                    </tr>
+                `);
+            });
+        }
+    }
+
+    // Initialize polling
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshQueue();
+        // Poll every 30 seconds
+        setInterval(refreshQueue, 30000);
+    });
+</script>

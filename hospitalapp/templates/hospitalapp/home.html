@@ -54,10 +54,11 @@
             
             <nav class="hidden lg:flex items-center gap-6">
                 <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -92,6 +93,55 @@
                 </div>
             {% endfor %}
         {% endif %}
+
+        <!-- Hospital AI Intelligence Tools Section -->
+        <div class="space-y-4">
+            <h2 class="font-headline font-bold text-2xl text-gray-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span> Hospital AI Features
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- AI Queue Prioritization (Feature 1) -->
+                <a href="{% url 'hospitalapp:ai_queue' %}" class="glass-card rounded-3xl p-6 shadow-sm border border-red-100 hover:border-red-300 hover:shadow-md transition-all group decoration-transparent">
+                    <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">format_list_bulleted_add</span>
+                    </div>
+                    <h3 class="font-headline font-bold text-lg text-gray-800 group-hover:text-red-600 transition-colors">AI Queue Prioritization</h3>
+                    <p class="text-xs text-gray-500 font-medium mt-1">Smart priority scoring & clinical attention sorting for today's queue.</p>
+                    <div class="mt-4 text-xs font-bold text-red-600 flex items-center gap-1">Open Queue <span class="material-symbols-outlined text-sm">arrow_forward</span></div>
+                </a>
+
+                <!-- AI Inventory Forecast (Feature 2) -->
+                <a href="{% url 'hospitalapp:inventory_forecast' %}" class="glass-card rounded-3xl p-6 shadow-sm border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all group decoration-transparent">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">trending_up</span>
+                    </div>
+                    <h3 class="font-headline font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors">Inventory Forecasting</h3>
+                    <p class="text-xs text-gray-500 font-medium mt-1">Predictive 7/14/30-day stock demand analysis & shortage warnings.</p>
+                    <div class="mt-4 text-xs font-bold text-blue-600 flex items-center gap-1">View Forecast <span class="material-symbols-outlined text-sm">arrow_forward</span></div>
+                </a>
+
+                <!-- Record Quality Alerts (Feature 3) -->
+                <a href="{% url 'hospitalapp:record_alerts' %}" class="glass-card rounded-3xl p-6 shadow-sm border border-amber-100 hover:border-amber-300 hover:shadow-md transition-all group decoration-transparent">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">verified_user</span>
+                    </div>
+                    <h3 class="font-headline font-bold text-lg text-gray-800 group-hover:text-amber-600 transition-colors">Quality Alerts</h3>
+                    <p class="text-xs text-gray-500 font-medium mt-1">AI record verification for date anomalies, gaps & duplicates.</p>
+                    <div class="mt-4 text-xs font-bold text-amber-600 flex items-center gap-1">Review Alerts <span class="material-symbols-outlined text-sm">arrow_forward</span></div>
+                </a>
+
+                <!-- Schedule Settings (Feature 4) -->
+                <a href="{% url 'hospitalapp:schedule_settings' %}" class="glass-card rounded-3xl p-6 shadow-sm border border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all group decoration-transparent">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">schedule</span>
+                    </div>
+                    <h3 class="font-headline font-bold text-lg text-gray-800 group-hover:text-emerald-600 transition-colors">Schedule Settings</h3>
+                    <p class="text-xs text-gray-500 font-medium mt-1">Manage operating hours, slot duration, capacity, breaks & holidays.</p>
+                    <div class="mt-4 text-xs font-bold text-emerald-600 flex items-center gap-1">Configure Slots <span class="material-symbols-outlined text-sm">arrow_forward</span></div>
+                </a>
+            </div>
+        </div>
+
 
         <!-- Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

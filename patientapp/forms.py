@@ -6,7 +6,7 @@ from patientapp.models import Patienttbl, Appointmenttbl
 class PatientForm(forms.ModelForm):
     class Meta:
         model  = Patienttbl
-        fields  ='__all__'
+        exclude = ['account_status', 'must_change_password', 'registered_hospital']
 
         widgets = {
             'name' : forms.TextInput(attrs={'required': True,'class':'form-control'}),

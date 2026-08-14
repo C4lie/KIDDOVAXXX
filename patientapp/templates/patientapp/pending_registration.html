@@ -1,0 +1,94 @@
+{% extends 'patientapp/base.html' %}
+{% load static %}
+
+{% block title %}Registration Pending{% endblock %}
+
+{% block content %}
+<div class="space-y-12 pb-12">
+    <!-- Banner -->
+    <section class="relative overflow-hidden rounded-[2.5rem] p-12 md:p-16 text-white shadow-xl animate__animated animate__fadeIn" style="background-image: linear-gradient(rgba(245, 158, 11, 0.85), rgba(245, 158, 11, 0.85)), url('{% static 'patients/images/banner2.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-3xl space-y-6 text-center mx-auto">
+            <div class="mx-auto h-16 w-16 bg-white/20 text-white rounded-full flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-4xl">hourglass_empty</span>
+            </div>
+            <h1 class="font-headline font-black text-3xl md:text-5xl tracking-tight text-white leading-tight">
+                Account Pending Registration
+            </h1>
+            <p class="text-lg md:text-xl text-amber-50 font-medium leading-relaxed opacity-95">
+                Complete your registration by visiting a participating hospital to receive your KiddoVax RFID device.
+            </p>
+        </div>
+    </section>
+
+    <!-- Instructions -->
+    <section class="animate__animated animate__fadeInUp">
+        <div class="bg-white rounded-[1.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-amber-500"></div>
+            
+            <h3 class="font-headline font-bold text-2xl text-slate-800 mb-8 text-center">Next Steps to Activate Your Account</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 shadow-sm z-10">1</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Visit Hospital</h4>
+                    <p class="text-sm text-slate-500 font-semibold">Visit your nearest participating hospital from the list below.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 shadow-sm z-10">2</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Verify Identity</h4>
+                    <p class="text-sm text-slate-500 font-semibold">The receptionist will verify your identity using your contact details.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 shadow-sm z-10">3</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Receive RFID</h4>
+                    <p class="text-sm text-slate-500 font-semibold">You will receive a smart KiddoVax RFID device for your family.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="relative flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 shadow-sm z-10">4</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Account Active</h4>
+                    <p class="text-sm text-slate-500 font-semibold">Your portal account will unlock automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hospitals List -->
+    <section class="animate__animated animate__fadeInUp animation-delay-200">
+        <h3 class="font-headline font-bold text-2xl text-slate-800 mb-6 flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary bg-teal-50 rounded-xl p-2">local_hospital</span>
+            Participating Hospitals
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for hospital in hospitals %}
+            <div class="bg-white rounded-[1.5rem] p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">medical_services</span>
+                    </div>
+                    {% if hospital.distance %}
+                    <span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">{{ hospital.distance }}</span>
+                    {% endif %}
+                </div>
+                <h4 class="font-bold text-lg text-slate-800 mb-2">{{ hospital.title }}</h4>
+                <div class="space-y-2 text-sm text-slate-500 font-semibold">
+                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-base">location_on</span> {{ hospital.address }}, {{ hospital.cityId.cityName }}</p>
+                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-base">phone</span> {{ hospital.contactNo }}</p>
+                </div>
+                <a href="https://maps.google.com/?q={{ hospital.address }},{{ hospital.cityId.cityName }}" target="_blank" class="mt-4 inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-bold text-sm">
+                    Get Directions <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-full bg-slate-50 rounded-2xl p-8 text-center border border-slate-200">
+                <p class="text-slate-500 font-semibold">No participating hospitals found in your area.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

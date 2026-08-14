@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Child Vaccination Journey</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.6); }
+    </style>
+</head>
+<body class="text-on-surface font-body min-h-screen flex flex-col">
+
+    {% include 'patientapp/menu.html' %}
+
+    <main class="flex-grow max-w-6xl mx-auto px-8 pt-28 pb-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <!-- Header & Child Profile Switcher -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-4xl">route</span>
+                    {{ selected_child.childname }}'s Vaccination Journey
+                </h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">DOB: {{ selected_child.dob }} (Age: {{ selected_child.age }} yrs) · Complete Immunization Roadmap</p>
+            </div>
+
+            <!-- Child Selector -->
+            {% if children|length > 1 %}
+            <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest px-2">Select Child:</span>
+                {% for c in children %}
+                <a href="{% url 'patient:journey_child' c.id %}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if c.id == selected_child.id %}bg-primary text-white shadow-sm{% else %}text-gray-600 hover:bg-slate-100{% endif %}">
+                    {{ c.childname }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% if journey.next_step %}
+        <!-- Next Recommended Action Banner -->
+        <div class="glass-card rounded-3xl p-8 shadow-md border-l-8 border-primary relative overflow-hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 z-10 relative">
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
+                        <span class="material-symbols-outlined text-sm">schedule</span> Immediate Next Step
+                    </div>
+                    <h2 class="font-headline font-black text-3xl text-gray-800 tracking-tight">
+                        Next Required Vaccine: <span class="text-primary">{{ journey.next_step.vaccine_name }}</span>
+                    </h2>
+                    <p class="text-gray-600 font-medium text-base">
+                        Recommended Medical Center: <strong class="text-gray-800">{{ journey.next_step.nearest_hospital }}</strong> 
+                        ({{ journey.next_step.distance_km }} km away)
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="{% url 'patient:vaccinebooking' %}?vaccine={{ journey.next_step.vaccine_name|urlencode }}&child={{ selected_child.id }}&hospital_id={{ journey.next_step.hospital_id }}" class="bg-gradient-to-r from-primary to-secondary text-white font-headline font-bold px-6 py-3.5 rounded-2xl shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 decoration-transparent">
+                        <span class="material-symbols-outlined">event</span> Book Appointment Now
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="glass-card rounded-3xl p-8 shadow-sm text-center bg-emerald-50/60 border border-emerald-200">
+            <span class="material-symbols-outlined text-5xl text-emerald-500">check_circle</span>
+            <h2 class="font-headline font-bold text-2xl text-emerald-900 mt-2">Immunization Records Up To Date!</h2>
+            <p class="text-sm text-emerald-700 font-medium mt-1">All age-appropriate vaccines have been recorded for {{ selected_child.childname }}.</p>
+        </div>
+        {% endif %}
+
+        <!-- Interactive Journey Timeline -->
+        <div class="glass-card rounded-3xl p-8 shadow-sm space-y-6">
+            <h2 class="font-headline font-bold text-2xl text-gray-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-3xl">timeline</span> Immunization Timeline
+            </h2>
+
+            <div class="space-y-6 border-l-2 border-primary/20 pl-6 ml-4">
+                
+                <!-- Completed Vaccinations -->
+                {% for item in journey.completed_records %}
+                <div class="relative group">
+                    <div class="absolute -left-[33px] top-1.5 w-5 h-5 rounded-full bg-emerald-500 border-4 border-white shadow-sm"></div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">✓ Completed</span>
+                            <h3 class="font-headline font-bold text-lg text-gray-800">{{ item.vaccine_name }}</h3>
+                            <p class="text-xs text-gray-500 mt-0.5 font-medium">Administered on {{ item.date }} at {{ item.hospital }}</p>
+                        </div>
+                        <span class="material-symbols-outlined text-emerald-500 text-3xl">verified</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Due Soon / Upcoming -->
+                {% for item in journey.due_vaccines %}
+                <div class="relative group">
+                    <div class="absolute -left-[33px] top-1.5 w-5 h-5 rounded-full bg-amber-400 border-4 border-white shadow-sm"></div>
+                    <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 shadow-sm flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">⚠ Upcoming / Due Soon</span>
+                            <h3 class="font-headline font-bold text-lg text-gray-800">{{ item.vaccine_name }}</h3>
+                            <p class="text-xs text-gray-600 mt-0.5 font-medium">Recommended for current age window</p>
+                        </div>
+                        <a href="{% url 'patient:vaccinebooking' %}?vaccine={{ item.vaccine_name|urlencode }}&child={{ selected_child.id }}" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-primary/90 transition-all decoration-transparent flex items-center gap-1">
+                            <span>Book</span> <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

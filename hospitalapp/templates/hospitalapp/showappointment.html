@@ -4,14 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Title can adapt based on template usage context if needed, but 'Appointments Overview' works universally -->
-    <title>KiddoVax | Appointments Overview</title>
+    <title>KiddoVax | Appointments & Queue</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script>
@@ -20,10 +19,10 @@
         theme: {
           extend: {
             colors: {
-              "primary": "#0F4C81",     /* Clinical Blue Primary */
-              "secondary": "#3BAFDA",   /* Clinical Blue Secondary */
-              "background": "#F6F9FC",  /* Clinical Background */
-              "on-surface": "#1E293B",  /* Slate 800 */
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B",
               "modern-cyan": "#3BAFDA",
               "modern-blue": "#3b82f6",
               "modern-indigo": "#6366f1"
@@ -43,7 +42,7 @@
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
 
-    <!-- Navbar -->
+    <!-- Standard Unified Navbar -->
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
@@ -53,12 +52,12 @@
             </a>
             
             <nav class="hidden lg:flex items-center gap-6">
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
-                <!-- We dynamically bold the active link if request.path has 'past' but Django templates without custom tags aren't great at that. Let's just keep today bold for visual fallback -->
-                <a class="font-headline font-bold text-sm {% if 'past' in request.path %}text-gray-500 hover:text-primary{% else %}text-primary bg-primary/10 px-4 py-2 rounded-full{% endif %} transition-all" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
-                <a class="font-headline font-bold text-sm {% if 'past' in request.path %}text-primary bg-primary/10 px-4 py-2 rounded-full{% else %}text-gray-500 hover:text-primary{% endif %} transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm {% if not is_past %}text-primary bg-primary/10 px-4 py-2 rounded-full{% else %}text-gray-600 hover:text-primary{% endif %} transition-all" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm {% if is_past %}text-primary bg-primary/10 px-4 py-2 rounded-full{% else %}text-gray-600 hover:text-primary{% endif %} transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -74,72 +73,149 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
         
-        <div class="flex flex-col justify-between items-start gap-4 border-b border-gray-200/60 pb-6">
-            <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Appointment Pipeline</h1>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-4xl">{% if is_past %}history_edu{% else %}event_available{% endif %}</span>
+                    {% if is_past %}Past Vaccination History{% else %}Appointment Queue{% endif %}
+                </h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">
+                    {% if is_past %}Completed patient vaccination records{% else %}Today's appointments prioritized by urgency and clinical need{% endif %}
+                </p>
+            </div>
+
+            {% if not is_past and data %}
+            <!-- Queue Sorting Toggle Option -->
+            <div class="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest px-2">Sort:</span>
+                <button type="button" id="btn-sort-priority" onclick="setQueueSort('priority')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-primary text-white shadow-sm flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">priority_high</span> By Urgency Priority
+                </button>
+                <button type="button" id="btn-sort-time" onclick="setQueueSort('time')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-600 hover:bg-gray-100 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">schedule</span> By Scheduled Time
+                </button>
+            </div>
+            {% endif %}
         </div>
 
+        {% if high_count or medium_count or normal_count or low_count %}
+        <!-- Priority Summary Bar -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-red-500">
+                <p class="text-xs font-bold text-red-600 uppercase tracking-widest">High Urgency</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ high_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-orange-400">
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-widest">Medium Urgency</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ medium_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-blue-400">
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest">Normal Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ normal_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-slate-300">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Low Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ low_count }}</h3>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Appointments Table with Urgency Badges & Reasons -->
         <div class="glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] overflow-hidden">
             {% if data %}
             <div class="overflow-x-auto">
                 <table class="w-full text-left whitespace-nowrap">
                     <thead>
                         <tr class="border-b border-gray-200">
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Date</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Urgency / Status</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Date & Time</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Patient Name</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Vaccine</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Time In</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Time Out</th>
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Details & Reasons</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100/60">
-                        {% for bookingitem in data %}
-                        <tr class="hover:bg-slate-50/50 transition-colors group">
-                            <!-- Date -->
-                            <td class="py-4 px-4 text-sm font-semibold text-gray-600">{{ bookingitem.aptdate|date:"D, d M y" }}</td>
+                    <tbody id="apt-tbody" class="divide-y divide-gray-100/60">
+                        {% for item in data %}
+                        <tr class="apt-row hover:bg-slate-50/50 transition-colors group"
+                            data-score="{{ item.score|default:0 }}"
+                            data-priority="{% if item.priority == 'HIGH' %}4{% elif item.priority == 'MEDIUM' %}3{% elif item.priority == 'NORMAL' %}2{% elif item.priority == 'LOW' %}1{% else %}0{% endif %}"
+                            data-time="{% if item.appointment.apttime %}{{ item.appointment.apttime|time:'H:i' }}{% else %}23:59{% endif %}">
                             
-                            <!-- Name -->
-                            <td class="py-4 px-4 font-bold text-gray-800 flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase shadow-inner">
-                                    {{ bookingitem.childname|make_list|first }}
+                            <!-- Urgency Indicator Badge -->
+                            <td class="py-4 px-4">
+                                {% if item.priority == 'COMPLETED' %}
+                                    <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-black uppercase shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">check_circle</span> COMPLETED
+                                    </span>
+                                {% elif item.priority == 'HIGH' %}
+                                    <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded-full text-xs font-black uppercase shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">priority_high</span> HIGH URGENCY
+                                    </span>
+                                {% elif item.priority == 'MEDIUM' %}
+                                    <span class="inline-flex items-center gap-1 bg-orange-100 text-orange-700 border border-orange-200 px-3 py-1 rounded-full text-xs font-black uppercase shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">warning</span> MEDIUM URGENCY
+                                    </span>
+                                {% elif item.priority == 'NORMAL' %}
+                                    <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-xs font-black uppercase shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">schedule</span> NORMAL
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1 rounded-full text-xs font-black uppercase shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">check_circle</span> LOW
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Date & Time -->
+                            <td class="py-4 px-4">
+                                <div class="text-sm font-bold text-gray-800">
+                                    {{ item.appointment.aptdate|date:"D, d M Y" }}
                                 </div>
-                                {{ bookingitem.childname }}
+                                <div class="text-xs font-semibold text-primary mt-0.5">
+                                    {% if item.appointment.apttime %}{{ item.appointment.apttime|time:"h:i A" }}{% else %}Scheduled Date{% endif %}
+                                </div>
+                            </td>
+                            
+                            <!-- Patient Name -->
+                            <td class="py-4 px-4 font-bold text-gray-800">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase shadow-inner">
+                                        {{ item.appointment.childname|default:item.appointment.patientid.name|make_list|first }}
+                                    </div>
+                                    <span>{{ item.appointment.childname|default:item.appointment.patientid.name }}</span>
+                                </div>
                             </td>
                             
                             <!-- Vaccine -->
                             <td class="py-4 px-4">
-                                <span class="bg-blue-50 text-modern-blue border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{{ bookingitem.vaccineid.vaccineName }}</span>
+                                <span class="bg-blue-50 text-modern-blue border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                    {{ item.appointment.vaccineid.vaccineName }}
+                                </span>
                             </td>
-                            
-                            <!-- Time In -->
-                            <td class="py-4 px-4 text-sm font-medium text-gray-500">
-                                {% if bookingitem.active == 1 or bookingitem.active == 2 %}
-                                    {{ bookingitem.indt|time:"h:i A" }}
-                                {% else %}    
-                                    <span class="text-gray-300 italic">Expected...</span>
-                                {% endif %}
-                            </td>
-                            
-                            <!-- Time Out -->
-                            <td class="py-4 px-4 text-sm font-medium text-gray-500">
-                                {% if bookingitem.active == 2 %}
-                                    {{ bookingitem.outdt|time:"h:i A" }}
-                                {% else %}    
-                                    <span class="text-gray-300 italic">In progress...</span>
-                                {% endif %}
+
+                            <!-- Priority Reasons -->
+                            <td class="py-4 px-4 whitespace-normal max-w-xs">
+                                <ul class="text-xs text-gray-600 space-y-0.5 font-medium">
+                                    {% for reason in item.reasons %}
+                                        <li class="flex items-start gap-1">
+                                            <span class="text-primary font-bold">•</span> {{ reason }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
                             </td>
                             
                             <!-- Status -->
                             <td class="py-4 px-4">
-                                {% if bookingitem.active == 0 %}
+                                {% if item.appointment.active == 0 %}
                                     <div class="inline-flex items-center gap-1.5 bg-yellow-50 text-yellow-600 border border-yellow-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                                         <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span> Pending
                                     </div>
-                                {% elif bookingitem.active == 1 %} 
+                                {% elif item.appointment.active == 1 %} 
                                     <div class="inline-flex items-center gap-1.5 bg-blue-50 text-modern-blue border border-blue-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-modern-blue animate-pulse"></span> Processing
+                                        <span class="w-1.5 h-1.5 rounded-full bg-modern-blue animate-pulse"></span> In Clinic
                                     </div>
-                                {% elif bookingitem.active == 2 %} 
+                                {% elif item.appointment.active == 2 %} 
                                     <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                                         <span class="material-symbols-outlined text-[14px]">check_circle</span> Completed
                                     </div>
@@ -156,12 +232,44 @@
                 <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-100">
                     <span class="material-symbols-outlined text-gray-300 text-5xl">event_available</span>
                 </div>
-                <h3 class="font-headline font-bold text-2xl text-gray-800">Clear Schedules</h3>
-                <p class="text-gray-500 font-medium max-w-sm mt-2">There are no appointments to display at this moment. The grid will automatically update when patients are registered.</p>
+                <h3 class="font-headline font-bold text-2xl text-gray-800">Clear Queue</h3>
+                <p class="text-gray-500 font-medium max-w-sm mt-2">There are no appointments scheduled. The queue will automatically update when patients register.</p>
             </div>
             {% endif %}
         </div>
     </main>
 
+    <script>
+        function setQueueSort(mode) {
+            const tbody = document.getElementById('apt-tbody');
+            if (!tbody) return;
+            const rows = Array.from(tbody.querySelectorAll('.apt-row'));
+            
+            if (mode === 'priority') {
+                rows.sort((a, b) => {
+                    const prioA = parseInt(a.getAttribute('data-priority') || '0');
+                    const prioB = parseInt(b.getAttribute('data-priority') || '0');
+                    const scoreA = parseInt(a.getAttribute('data-score') || '0');
+                    const scoreB = parseInt(b.getAttribute('data-score') || '0');
+                    
+                    if (prioA !== prioB) return prioB - prioA; // High priority first
+                    if (scoreA !== scoreB) return scoreB - scoreA;
+                    return a.getAttribute('data-time').localeCompare(b.getAttribute('data-time'));
+                });
+                
+                $('#btn-sort-priority').addClass('bg-primary text-white shadow-sm').removeClass('text-gray-600 hover:bg-gray-100');
+                $('#btn-sort-time').removeClass('bg-primary text-white shadow-sm').addClass('text-gray-600 hover:bg-gray-100');
+            } else if (mode === 'time') {
+                rows.sort((a, b) => {
+                    return a.getAttribute('data-time').localeCompare(b.getAttribute('data-time'));
+                });
+                
+                $('#btn-sort-time').addClass('bg-primary text-white shadow-sm').removeClass('text-gray-600 hover:bg-gray-100');
+                $('#btn-sort-priority').removeClass('bg-primary text-white shadow-sm').addClass('text-gray-600 hover:bg-gray-100');
+            }
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
 </body>
 </html>

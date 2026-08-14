@@ -9,9 +9,9 @@ local_settings.py
 db.sqlite3
 db.sqbpro
 
-# Logs
-*.txt
+# Logs & Generated Files
 *.log
+static/vaccine_cards/*.pdf
 
 # Environments
 .env
@@ -20,5 +20,7 @@ venv/
 env/
 ENV/
 
-# VS Code
+# IDE & OS
 .vscode/
+.idea/
+.DS_Store

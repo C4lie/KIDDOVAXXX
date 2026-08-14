@@ -127,6 +127,26 @@
                 </div>
             </a>
 
+            <!-- Card 3: AI Vaccination Journey Assistant -->
+            <a href="{% url 'patient:journey' %}" class="group bg-white rounded-[2rem] p-10 border border-teal-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full decoration-transparent relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/60 to-purple-50/60 rounded-bl-[100%] transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div class="relative z-10 flex-1 flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 shadow-sm bg-gradient-to-br from-indigo-600 to-primary text-white">
+                            <span class="material-symbols-outlined text-3xl">route</span>
+                        </div>
+                        <h3 class="font-headline font-black text-3xl text-text-main tracking-tight">AI Vaccination Journey</h3>
+                        <p class="text-text-secondary text-base leading-relaxed font-medium">
+                            Personalized immunization roadmap, age milestone timelines, missed dose alerts, and nearest hospital slot recommendation.
+                        </p>
+                    </div>
+                    <div class="mt-8 flex items-center gap-2 text-indigo-600 font-bold uppercase tracking-wider text-xs">
+                        View Child Journey <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">east</span>
+                    </div>
+                </div>
+            </a>
+
             <!-- Trust Badge Card (Clinically Secured) -->
             <div class="md:col-span-2 rounded-[2rem] p-8 bg-white border border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 shadow-sm text-center sm:text-left">
                 <div class="relative flex-shrink-0">

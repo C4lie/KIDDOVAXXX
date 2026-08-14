@@ -22,11 +22,11 @@ class ReceptionistForm(forms.ModelForm):
    
     class Meta:
         model = Receptionisttbl
-        fields ='__all__'
+        fields = '__all__'
      
         widgets={
             'name': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-           
+            'ui_no': forms.TextInput(attrs={'required': False, 'maxlength': '5', 'class':'form-control'}),
             'address': forms.TextInput(attrs={'required': True,'class':'form-control'}),
             'contactNo': forms.TextInput(attrs={'required': True, 'maxlength':"10", 'class':'form-control', 'onkeypress': 'return restrictAlphabets(event);'}),
             'password': forms.TextInput(attrs={'required': True,'class':'form-control'}),

@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Record Quality Verification</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B",
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm"><span class="material-symbols-outlined text-xl">logout</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-4xl">verified_user</span>
+                    Record Verification Checklist
+                </h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">AI quality verification alerts for staff review</p>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-r-xl shadow-sm" role="alert">
+                    <p class="font-bold">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- List of Quality Alerts -->
+        <div class="space-y-4">
+            {% if alerts %}
+                {% for alert in alerts %}
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-gray-100">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="flex items-center gap-4">
+                            {% if alert.severity == 'HIGH' %}
+                                <div class="w-14 h-14 rounded-2xl bg-red-100 text-red-700 font-bold flex items-center justify-center border border-red-200">
+                                    <span class="material-symbols-outlined text-2xl">error</span>
+                                </div>
+                            {% else %}
+                                <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-700 font-bold flex items-center justify-center border border-orange-200">
+                                    <span class="material-symbols-outlined text-2xl">warning</span>
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <h3 class="font-headline font-bold text-lg text-gray-800">
+                                    Patient: {{ alert.child.childname }} · Vaccine: {{ alert.vaccine_name }}
+                                </h3>
+                                <p class="text-xs font-bold text-red-600 uppercase tracking-widest mt-0.5">
+                                    Issue: {{ alert.issue_type }} (Severity: {{ alert.severity }})
+                                </p>
+                                <p class="text-xs text-gray-600 mt-1 font-medium max-w-xl">
+                                    {{ alert.description }}
+                                </p>
+                                <p class="text-xs text-primary font-bold mt-1">
+                                    Action: {{ alert.recommended_action }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls -->
+                        <div class="flex items-center gap-3">
+                            {% if alert.status == 'PENDING' %}
+                                <form method="POST" action="{% url 'hospitalapp:resolve_alert' alert.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="VERIFIED">
+                                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-5 rounded-xl transition-all shadow-sm">
+                                        Mark as Verified
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'hospitalapp:resolve_alert' alert.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="CORRECTED">
+                                    <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-5 rounded-xl transition-all shadow-sm">
+                                        Requires Correction
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-4 py-2 rounded-xl text-xs font-bold uppercase">
+                                    Status: {{ alert.status }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="glass-card rounded-3xl p-12 text-center">
+                    <span class="material-symbols-outlined text-5xl text-emerald-400">check_circle</span>
+                    <h3 class="font-headline font-bold text-xl text-gray-700 mt-4">All Vaccination Records Clear</h3>
+                    <p class="text-sm text-gray-500 font-medium mt-1">No quality inconsistencies or date anomalies found for hospital patient files.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </main>
+
+</body>
+</html>

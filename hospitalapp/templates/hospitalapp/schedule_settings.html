@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | Hospital Schedule Settings</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B",
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm"><span class="material-symbols-outlined text-xl">logout</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-4xl">more_time</span>
+                    Hospital Schedule & Time-Slot Configuration
+                </h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">Configure operating hours, slot duration, capacity, breaks, and closed holidays</p>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-blue-50 border-l-4 border-primary text-primary p-4 rounded-r-xl shadow-sm" role="alert">
+                    <p class="font-bold">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Operating Hours & Slots -->
+            <div class="glass-card rounded-3xl p-8 shadow-sm space-y-6">
+                <h2 class="font-headline font-bold text-xl text-gray-800 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">schedule</span> Daily Operating Hours
+                </h2>
+
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_hours">
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Opening Time</label>
+                        <input type="time" name="opening_time" value="{{ hospital.opening_time|time:'H:i' }}" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-800 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Closing Time</label>
+                        <input type="time" name="closing_time" value="{{ hospital.closing_time|time:'H:i' }}" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-800 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Slot Duration (Minutes)</label>
+                        <select name="slot_duration" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-800 font-bold">
+                            <option value="15" {% if hospital.slot_duration == 15 %}selected{% endif %}>15 Minutes</option>
+                            <option value="30" {% if hospital.slot_duration == 30 %}selected{% endif %}>30 Minutes</option>
+                            <option value="45" {% if hospital.slot_duration == 45 %}selected{% endif %}>45 Minutes</option>
+                            <option value="60" {% if hospital.slot_duration == 60 %}selected{% endif %}>60 Minutes</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Slot Capacity (Patients / Slot)</label>
+                        <input type="number" name="slot_capacity" min="1" max="50" value="{{ hospital.slot_capacity }}" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-800 font-bold">
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all">
+                        Save Operating Hours
+                    </button>
+                </form>
+            </div>
+
+            <!-- Break Periods -->
+            <div class="glass-card rounded-3xl p-8 shadow-sm space-y-6">
+                <h2 class="font-headline font-bold text-xl text-gray-800 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-500">free_breakfast</span> Configured Break Periods
+                </h2>
+
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_break">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Break Start</label>
+                            <input type="time" name="start_time" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2.5 text-slate-800 font-bold text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Break End</label>
+                            <input type="time" name="end_time" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2.5 text-slate-800 font-bold text-xs">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-sm">
+                        + Add Break Period
+                    </button>
+                </form>
+
+                <div class="space-y-2 pt-2">
+                    {% for brk in breaks %}
+                        <div class="flex items-center justify-between bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-xs font-bold text-gray-700">
+                            <span>☕ Break: {{ brk.start_time|time:"h:i A" }} - {{ brk.end_time|time:"h:i A" }}</span>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_break">
+                                <input type="hidden" name="break_id" value="{{ brk.id }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 font-medium">No break periods configured.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Closed Dates / Holidays -->
+            <div class="glass-card rounded-3xl p-8 shadow-sm space-y-6">
+                <h2 class="font-headline font-bold text-xl text-gray-800 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-red-500">event_busy</span> Closed Dates / Holidays
+                </h2>
+
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_holiday">
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Closed Date</label>
+                        <input type="date" name="date" required class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-slate-800 font-bold text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Description (e.g. National Holiday)</label>
+                        <input type="text" name="description" placeholder="e.g. Independence Day" class="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-slate-800 font-bold text-xs">
+                    </div>
+
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-sm">
+                        + Add Closed Date
+                    </button>
+                </form>
+
+                <div class="space-y-2 pt-2">
+                    {% for hol in holidays %}
+                        <div class="flex items-center justify-between bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-xs font-bold text-gray-700">
+                            <div>
+                                <div>📅 {{ hol.date|date:"d M Y" }}</div>
+                                <div class="text-[10px] text-gray-400 font-normal">{{ hol.description }}</div>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_holiday">
+                                <input type="hidden" name="holiday_id" value="{{ hol.id }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 font-medium">No holiday closed dates configured.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

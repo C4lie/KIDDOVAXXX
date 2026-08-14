@@ -115,6 +115,34 @@
         </div>
         {% endif %}
 
+        <!-- Live Platform Analytics Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 animate__animated animate__fadeInUp">
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Hospitals</p>
+                <p class="text-3xl font-headline font-black text-admin-primary">{{ total_hospitals }}</p>
+            </div>
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Patients</p>
+                <p class="text-3xl font-headline font-black text-cyan-300">{{ total_patients }}</p>
+            </div>
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Children</p>
+                <p class="text-3xl font-headline font-black text-teal-300">{{ total_children }}</p>
+            </div>
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Appointments</p>
+                <p class="text-3xl font-headline font-black text-sky-300">{{ total_appointments }}</p>
+            </div>
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Vaccinations</p>
+                <p class="text-3xl font-headline font-black text-emerald-400">{{ completed_vaccinations }}</p>
+            </div>
+            <div class="glass-card rounded-2xl p-5 border border-white/10 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Staff</p>
+                <p class="text-3xl font-headline font-black text-indigo-300">{{ total_receptionists }}</p>
+            </div>
+        </div>
+
         <!-- Navigation Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 content-center">
             

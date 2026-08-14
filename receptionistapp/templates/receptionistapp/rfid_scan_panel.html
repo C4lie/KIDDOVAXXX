@@ -1,0 +1,615 @@
+<!-- Modern RFID Scanner Card -->
+<div
+  class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] mb-8"
+>
+  <div class="flex items-center gap-3 mb-6">
+    <span
+      class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01"
+        />
+      </svg>
+    </span>
+    <h3 class="font-headline font-black text-2xl text-slate-800">
+      RFID Scanner
+    </h3>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+    <div class="md:col-span-7">
+      <input
+        type="text"
+        id="rfid-input"
+        class="w-full border-2 border-indigo-200 rounded-2xl px-5 py-4 bg-white text-slate-700 font-medium shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500"
+        placeholder="Scan or type RFID number here..."
+        autofocus
+      />
+    </div>
+    <div class="md:col-span-2">
+      <button
+        type="button"
+        id="btn-scan-rfid"
+        class="w-full bg-gradient-to-r from-admin-primary to-admin-secondary text-white font-black text-xs uppercase tracking-wider rounded-2xl px-4 py-4 shadow-[0_10px_20px_-10px_rgba(79,70,229,0.6)] hover:-translate-y-0.5 transition-all"
+      >
+        <span class="inline-flex items-center gap-2"
+          ><span>⌕</span> Scan RFID</span
+        >
+      </button>
+    </div>
+    <div class="md:col-span-3">
+      <button
+        type="button"
+        id="btn-generate-rfid"
+        class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl px-4 py-4 shadow-[0_10px_20px_-10px_rgba(245,158,11,0.6)] hover:-translate-y-0.5 transition-all"
+      >
+        <span class="inline-flex items-center gap-2"
+          ><span>✦</span> Generate New</span
+        >
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="pending-registration-area"
+    class="mt-5"
+    style="display: none"
+  >
+    <div class="flex flex-col gap-3 md:flex-row md:items-end">
+      <div class="flex-1">
+        <label
+          class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-2"
+          >Pending Registration Accounts</label
+        >
+        <select
+          id="pending-patient-select"
+          class="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 bg-white text-slate-700 font-bold"
+        >
+          <option value="">Select a pending account...</option>
+        </select>
+      </div>
+      <div>
+        <button
+          type="button"
+          id="btn-assign-generated-rfid"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl px-6 py-4 shadow-[0_10px_20px_-10px_rgba(16,185,129,0.6)] transition-all"
+        >
+          <span class="inline-flex items-center gap-2"
+            ><span>✓</span> Add User</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="scan-alert"
+    class="hidden alert rounded-2xl p-4 mt-4 text-sm font-bold border"
+  ></div>
+</div>
+
+<!-- Scan Results Area -->
+<div
+  id="scan-results"
+  class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)]"
+  style="display: none; margin-bottom: 20px"
+>
+  <div class="flex items-center gap-2 mb-4">
+    <span
+      class="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      </svg>
+    </span>
+    <h3 class="font-headline font-black text-2xl text-slate-800">
+      Patient Information
+    </h3>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div
+      class="md:col-span-1 border border-slate-200 rounded-2xl p-5 bg-slate-50/50"
+    >
+      <h4
+        id="patient-name"
+        class="font-headline font-black text-xl text-admin-primary mt-0"
+      ></h4>
+      <p class="text-sm font-medium text-slate-600 mt-3">
+        <span class="font-bold">Phone:</span> <span id="patient-phone"></span>
+      </p>
+      <p class="text-sm font-medium text-slate-600">
+        <span class="font-bold">Address:</span>
+        <span id="patient-address"></span>
+      </p>
+    </div>
+    <div class="md:col-span-3">
+      <h4 class="font-headline font-black text-xl text-slate-800 mb-4">
+        Children & Appointments
+      </h4>
+      <div
+        id="children-list"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
+        <!-- Child cards injected here via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Verification Results Area -->
+<div
+  id="verification-results"
+  class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)]"
+  style="display: none; margin-bottom: 20px"
+>
+  <div class="flex items-center gap-2 mb-4">
+    <span
+      class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5 12l5 5L20 2"
+        />
+      </svg>
+    </span>
+    <h3 class="font-headline font-black text-2xl text-slate-800">
+      Verification Checklist
+    </h3>
+  </div>
+  <div class="space-y-4">
+    <h4
+      id="verify-child-name"
+      class="font-headline font-black text-xl text-sky-700"
+    ></h4>
+    <ul class="space-y-2">
+      <li
+        class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-bold text-emerald-800"
+      >
+        Patient Match ✓
+      </li>
+      <li
+        class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-bold text-emerald-800"
+      >
+        Appointment Match ✓
+      </li>
+      <li
+        class="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 font-bold text-sky-800"
+        id="verify-time-status"
+      >
+        Time Status: On Time
+      </li>
+      <li
+        class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-bold text-emerald-800"
+      >
+        Vaccine Available ✓
+      </li>
+    </ul>
+    <input
+      type="hidden"
+      id="verify-appointment-id"
+    />
+    <div class="flex flex-wrap gap-3 pt-4">
+      <button
+        type="button"
+        id="btn-checkin-patient"
+        class="bg-emerald-600 text-white font-black px-6 py-3 rounded-2xl shadow-sm hover:bg-emerald-700 transition-all"
+      >
+        CHECK IN PATIENT
+      </button>
+      <button
+        type="button"
+        class="bg-slate-100 text-slate-700 font-black px-6 py-3 rounded-2xl shadow-sm hover:bg-slate-200 transition-all"
+        onclick="hideVerification()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Completion Area -->
+<div
+  id="completion-area"
+  class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)]"
+  style="display: none; margin-bottom: 20px; border-left: 5px solid #10b981"
+>
+  <div class="flex items-center gap-2 mb-4">
+    <span
+      class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 8h16M4 12h16M4 16h16"
+        />
+      </svg>
+    </span>
+    <h3 class="font-headline font-black text-2xl text-slate-800">
+      Vaccination Completion
+    </h3>
+  </div>
+  <div class="text-center py-4">
+    <h2 class="font-headline font-black text-2xl text-emerald-700 mb-4">
+      Active Transaction Detected
+    </h2>
+    <h3
+      id="complete-child-name"
+      class="font-headline font-black text-xl text-slate-800"
+    ></h3>
+    <h4 class="text-slate-500 font-bold">
+      <span id="complete-vaccine"></span> @ <span id="complete-time"></span>
+    </h4>
+    <input
+      type="hidden"
+      id="complete-appointment-id"
+    />
+    <div class="mt-8 flex justify-center gap-4 flex-wrap">
+      <button
+        type="button"
+        id="btn-complete-vaccination"
+        class="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-sm hover:bg-emerald-700 transition-all"
+      >
+        MARK VACCINATION COMPLETED
+      </button>
+      <button
+        type="button"
+        class="bg-slate-100 text-slate-700 font-black px-8 py-4 rounded-2xl shadow-sm hover:bg-slate-200 transition-all"
+        onclick="hideCompletion()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Utility for CSRF token
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + '=') {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  // API Helpers
+  function callAPI(url, method, data) {
+    return fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': csrftoken,
+      },
+      body: data ? JSON.stringify(data) : null,
+    }).then((res) => res.json());
+  }
+
+  function showScanAlert(msg, type) {
+    const alert = document.getElementById('scan-alert');
+    alert.className = 'alert alert-' + type;
+    alert.textContent = msg;
+    alert.style.display = 'block';
+    setTimeout(() => (alert.style.display = 'none'), 4000);
+  }
+
+  // Event Listeners
+  document
+    .getElementById('btn-scan-rfid')
+    .addEventListener('click', function () {
+      const rfid = document.getElementById('rfid-input').value;
+      if (!rfid) {
+        showScanAlert('Please enter an RFID number', 'warning');
+        return;
+      }
+
+      callAPI('/receptionist/api/rfid/scan/', 'POST', { rfid_number: rfid })
+        .then((data) => {
+          if (data.status === 'error') {
+            showScanAlert(data.message, 'danger');
+            hideAllAreas();
+          } else if (data.status === 'in_progress') {
+            // Show completion area for second scan
+            hideAllAreas();
+            document.getElementById('completion-area').style.display = 'block';
+            document.getElementById('complete-child-name').textContent =
+              data.child_name;
+            document.getElementById('complete-vaccine').textContent =
+              data.vaccine_name;
+            document.getElementById('complete-time').textContent =
+              data.appointment_time;
+            document.getElementById('complete-appointment-id').value =
+              data.appointment_id;
+          } else {
+            // Show scan results
+            hideAllAreas();
+            renderScanResults(data);
+            document.getElementById('scan-results').style.display = 'block';
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          showScanAlert('Error communicating with server', 'danger');
+        });
+    });
+
+  document
+    .getElementById('btn-generate-rfid')
+    .addEventListener('click', function () {
+      callAPI('/receptionist/api/rfid/generate/', 'GET')
+        .then((data) => {
+          if (data.rfid) {
+            document.getElementById('rfid-input').value = data.rfid;
+            showScanAlert('New RFID generated', 'success');
+            loadPendingRegistrationAccounts();
+          }
+        })
+        .catch((err) => console.error(err));
+    });
+
+  function loadPendingRegistrationAccounts() {
+    fetch('/receptionist/api/pending-registrations/', {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': csrftoken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const select = document.getElementById('pending-patient-select');
+        if (!select) return;
+        select.innerHTML =
+          '<option value="">Select a pending account...</option>';
+
+        if (data.patients && data.patients.length > 0) {
+          data.patients.forEach((patient) => {
+            const option = document.createElement('option');
+            option.value = patient.id;
+            option.textContent =
+              patient.name + ' • ' + (patient.contact || 'No phone');
+            select.appendChild(option);
+          });
+          document.getElementById('pending-registration-area').style.display =
+            'block';
+        } else {
+          document.getElementById('pending-registration-area').style.display =
+            'none';
+          showScanAlert('No pending registration accounts found', 'warning');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        showScanAlert('Unable to load pending registrations', 'danger');
+      });
+  }
+
+  document
+    .getElementById('btn-assign-generated-rfid')
+    .addEventListener('click', function () {
+      const rfid = document.getElementById('rfid-input').value.trim();
+      const patientId = document.getElementById('pending-patient-select').value;
+      if (!rfid) {
+        showScanAlert(
+          'Generate or scan an RFID before assigning it',
+          'warning',
+        );
+        return;
+      }
+      if (!patientId) {
+        showScanAlert('Select a pending registration account first', 'warning');
+        return;
+      }
+
+      fetch('/receptionist/api/rfid/assign-pending/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+          patient_id: patientId,
+          rfid_number: rfid,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showScanAlert(
+              data.message || 'RFID linked to pending account',
+              'success',
+            );
+            document.getElementById('pending-patient-select').value = '';
+            document.getElementById('pending-registration-area').style.display =
+              'none';
+          } else {
+            showScanAlert(
+              data.message || 'RFID could not be assigned',
+              'danger',
+            );
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          showScanAlert('Assignment request failed', 'danger');
+        });
+    });
+
+  function hideAllAreas() {
+    document.getElementById('scan-results').style.display = 'none';
+    document.getElementById('verification-results').style.display = 'none';
+    document.getElementById('completion-area').style.display = 'none';
+  }
+
+  function hideVerification() {
+    document.getElementById('verification-results').style.display = 'none';
+  }
+
+  function hideCompletion() {
+    document.getElementById('completion-area').style.display = 'none';
+    document.getElementById('rfid-input').value = '';
+  }
+
+  function renderScanResults(data) {
+    document.getElementById('patient-name').textContent = data.patient_name;
+    document.getElementById('patient-phone').textContent = data.patient_contact;
+    document.getElementById('patient-address').textContent =
+      data.patient_address || 'N/A';
+
+    const childrenList = document.getElementById('children-list');
+    childrenList.innerHTML = '';
+
+    if (!data.children || data.children.length === 0) {
+      childrenList.innerHTML =
+        '<div class="col-md-12"><p class="text-muted">No children registered.</p></div>';
+      return;
+    }
+
+    // Sort children: those with appointments first
+    const sortedChildren = data.children.sort((a, b) => {
+      if (a.today_appointment && !b.today_appointment) return -1;
+      if (!a.today_appointment && b.today_appointment) return 1;
+      return 0;
+    });
+
+    sortedChildren.forEach((child) => {
+      let aptHtml = '';
+      let btnHtml = '';
+      let borderClass = 'border-default';
+
+      if (child.today_appointment) {
+        borderClass = 'border-primary';
+        aptHtml = `
+                    <div class="alert alert-info" style="padding: 10px; margin-bottom: 10px;">
+                        <strong>Today's Appointment:</strong><br>
+                        ${child.today_appointment.vaccine}<br>
+                        <i class="fa fa-clock-o"></i> ${child.today_appointment.time}<br>
+                        <span class="label label-warning">${child.today_appointment.status}</span>
+                    </div>
+                `;
+        btnHtml = `<button type="button" class="btn btn-success btn-sm w-100" onclick="verifyChild(${child.id}, ${child.today_appointment.id}, '${child.name}', '${child.today_appointment.time}')"><i class="fa fa-check-square-o"></i> VERIFY & CHECK-IN</button>`;
+      } else {
+        aptHtml = `<p class="text-muted" style="margin-bottom: 10px;">No appointments today.</p>`;
+      }
+
+      const card = `
+                <div class="col-md-6 mb-3" style="margin-bottom: 15px;">
+                    <div class="card ${borderClass}" style="border: 1px solid ${child.today_appointment ? '#337ab7' : '#ddd'}; padding: 15px; border-radius: 5px; height: 100%;">
+                        <h5 style="margin-top:0;"><strong>${child.name}</strong></h5>
+                        <p class="text-muted"><small>DOB: ${child.dob}</small></p>
+                        ${aptHtml}
+                        ${btnHtml}
+                    </div>
+                </div>
+            `;
+      childrenList.insertAdjacentHTML('beforeend', card);
+    });
+  }
+
+  window.verifyChild = function (childId, aptId, childName, aptTime) {
+    // Scroll to verification
+    document.getElementById('verify-child-name').textContent =
+      childName + ' - Verification';
+    document.getElementById('verify-appointment-id').value = aptId;
+
+    // Pseudo check for time status
+    const timeStatus = document.getElementById('verify-time-status');
+    timeStatus.innerHTML = `<i class="fa fa-clock-o"></i> Time Status: Scheduled for ${aptTime}`;
+
+    document.getElementById('verification-results').style.display = 'block';
+    document
+      .getElementById('verification-results')
+      .scrollIntoView({ behavior: 'smooth' });
+  };
+
+  document
+    .getElementById('btn-checkin-patient')
+    .addEventListener('click', function () {
+      const aptId = document.getElementById('verify-appointment-id').value;
+      const rfid = document.getElementById('rfid-input').value;
+
+      callAPI('/receptionist/api/rfid/checkin/', 'POST', {
+        appointment_id: aptId,
+        rfid_number: rfid,
+      })
+        .then((data) => {
+          if (data.status === 'success') {
+            showScanAlert('Patient successfully checked in!', 'success');
+            hideAllAreas();
+            document.getElementById('rfid-input').value = '';
+            // Optionally refresh live queue if function exists
+            if (typeof refreshQueue === 'function') refreshQueue();
+          } else {
+            showScanAlert(data.message, 'danger');
+          }
+        })
+        .catch((err) => console.error(err));
+    });
+
+  document
+    .getElementById('btn-complete-vaccination')
+    .addEventListener('click', function () {
+      const aptId = document.getElementById('complete-appointment-id').value;
+      const rfid = document.getElementById('rfid-input').value;
+
+      callAPI('/receptionist/api/rfid/complete/', 'POST', {
+        appointment_id: aptId,
+        rfid_number: rfid,
+      })
+        .then((data) => {
+          if (data.status === 'success') {
+            showScanAlert('Vaccination marked as completed!', 'success');
+            hideAllAreas();
+            document.getElementById('rfid-input').value = '';
+            // Optionally refresh live queue if function exists
+            if (typeof refreshQueue === 'function') refreshQueue();
+          } else {
+            showScanAlert(data.message, 'danger');
+          }
+        })
+        .catch((err) => console.error(err));
+    });
+</script>

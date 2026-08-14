@@ -4,15 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | Manage Vaccines</title>
+    <title>KiddoVax | Manage Vaccines & AI Forecast</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script>
       tailwind.config = {
@@ -20,10 +18,10 @@
         theme: {
           extend: {
             colors: {
-              "primary": "#0F4C81",     /* Clinical Blue Primary */
-              "secondary": "#3BAFDA",   /* Clinical Blue Secondary */
-              "background": "#F6F9FC",  /* Clinical Background */
-              "on-surface": "#1E293B",  /* Slate 800 */
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B",
               "modern-cyan": "#3BAFDA",
               "modern-blue": "#3b82f6",
               "modern-indigo": "#6366f1"
@@ -43,7 +41,7 @@
 </head>
 <body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
 
-    <!-- Navbar -->
+    <!-- Standard Unified Navbar -->
     <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
             <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
@@ -53,11 +51,12 @@
             </a>
             
             <nav class="hidden lg:flex items-center gap-6">
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:receptionistregister' %}">Staff</a>
                 <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:vaccineregister' %}">Vaccines</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
-                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:showappointment' %}">Appointments</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:historyappointment' %}">Past History</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -74,8 +73,8 @@
     <main class="flex-grow max-w-[90rem] mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
         
         <div class="flex flex-col justify-between items-start gap-4 border-b border-gray-200/60 pb-6">
-            <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Vaccine Inventory</h1>
-            <p class="text-gray-500 font-medium mt-1 text-lg">Add and manage the hospital's available vaccines.</p>
+            <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight">Vaccine Inventory & AI Forecasting</h1>
+            <p class="text-gray-500 font-medium mt-1 text-lg">Manage vaccine stock, restock doses, and view AI-predicted inventory demand risks.</p>
         </div>
 
         {% if messages %}
@@ -88,18 +87,28 @@
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             
-            <!-- Left Column: Add/Edit Form -->
+            <!-- Left Column: Add / Restock / Edit Form -->
             <div class="xl:col-span-1 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="font-headline font-bold text-2xl text-gray-800"><span class="material-symbols-outlined align-bottom text-primary mr-2">add_task</span>New Vaccine</h2>
+                    <h2 class="font-headline font-bold text-2xl text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-3xl">inventory</span>
+                        Manage Vaccine Card
+                    </h2>
                 </div>
                 
                 <form method="POST" enctype="multipart/form-data" class="space-y-5">
                     {% csrf_token %}
+                    <input type="hidden" name="existing_vaccine_id" id="existing_vaccine_id">
                     
                     <div class="space-y-1">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Vaccine Name</label>
                         {{ form.vaccineName }}
+                    </div>
+
+                    <!-- Stock Status Info Badge (Appears when existing vaccine is selected) -->
+                    <div id="stock-status-badge" class="hidden p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-sm">
+                        <span>Current Stock: <strong id="current-stock-val" class="text-sm">50</strong> doses</span>
+                        <span class="bg-emerald-600 text-white px-2.5 py-1 rounded-full text-[10px] uppercase font-black tracking-wider">In Inventory</span>
                     </div>
 
                     <div class="space-y-1">
@@ -117,8 +126,9 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Stock Quantity</label>
-                            {{ form.stock_quantity }}
+                            <label class="block text-xs font-bold text-emerald-600 uppercase tracking-widest px-1">➕ Doses to Add</label>
+                            <input type="number" name="added_stock" id="id_added_stock" min="0" max="1000" value="10" placeholder="+10 doses"
+                                   class="w-full bg-emerald-50/50 border border-emerald-300 rounded-xl px-4 py-3 text-gray-800 font-bold focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Min Threshold</label>
@@ -126,53 +136,117 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex gap-4">
-                        <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-[0_8px_20px_rgba(6,182,212,0.3)] hover:-translate-y-0.5 transition-all outline-none">Publish Vaccine</button>
-                        <button type="reset" name="btnreset" class="px-6 bg-slate-100 text-gray-600 font-headline font-bold py-3 rounded-xl hover:bg-slate-200 transition-all outline-none">Classify</button>
+                    <div class="pt-4 flex gap-3">
+                        <button type="submit" id="btn-submit-vaccine" class="flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-md hover:-translate-y-0.5 transition-all outline-none">
+                            Publish Vaccine
+                        </button>
+                        <button type="reset" name="btnreset" onclick="resetVaccineForm()" class="px-5 bg-slate-100 text-gray-600 font-headline font-bold py-3 rounded-xl hover:bg-slate-200 transition-all outline-none">
+                            Reset
+                        </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Right Column: Data Table -->
-            <div class="xl:col-span-2 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max overflow-x-auto">
-                <table class="w-full text-left whitespace-nowrap">
-                    <thead>
-                        <tr class="border-b border-gray-200">
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Title</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Description</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Price</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Stock Status</th>
-                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100/60">
-                        {% for item in vaccinedata %}
-                        <tr class="hover:bg-slate-50/50 transition-colors group">
-                            <td class="py-4 px-4 font-bold text-gray-800">{{ item.vaccineName }}</td>
-                            <td class="py-4 px-4 text-sm text-gray-500 whitespace-normal min-w-[300px]">{{ item.vaccineDescr }}</td>
-                            <td class="py-4 px-4 text-sm font-black text-primary">₹{{ item.price }}</td>
-                            <td class="py-4 px-4">
-                                <div class="inline-flex items-center gap-1.5 font-bold text-sm {% if item.stock_quantity < item.minimum_quantity %}text-red-500 bg-red-50 px-2.5 py-1 rounded-lg border border-red-100{% else %}text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100{% endif %}">
-                                    <span>{{ item.stock_quantity }} (Min: {{ item.minimum_quantity }})</span>
-                                    {% if item.stock_quantity < item.minimum_quantity %}
-                                    <span class="text-[9px] uppercase font-black tracking-wider">⚠️ Low Stock</span>
+            <!-- Right Column: Data Table with AI Forecast -->
+            <div class="xl:col-span-2 glass-card rounded-3xl p-8 shadow-[0_10px_40px_rgb(0,0,0,0.06)] h-max">
+                
+                <!-- Table Header with Forecast Period Selector -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <h2 class="font-headline font-bold text-2xl text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-3xl">trending_up</span>
+                        Catalogue & AI Demand Forecast
+                    </h2>
+                    
+                    <div class="flex items-center gap-1.5 bg-white p-1 rounded-2xl border border-gray-200 text-xs font-bold shadow-sm">
+                        <span class="text-gray-400 uppercase tracking-widest px-2 text-[10px]">AI Forecast:</span>
+                        <a href="?days=7" class="px-3 py-1.5 rounded-xl transition-all {% if forecast_days == 7 %}bg-primary text-white shadow-sm{% else %}text-gray-600 hover:bg-slate-100{% endif %}">7 Days</a>
+                        <a href="?days=14" class="px-3 py-1.5 rounded-xl transition-all {% if forecast_days == 14 %}bg-primary text-white shadow-sm{% else %}text-gray-600 hover:bg-slate-100{% endif %}">14 Days</a>
+                        <a href="?days=30" class="px-3 py-1.5 rounded-xl transition-all {% if forecast_days == 30 %}bg-primary text-white shadow-sm{% else %}text-gray-600 hover:bg-slate-100{% endif %}">30 Days</a>
+                    </div>
+                </div>
+
+                <div class="overflow-y-auto max-h-[680px] rounded-2xl border border-gray-100/80 shadow-inner">
+                    <table class="w-full text-left">
+                        <thead class="sticky top-0 bg-white/95 backdrop-blur-md z-10 shadow-sm">
+                            <tr class="border-b border-gray-200/80">
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider">Title</th>
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider">Description</th>
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider">AI Forecast & Risk</th>
+                                <th class="py-4 px-4 font-bold text-sm text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100/60">
+                            {% for item in vaccinedata %}
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="py-4 px-4 font-bold text-gray-800">{{ item.vaccineName }}</td>
+                                <td class="py-4 px-4 text-sm text-gray-500 whitespace-normal min-w-[200px]">{{ item.vaccineDescr }}</td>
+                                <td class="py-4 px-4 text-sm font-black text-primary">₹{{ item.price }}</td>
+                                
+                                <!-- Current Stock -->
+                                <td class="py-4 px-4">
+                                    <div class="inline-flex items-center gap-1.5 font-bold text-sm {% if item.stock_quantity < item.minimum_quantity %}text-red-500 bg-red-50 px-2.5 py-1 rounded-lg border border-red-100{% else %}text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100{% endif %}">
+                                        <span>{{ item.stock_quantity }} doses</span>
+                                        {% if item.stock_quantity < item.minimum_quantity %}
+                                        <span class="text-[9px] uppercase font-black tracking-wider">⚠️ Low</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <!-- AI Forecast & Risk Level Column -->
+                                <td class="py-4 px-4">
+                                    {% if item.forecast %}
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-1.5">
+                                                {% if item.forecast.risk_level == 'CRITICAL' %}
+                                                    <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 border border-red-200 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
+                                                        <span class="material-symbols-outlined text-[12px]">error</span> CRITICAL
+                                                    </span>
+                                                {% elif item.forecast.risk_level == 'AT_RISK' %}
+                                                    <span class="inline-flex items-center gap-1 bg-orange-100 text-orange-700 border border-orange-200 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
+                                                        <span class="material-symbols-outlined text-[12px]">warning</span> AT RISK
+                                                    </span>
+                                                {% elif item.forecast.risk_level == 'MONITOR' %}
+                                                    <span class="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 border border-yellow-200 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
+                                                        <span class="material-symbols-outlined text-[12px]">visibility</span> MONITOR
+                                                    </span>
+                                                {% else %}
+                                                    <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
+                                                        <span class="material-symbols-outlined text-[12px]">check_circle</span> SAFE
+                                                    </span>
+                                                {% endif %}
+                                                <span class="text-xs font-bold text-gray-700">{{ forecast_days }}-Day Demand: {{ item.forecast.total_expected_demand }}</span>
+                                            </div>
+                                            {% if item.forecast.recommended_restock > 0 %}
+                                                <span class="text-[11px] font-semibold text-red-600 flex items-center gap-0.5">
+                                                    <span class="material-symbols-outlined text-[13px]">add_shopping_cart</span> Rec. Restock +{{ item.forecast.recommended_restock }} doses
+                                                </span>
+                                            {% else %}
+                                                <span class="text-[11px] font-medium text-slate-500">Sufficient for {{ forecast_days }} days</span>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-xs text-gray-400">No forecast</span>
                                     {% endif %}
-                                </div>
-                            </td>
-                            <td class="py-4 px-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{% url 'hospitalapp:editvaccine' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-modern-blue hover:bg-modern-blue hover:text-white transition-all">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
-                                    </a>
-                                    <a href="{% url 'hospitalapp:deletevaccine' item.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                </td>
+
+                                <!-- Actions Column -->
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{% url 'hospitalapp:editvaccine' item.id %}" title="Edit / Restock Vaccine" class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-modern-blue hover:bg-modern-blue hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                                        </a>
+                                        <a href="{% url 'hospitalapp:deletevaccine' item.id %}" title="Delete Vaccine" class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -181,27 +255,73 @@
     <script>
         const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
         inputs.forEach(input => {
-            if(input.id === 'id_price') {
+            if (input.name === 'added_stock') return;
+            if (input.id === 'id_price') {
                 input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'pl-9', 'pr-4', 'py-3', 'text-gray-800', 'font-monaco', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
             } else {
                 input.classList.add('w-full', 'bg-slate-50', 'border', 'border-gray-200', 'rounded-xl', 'px-4', 'py-3', 'text-gray-800', 'font-medium', 'focus:ring-2', 'focus:ring-modern-blue/50', 'focus:border-modern-blue', 'transition-all');
             }
         });
 
-        // Auto-fill descriptions from predefined vaccine choices
+        // Predefined descriptions & existing inventory lookup
         const vaccineDescriptions = {{ vaccine_descriptions_json|safe }};
+        const hospitalInventory = {{ inventory_json|safe }};
+        
         const vaccineNameSelect = document.getElementById('id_vaccineName');
         const vaccineDescrInput = document.getElementById('id_vaccineDescr');
-        
-        if (vaccineNameSelect && vaccineDescrInput) {
-            vaccineNameSelect.addEventListener('change', function() {
-                const selectedVaccine = this.value;
-                if (vaccineDescriptions[selectedVaccine]) {
-                    vaccineDescrInput.value = vaccineDescriptions[selectedVaccine];
-                } else if (selectedVaccine === '') {
-                    vaccineDescrInput.value = '';
+        const priceInput = document.getElementById('id_price');
+        const minQtyInput = document.getElementById('id_minimum_quantity');
+        const existingIdInput = document.getElementById('existing_vaccine_id');
+        const stockBadge = document.getElementById('stock-status-badge');
+        const currentStockVal = document.getElementById('current-stock-val');
+        const submitBtn = document.getElementById('btn-submit-vaccine');
+
+        function updateFormState() {
+            if (!vaccineNameSelect) return;
+            const selectedVaccine = vaccineNameSelect.value;
+            
+            if (hospitalInventory[selectedVaccine]) {
+                const item = hospitalInventory[selectedVaccine];
+                existingIdInput.value = item.id;
+                if (priceInput) priceInput.value = item.price;
+                if (vaccineDescrInput) vaccineDescrInput.value = item.descr;
+                if (minQtyInput) minQtyInput.value = item.min;
+                
+                if (stockBadge) {
+                    stockBadge.classList.remove('hidden');
+                    currentStockVal.textContent = item.stock;
                 }
-            });
+                if (submitBtn) {
+                    submitBtn.textContent = '➕ Restock & Update Vaccine';
+                    submitBtn.className = 'flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-headline font-bold py-3 px-4 rounded-xl shadow-md transition-all outline-none cursor-pointer';
+                }
+            } else {
+                existingIdInput.value = '';
+                if (stockBadge) stockBadge.classList.add('hidden');
+                if (vaccineDescriptions[selectedVaccine]) {
+                    if (vaccineDescrInput) vaccineDescrInput.value = vaccineDescriptions[selectedVaccine];
+                } else if (selectedVaccine === '') {
+                    if (vaccineDescrInput) vaccineDescrInput.value = '';
+                }
+                if (submitBtn) {
+                    submitBtn.textContent = 'Publish Vaccine';
+                    submitBtn.className = 'flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-md transition-all outline-none cursor-pointer';
+                }
+            }
+        }
+
+        if (vaccineNameSelect) {
+            vaccineNameSelect.addEventListener('change', updateFormState);
+            updateFormState();
+        }
+
+        function resetVaccineForm() {
+            existingIdInput.value = '';
+            if (stockBadge) stockBadge.classList.add('hidden');
+            if (submitBtn) {
+                submitBtn.textContent = 'Publish Vaccine';
+                submitBtn.className = 'flex-1 bg-gradient-to-r from-primary to-modern-cyan text-white font-headline font-bold py-3 px-4 rounded-xl shadow-md transition-all outline-none cursor-pointer';
+            }
         }
     </script>
 </body>

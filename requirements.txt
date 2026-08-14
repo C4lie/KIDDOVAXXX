@@ -1,0 +1,5 @@
+asgiref==3.11.1
+Django==5.2.12
+sqlparse==0.5.5
+tzdata==2025.3
+openpyxl==3.1.5

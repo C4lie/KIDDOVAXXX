@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | AI Vaccine Education & Safety Explainer</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.6); }
+    </style>
+</head>
+<body class="text-on-surface font-body min-h-screen flex flex-col">
+
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'patient:homepage' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter text-primary">
+                    Kidd<i class="fab fa-keycdn text-red-500 mx-0.5"></i>Vax
+                </span>
+            </a>
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'patient:homepage' %}">Home</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'patient:journey' %}">Vaccination Journey</a>
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full" href="{% url 'patient:education' %}">Vaccine Explainer</a>
+                <a class="font-headline font-bold text-sm text-gray-600 hover:text-primary transition-all decoration-transparent" href="{% url 'patient:vaccinebooking' %}">Book Appointment</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'patient:profilepage' %}" class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <span class="material-symbols-outlined">person</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="border-b border-gray-200/60 pb-6">
+            <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-4xl">school</span>
+                AI Vaccine Education & Safety Explainer
+            </h1>
+            <p class="text-gray-500 font-medium mt-1 text-lg">Trusted, safety-bounded information about pediatric vaccines, schedule intervals & after-care guidance.</p>
+        </div>
+
+        <!-- Preset Query Pills -->
+        <div class="space-y-2">
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Suggested Questions</label>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="askPreset('Why does my child need another DTaP dose?')" class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-700 hover:border-primary hover:text-primary transition-all shadow-sm">
+                    Why multiple DTaP doses?
+                </button>
+                <button onclick="askPreset('What is MMR vaccine?')" class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-700 hover:border-primary hover:text-primary transition-all shadow-sm">
+                    What is MMR?
+                </button>
+                <button onclick="askPreset('What should I expect after vaccination?')" class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-700 hover:border-primary hover:text-primary transition-all shadow-sm">
+                    After-care guidance
+                </button>
+                <button onclick="askPreset('My child has high fever above 102. Should I give vaccine?')" class="px-4 py-2 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 hover:bg-red-100 transition-all shadow-sm">
+                    Symptom Query Test
+                </button>
+            </div>
+        </div>
+
+        <!-- Query Form -->
+        <div class="glass-card rounded-3xl p-6 shadow-sm">
+            <form id="education-form" class="flex gap-3">
+                {% csrf_token %}
+                <input type="text" id="query-input" name="query" placeholder="Ask any question about pediatric vaccines, schedules, or side effects..." required
+                       class="flex-1 bg-white border border-gray-200 rounded-2xl px-5 py-3.5 text-gray-800 font-medium focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-headline font-bold px-6 py-3.5 rounded-2xl shadow-md transition-all">
+                    Ask AI
+                </button>
+            </form>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-card" class="hidden glass-card rounded-3xl p-8 shadow-md border border-gray-100 space-y-4">
+            <div id="result-header" class="flex items-center gap-3">
+                <span id="result-icon" class="material-symbols-outlined text-3xl text-primary">auto_awesome</span>
+                <h3 id="result-title" class="font-headline font-bold text-2xl text-gray-800">Answer</h3>
+            </div>
+            
+            <div id="result-body" class="text-gray-700 font-medium text-base leading-relaxed whitespace-pre-line"></div>
+
+            <div id="result-actions" class="pt-4 border-t border-gray-100 flex gap-4">
+                <a href="{% url 'patient:vaccinebooking' %}" class="bg-primary text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm decoration-transparent">Book Appointment</a>
+                <a href="{% url 'patient:journey' %}" class="bg-slate-100 text-gray-700 text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-slate-200 transition-all decoration-transparent">View Schedule</a>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const form = document.getElementById('education-form');
+        const input = document.getElementById('query-input');
+        const resultCard = document.getElementById('result-card');
+        const resultTitle = document.getElementById('result-title');
+        const resultBody = document.getElementById('result-body');
+        const resultIcon = document.getElementById('result-icon');
+
+        function askPreset(text) {
+            input.value = text;
+            form.dispatchEvent(new Event('submit'));
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const queryText = input.value.trim();
+            if (!queryText) return;
+
+            const response = await fetch("{% url 'patient:education' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new URLSearchParams({ 'query': queryText })
+            });
+
+            const data = await response.json();
+            resultCard.classList.remove('hidden');
+
+            if (data.is_safety_disclaimer) {
+                resultIcon.textContent = 'warning';
+                resultIcon.className = 'material-symbols-outlined text-3xl text-red-600';
+                resultTitle.textContent = data.title;
+                resultTitle.className = 'font-headline font-bold text-2xl text-red-600';
+                resultBody.innerHTML = `<div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-red-900 font-bold mb-3">${data.answer}</div><p class="text-sm font-medium text-gray-700">${data.action_advice}</p>`;
+            } else {
+                resultIcon.textContent = 'verified';
+                resultIcon.className = 'material-symbols-outlined text-3xl text-emerald-600';
+                resultTitle.textContent = data.title;
+                resultTitle.className = 'font-headline font-bold text-2xl text-gray-800';
+                resultBody.textContent = data.answer;
+            }
+        });
+    </script>
+</body>
+</html>

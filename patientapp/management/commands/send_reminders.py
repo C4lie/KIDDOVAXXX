@@ -33,10 +33,11 @@ class Command(BaseCommand):
             child_name = apt.child.childname if apt.child else (apt.childname or "your child")
             vaccine_name = apt.vaccineid.vaccineName
             apt_date_str = tomorrow.strftime('%b %d, %Y')
+            apt_time_str = f" at {apt.apttime.strftime('%I:%M %p')}" if apt.apttime else ""
 
             # Interactive two-way SMS — patient replies YES or NO
             sms_msg = (
-                f"KiddoVax Reminder: {child_name}'s {vaccine_name} vaccine is due tomorrow. "
+                f"KiddoVax Reminder: {child_name}'s {vaccine_name} vaccine at {apt.hospitalid.title} is scheduled for tomorrow ({apt_date_str}{apt_time_str}). "
                 f"Mild fever after vaccination is normal. "
                 f"Reply YES to confirm or NO to cancel."
             )

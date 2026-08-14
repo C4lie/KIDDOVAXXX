@@ -9,7 +9,7 @@
     </a>
     
     <!-- Navigation Links -->
-    <nav class="hidden md:flex items-center gap-10">
+    <nav class="hidden md:flex items-center gap-8">
       <a class="nav-link font-headline font-bold text-base {% if request.resolver_match.url_name == 'homepage' %}active{% endif %} decoration-transparent" href="{% url 'patient:homepage' %}">{{ T.home|default:"Home" }}</a>
       <a class="nav-link font-headline font-bold text-base {% if request.resolver_match.url_name == 'aboutpage' %}active{% endif %} decoration-transparent" href="{% url 'patient:aboutpage' %}">{{ T.about|default:"About Us" }}</a>
       <a class="nav-link font-headline font-bold text-base {% if request.resolver_match.url_name == 'contactpage' %}active{% endif %} decoration-transparent" href="{% url 'patient:contactpage' %}">{{ T.contact|default:"Contact" }}</a>
@@ -63,6 +63,9 @@
           </button>
           <!-- Dropdown Menu -->
           <div class="dropdown-menu absolute right-0 top-full mt-2 w-60 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 p-2.5 z-50 transition-all duration-200 transform opacity-0 scale-95 translate-y-[-10px] pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
+            <a href="{% url 'patient:journey' %}" class="flex items-center gap-3.5 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
+              <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">route</span></div> Vaccination Journey
+            </a>
             <a href="{% url 'patient:vaccinebooking' %}" class="flex items-center gap-3.5 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
               <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">calendar_month</span></div> Appointments
             </a>
@@ -104,6 +107,7 @@
     
     <nav class="flex flex-col gap-4">
       <a class="font-headline font-bold text-base text-gray-700 hover:text-primary py-2 border-b border-gray-50 decoration-transparent" href="{% url 'patient:homepage' %}">{{ T.home|default:"Home" }}</a>
+      <a class="font-headline font-bold text-base text-gray-700 hover:text-primary py-2 border-b border-gray-50 decoration-transparent" href="{% url 'patient:journey' %}">Vaccination Journey</a>
       <a class="font-headline font-bold text-base text-gray-700 hover:text-primary py-2 border-b border-gray-50 decoration-transparent" href="{% url 'patient:aboutpage' %}">{{ T.about|default:"About" }}</a>
       <a class="font-headline font-bold text-base text-gray-700 hover:text-primary py-2 border-b border-gray-50 decoration-transparent" href="{% url 'patient:contactpage' %}">{{ T.contact|default:"Contact" }}</a>
       

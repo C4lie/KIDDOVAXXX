@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>KiddoVax | AI Vaccination Queue</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0F4C81",
+              "secondary": "#3BAFDA",
+              "background": "#F6F9FC",
+              "on-surface": "#1E293B",
+              "modern-cyan": "#3BAFDA",
+              "modern-blue": "#3b82f6",
+              "modern-indigo": "#6366f1"
+            },
+            fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Inter", "sans-serif"] },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { -webkit-font-smoothing: antialiased; background-color: #F6F9FC; overflow-x: hidden; }
+      .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(15, 76, 129, 0.1); }
+      .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); }
+      .mesh-bg { background-image: radial-gradient(at 40% 20%, rgba(59, 175, 218, 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(15, 76, 129, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%); }
+    </style>
+</head>
+<body class="text-on-surface font-body mesh-bg min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 w-full z-50 glass-nav shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-20">
+            <a href="{% url 'hospitalapp:hospitalhome' %}" class="flex items-center decoration-transparent group">
+                <span class="font-headline font-black text-3xl tracking-tighter" style="color: #0F4C81;">
+                    Kidd<i class="fab fa-keycdn transition-all duration-300 drop-shadow-md" style="color: #ff3c3c; margin: 0 2px;"></i>Vax <span class="text-gray-400 font-light text-xl ml-2 tracking-normal">Hospital Portal</span>
+                </span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-6">
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:hospitalhome' %}">Dashboard</a>
+                <a class="font-headline font-bold text-sm text-primary bg-primary/10 px-4 py-2 rounded-full transition-all" href="{% url 'hospitalapp:ai_queue' %}">AI Queue</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:inventory_forecast' %}">Inventory Forecast</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:record_alerts' %}">Quality Alerts</a>
+                <a class="font-headline font-bold text-sm text-gray-500 hover:text-primary transition-all decoration-transparent" href="{% url 'hospitalapp:schedule_settings' %}">Schedule Settings</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-100">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-inner"><span class="material-symbols-outlined">local_hospital</span></div>
+                    <span class="font-headline font-bold text-gray-800">{{ request.session.CName }}</span>
+                </div>
+                <a href="{% url 'hospitalapp:logout' %}" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm"><span class="material-symbols-outlined text-xl">logout</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-8 py-10 w-full space-y-8 animate__animated animate__fadeIn">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200/60 pb-6">
+            <div>
+                <h1 class="font-headline font-black text-4xl text-gray-800 tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-4xl">format_list_bulleted_add</span>
+                    Today's AI Vaccination Queue
+                </h1>
+                <p class="text-gray-500 font-medium mt-1 text-lg">Intelligent queue prioritizing patient care attention for {{ today|date:"d M Y" }}</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-red-500">
+                <p class="text-xs font-bold text-red-600 uppercase tracking-widest">High Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ high_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-orange-400">
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-widest">Medium Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ medium_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-blue-400">
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest">Normal Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ normal_count }}</h3>
+            </div>
+            <div class="glass-card rounded-3xl p-6 shadow-sm border-l-4 border-slate-300">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Low Priority</p>
+                <h3 class="font-headline font-black text-4xl text-gray-800 mt-2">{{ low_count }}</h3>
+            </div>
+        </div>
+
+        <!-- Queue List -->
+        <div class="space-y-4">
+            {% if queue %}
+                {% for item in queue %}
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="flex items-center gap-4">
+                            <!-- Priority Badge -->
+                            {% if item.priority == 'HIGH' %}
+                                <div class="w-16 h-16 rounded-2xl bg-red-100 text-red-700 font-headline font-black text-xs flex flex-col items-center justify-center border border-red-200 shadow-inner">
+                                    <span class="material-symbols-outlined text-lg">priority_high</span>
+                                    HIGH
+                                </div>
+                            {% elif item.priority == 'MEDIUM' %}
+                                <div class="w-16 h-16 rounded-2xl bg-orange-100 text-orange-700 font-headline font-black text-xs flex flex-col items-center justify-center border border-orange-200 shadow-inner">
+                                    <span class="material-symbols-outlined text-lg">warning</span>
+                                    MEDIUM
+                                </div>
+                            {% elif item.priority == 'NORMAL' %}
+                                <div class="w-16 h-16 rounded-2xl bg-blue-100 text-blue-700 font-headline font-black text-xs flex flex-col items-center justify-center border border-blue-200 shadow-inner">
+                                    <span class="material-symbols-outlined text-lg">schedule</span>
+                                    NORMAL
+                                </div>
+                            {% else %}
+                                <div class="w-16 h-16 rounded-2xl bg-slate-100 text-slate-600 font-headline font-black text-xs flex flex-col items-center justify-center border border-slate-200 shadow-inner">
+                                    <span class="material-symbols-outlined text-lg">check_circle</span>
+                                    LOW
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <h3 class="font-headline font-bold text-xl text-gray-800">
+                                    {{ item.appointment.childname|default:item.appointment.patientid.name }}
+                                </h3>
+                                <p class="text-sm font-semibold text-primary mt-0.5">
+                                    Vaccine: <strong>{{ item.appointment.vaccineid.vaccineName }}</strong>
+                                    · Scheduled: <strong>{% if item.appointment.apttime %}{{ item.appointment.apttime|time:"h:i A" }}{% else %}Date-only{% endif %}</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Operational Attention Reasons -->
+                        <div class="bg-white/80 rounded-2xl p-4 border border-gray-100 max-w-lg w-full">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm text-primary">info</span> Priority Reasons (Score: {{ item.score }})
+                            </h4>
+                            <ul class="space-y-1 text-xs text-gray-600 font-medium">
+                                {% for reason in item.reasons %}
+                                    <li class="flex items-start gap-1.5">
+                                        <span class="text-primary font-bold">•</span> {{ reason }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="glass-card rounded-3xl p-12 text-center">
+                    <span class="material-symbols-outlined text-5xl text-gray-300">event_available</span>
+                    <h3 class="font-headline font-bold text-xl text-gray-700 mt-4">No Appointments Scheduled for Today</h3>
+                </div>
+            {% endif %}
+        </div>
+
+    </main>
+
+</body>
+</html>

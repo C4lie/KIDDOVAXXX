@@ -1,3 +1,36 @@
+from django.shortcuts import redirect
+
+# Paths that AccountStatusMiddleware should NOT redirect away from
+_ACCOUNT_EXEMPT_PATHS = [
+    '/login/', '/register/', '/logout/', '/force-change-password/',
+    '/pending-registration/', '/set-lang/', '/update-location/',
+    '/admin/', '/hospital/', '/receptionist/',
+]
+
+
+class AccountStatusMiddleware:
+    """Redirects patients who must change password or have pending status."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        patient_id = request.session.get('Cid')
+
+        if patient_id and not any(request.path.startswith(p) for p in _ACCOUNT_EXEMPT_PATHS):
+            from patientapp.models import Patienttbl
+            try:
+                patient = Patienttbl.objects.get(id=patient_id)
+                if patient.must_change_password:
+                    return redirect('patient:force_password_change')
+                if patient.account_status == 'PENDING_HOSPITAL_REGISTRATION':
+                    return redirect('patient:pending_registration')
+            except Patienttbl.DoesNotExist:
+                pass
+
+        return self.get_response(request)
+
+
 from bs4 import BeautifulSoup
 from .translations import TRANSLATIONS
 

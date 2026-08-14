@@ -114,11 +114,12 @@
                 <table class="w-full text-left whitespace-nowrap">
                     <thead>
                         <tr class="border-b border-slate-200">
-                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Date</th>
-                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Name</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Date & Time</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Child Name</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Parent Name</th>
                             <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Vaccine</th>
-                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Time In</th>
-                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Time Out</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Check-in</th>
+                            <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Completion</th>
                             <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Status</th>
                             <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider text-right">View</th>
                         </tr>
@@ -126,32 +127,42 @@
                     <tbody class="divide-y divide-slate-100/60">
                         {% for bookingitem in bindData %}
                         <tr class="hover:bg-slate-50/50 transition-colors group">
-                            <td class="py-4 px-4 text-sm font-medium text-slate-500">{{bookingitem.aptdate|date:"d-m-Y"}}</td>
-                            <td class="py-4 px-4 font-bold text-slate-800">{{bookingitem.childname}}</td>
+                            <td class="py-4 px-4 text-sm font-medium text-slate-500">
+                                <div>{{bookingitem.aptdate|date:"d-m-Y"}}</div>
+                                {% if bookingitem.apttime %}
+                                <div class="text-xs font-bold text-indigo-600">{{bookingitem.apttime|time:"h:i A"}}</div>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-4 font-bold text-slate-800">{{bookingitem.display_child_name}}</td>
+                            <td class="py-4 px-4 font-medium text-slate-600">{{bookingitem.patientid.name|default:"-"}}</td>
                             <td class="py-4 px-4 font-medium text-slate-600">{{bookingitem.vaccineid.vaccineName}}</td>
                             <td class="py-4 px-4 text-sm text-slate-500">
-                                {% if bookingitem.active == 1 or bookingitem.active == 2 %}
-                                    {{bookingitem.indt}}
+                                {% if bookingitem.indt %}
+                                    {{bookingitem.indt|date:"d-m-Y h:i A"}}
                                 {% else %}    
-                                    <span class="text-slate-400 italic">Pending</span>
+                                    <span class="text-slate-400 italic">Not Checked In</span>
                                 {% endif %}
                             </td>
                             <td class="py-4 px-4 text-sm text-slate-500">
-                                {% if bookingitem.active == 2 %}
-                                    {{bookingitem.outdt}}
+                                {% if bookingitem.outdt %}
+                                    {{bookingitem.outdt|date:"d-m-Y h:i A"}}
                                 {% else %}    
-                                    <span class="text-slate-400 italic">Pending</span>
+                                    <span class="text-slate-400 italic">Not Completed</span>
                                 {% endif %}
                             </td>
                             <td class="py-4 px-4">
                                 {% if bookingitem.active == 0 %}
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800">Pending</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Booked (Pending)</span>
                                 {% elif bookingitem.active == 1 %} 
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Waiting</span>
-                                {% elif bookingitem.active == 2 %} 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Checked In (Waiting)</span>
+                                {% elif bookingitem.active == 2 or bookingitem.active == 4 %} 
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Completed</span>
                                 {% elif bookingitem.active == 3 %} 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800">In Vaccination</span>
+                                {% elif bookingitem.active == 5 %} 
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">Cancelled</span>
+                                {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800">Pending</span>
                                 {% endif %}
                             </td>
                             <td class="py-4 px-4 text-right">

@@ -26,7 +26,7 @@ class AdminCreation(View):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
-        if request.session.get('CName') is None:
+        if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
           return redirect('adminapp:adminlogin') 
         adminData = Admintbl.objects.all().order_by('-id')
         form = AdminForm()
@@ -37,6 +37,8 @@ class AdminCreation(View):
         return render(request, 'adminapp/createadmin.html',context)
     
     def post(self, request):
+        if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
+            return redirect('adminapp:adminlogin')
         form = AdminForm(request.POST)
         messages.info(request,'New Admin Inserted Success!')
         form.save()
@@ -68,9 +70,9 @@ class AdminLogin(View):
         if checkusername is not None:
             checkcontactpasswordboth = Admintbl.objects.filter(username=scontact,password=spassword).exists()
             if checkcontactpasswordboth:
-                #loggedname = CustomerModel.objects.only('name').get(contactno=scontact)
                 loggedname = Admintbl.objects.filter(username=scontact).values('username')
-                request.session['CName'] =loggedname[0]['username']
+                request.session['CName'] = loggedname[0]['username']
+                request.session['user_role'] = 'admin'
                 return redirect('adminapp:adminhome')
             else:
                 messages.info(request,'Invalid Password')                
@@ -83,9 +85,28 @@ def Home(request):
     storage = messages.get_messages(request)
     for message in storage:
         message = None
-    if request.session.get('CName') is None:
+    if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
         return redirect('adminapp:adminlogin') 
-    return render(request,'adminapp/home.html')
+
+    from patientapp.models import Patienttbl, Childtbl, Appointmenttbl
+    from hospitalapp.models import Receptionisttbl
+
+    total_hospitals = Hospitaltbl.objects.count()
+    total_patients = Patienttbl.objects.count()
+    total_children = Childtbl.objects.count()
+    total_appointments = Appointmenttbl.objects.count()
+    completed_vaccinations = Appointmenttbl.objects.filter(active__in=[2, 4]).count()
+    total_receptionists = Receptionisttbl.objects.count()
+
+    context = {
+        'total_hospitals': total_hospitals,
+        'total_patients': total_patients,
+        'total_children': total_children,
+        'total_appointments': total_appointments,
+        'completed_vaccinations': completed_vaccinations,
+        'total_receptionists': total_receptionists,
+    }
+    return render(request, 'adminapp/home.html', context)
 
 class ManageCity(View):
     def get(self, request,id=None,cityid=None):

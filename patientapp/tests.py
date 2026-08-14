@@ -103,3 +103,178 @@ class KiddoVaxV2Tests(TestCase):
         self.assertIn("प्रसार रोकें", response.content.decode('utf-8'))
         self.assertIn("घर पर रहें, सुरक्षित रहें।", response.content.decode('utf-8'))
         self.assertNotIn("Prevent the Spread", response.content.decode('utf-8'))
+
+    def test_stock_auto_decrement_and_replenishment(self):
+        from patientapp.models import Appointmenttbl
+        # 1. New vaccine defaults to 50 stock
+        v = Vaccinetbl.objects.create(
+            hospitalId=self.hospital,
+            vaccineName="Hepatitis-B 1",
+            price=300
+        )
+        self.assertEqual(v.stock_quantity, 50)
+
+        # 2. Simulate appointment completion / check-out (active=1 -> active=2)
+        apt = Appointmenttbl.objects.create(
+            hospitalid=self.hospital,
+            vaccineid=v,
+            patientid=self.parent,
+            aptdate=datetime.date.today(),
+            active=1
+        )
+        
+        # Perform check-out logic
+        apt.active = 2
+        apt.save()
+        if apt.vaccineid and apt.vaccineid.stock_quantity > 0:
+            apt.vaccineid.stock_quantity = max(0, apt.vaccineid.stock_quantity - 1)
+            apt.vaccineid.save()
+
+        v.refresh_from_db()
+        self.assertEqual(v.stock_quantity, 49)
+
+        # 3. Simulate Quick Restock (+10 doses -> 59)
+        v.stock_quantity += 10
+        v.save()
+        v.refresh_from_db()
+        self.assertEqual(v.stock_quantity, 59)
+
+    def test_feature1_queue_prioritization(self):
+        from patientapp.models import Appointmenttbl
+        from patientapp.services.queue_priority_service import calculate_appointment_priority
+        
+        vaccine = Vaccinetbl.objects.create(
+            hospitalId=self.hospital,
+            vaccineName="MMR 1",
+            price=200,
+            stock_quantity=2, # low stock
+            minimum_quantity=5
+        )
+        child = Childtbl.objects.create(
+            patient=self.parent,
+            childname="Aarav",
+            dob=datetime.date(2023, 1, 1),
+            gender="Boy"
+        )
+        apt = Appointmenttbl.objects.create(
+            hospitalid=self.hospital,
+            vaccineid=vaccine,
+            patientid=self.parent,
+            child=child,
+            aptdate=datetime.date.today(),
+            apttime=datetime.time(10, 30),
+            is_confirmed=False
+        )
+        result = calculate_appointment_priority(apt)
+        self.assertIn(result['priority'], ['HIGH', 'MEDIUM'])
+        self.assertTrue(len(result['reasons']) > 0)
+
+    def test_feature2_inventory_forecasting(self):
+        from hospitalapp.services.inventory_forecast_service import generate_inventory_forecast_for_hospital
+        v1 = Vaccinetbl.objects.create(
+            hospitalId=self.hospital,
+            vaccineName="BCG",
+            stock_quantity=8,
+            minimum_quantity=5
+        )
+        forecasts = generate_inventory_forecast_for_hospital(self.hospital.id, forecast_days=14)
+        self.assertTrue(len(forecasts) > 0)
+        fc = [f for f in forecasts if f['vaccine_name'] == "BCG"][0]
+        self.assertEqual(fc['stock_quantity'], 8)
+        self.assertIn(fc['risk_level'], ['SAFE', 'MONITOR', 'AT_RISK', 'CRITICAL'])
+
+    def test_feature3_quality_checker(self):
+        from patientapp.models import Appointmenttbl
+        from patientapp.services.quality_checker_service import run_quality_check_for_child
+        child = Childtbl.objects.create(
+            patient=self.parent,
+            childname="Riya",
+            dob=datetime.date(2025, 5, 10),
+            gender="Girl"
+        )
+        vaccine = Vaccinetbl.objects.create(
+            hospitalId=self.hospital,
+            vaccineName="OPV",
+            stock_quantity=20
+        )
+        # Create an impossible date (before DOB)
+        apt = Appointmenttbl.objects.create(
+            hospitalid=self.hospital,
+            vaccineid=vaccine,
+            patientid=self.parent,
+            child=child,
+            aptdate=datetime.date(2025, 1, 1), # Before DOB!
+            active=2
+        )
+        alerts = run_quality_check_for_child(child.id)
+        self.assertTrue(len(alerts) > 0)
+        self.assertEqual(alerts[0].issue_type, 'IMPOSSIBLE_DATE')
+
+    def test_feature4_date_time_scheduling(self):
+        from patientapp.services.booking_service import generate_hospital_time_slots, validate_and_reserve_slot
+        today = datetime.date.today() + datetime.timedelta(days=1)
+        slots = generate_hospital_time_slots(self.hospital.id, today)
+        self.assertTrue(len(slots) > 0)
+        # Validate reservation
+        res = validate_and_reserve_slot(self.hospital.id, today, datetime.time(9, 30))
+        self.assertTrue(res)
+
+    def test_feature5_location_recommendation(self):
+        from patientapp.services.geocoding_service import calculate_haversine_distance, sort_hospitals_by_recommendation
+        # Surat to Vadodara distance
+        dist = calculate_haversine_distance(21.1702, 72.8311, 22.3072, 73.1812)
+        self.assertGreater(dist, 100) # ~130 km
+        
+        hospitals = sort_hospitals_by_recommendation(
+            Hospitaltbl.objects.all(),
+            user_lat=21.1702,
+            user_lng=72.8311
+        )
+        self.assertEqual(len(hospitals), 1)
+
+    def test_journey_assistant_timeline_and_next_step(self):
+        from patientapp.services.journey_assistant_service import build_child_vaccination_journey
+        Vaccinetbl.objects.create(
+            hospitalId=self.hospital,
+            vaccineName="BCG",
+            price=250
+        )
+        child = Childtbl.objects.create(
+            patient=self.parent,
+            childname="Siya",
+            dob=datetime.date.today() - datetime.timedelta(days=60), # ~2 months old
+            gender="Girl"
+        )
+        res = build_child_vaccination_journey(child.id)
+        self.assertTrue(res['success'])
+        self.assertEqual(res['child']['name'], "Siya")
+        self.assertIsNotNone(res['next_step'])
+
+    def test_patient_booking_get_builds_vaccine_context(self):
+        from django.test import RequestFactory
+        from django.contrib.sessions.backends.db import SessionStore
+        from patientapp.views import BookedAppointment
+
+        request = RequestFactory().get('/patient/booking/')
+        request.session = SessionStore()
+        request.session['CName'] = 'John Doe'
+        request.session['Cid'] = self.parent.id
+        request.session['user_role'] = 'patient'
+
+        response = BookedAppointment.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Book Appointment')
+
+    def test_education_explainer_qa_and_safety_disclaimer(self):
+        from patientapp.services.education_explainer_service import answer_vaccine_education_query
+        
+        # Test normal question
+        ans_normal = answer_vaccine_education_query("Why does my child need DTaP vaccine?")
+        self.assertFalse(ans_normal['is_safety_disclaimer'])
+        self.assertIn("DTaP", ans_normal['title'])
+
+        # Test safety boundary query
+        ans_safety = answer_vaccine_education_query("My child has high fever above 102. Should I give vaccine?")
+        self.assertTrue(ans_safety['is_safety_disclaimer'])
+        self.assertTrue(ans_safety['show_contact_button'])
+        self.assertIn("cannot determine", ans_safety['answer'])

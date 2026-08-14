@@ -1,4 +1,4 @@
 <option value="">---Select Vaccine---</option>
 {% for v in vaccinelist %}
-	<option value="{{ v.pk }}">{{ v.vaccineName }}</option>
+	<option value="{{ v.pk }}" {% if v.is_prefilled %}selected{% endif %}>{{ v.vaccineName }}</option>
 {% endfor %}

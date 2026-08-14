@@ -7,8 +7,16 @@ from django.contrib.sessions.models import Session
 from hospitalapp.forms import ReceptionistForm,VaccineForm
 from adminapp.models import City,Area
 from patientapp.models import Appointmenttbl
-import datetime
+import datetime, random
 # Create your views here.
+
+
+def generate_ui_number():
+    for _ in range(50):
+        candidate = str(random.randint(10000, 99999))
+        if not Receptionisttbl.objects.filter(ui_no=candidate).exists():
+            return candidate
+    raise Exception('Unable to generate a unique 5-digit UI number for staff registration.')
 
 def Logout(request):
     storage = messages.get_messages(request)
@@ -25,7 +33,7 @@ def Home(request):
     for message in storage:
         pass
     
-    if request.session.get('CName') is None:
+    if request.session.get('CName') is None or request.session.get('user_role') != 'hospital':
         return redirect('hospitalapp:hospitallogin') 
 
     hosp_id = request.session.get('Cid')
@@ -91,10 +99,10 @@ class HospitalLogin(View):
         if checkusername is not None:
             checkcontactpasswordboth = Hospitaltbl.objects.filter(contactNo=scontact,password=spassword).exists()
             if checkcontactpasswordboth:
-                #loggedname = CustomerModel.objects.only('name').get(contactno=scontact)
                 loggedname = Hospitaltbl.objects.filter(contactNo=scontact).values('id', 'title')
                 request.session['CName'] = loggedname[0]['title']
                 request.session['Cid'] = loggedname[0]['id']
+                request.session['user_role'] = 'hospital'
                 return redirect('hospitalapp:hospitalhome')
             else:
                 messages.info(request,'Invalid Password')                
@@ -179,19 +187,30 @@ class ReceptionistRegister(View):
           
             data = form.save(commit=False)
             data.hospitalid_id = request.session['Cid']
+            data.ui_no = generate_ui_number()
              
             data.name = request.POST.get('name')
             data.address = request.POST.get('address')
             data.gender = request.POST.get('gender')
             data.contactNo = request.POST.get('contactNo')
             data.password = request.POST.get('password')
+            data.ui_no = request.POST.get('ui_no') or generate_ui_number()
             data.staffimg  = request.FILES.get('staffimg')
             data.doj = request.POST.get('doj')
             data.areaId_id = request.POST.get('areaId')
             data.cityId_id = request.POST.get('cityId')
+            
+            if data.ui_no:
+                data.ui_no = str(data.ui_no).strip()
+                if not data.ui_no.isdigit() or len(data.ui_no) != 5:
+                    messages.error(request, 'UI Number must be a 5-digit number.')
+                    return redirect('hospitalapp:receptionistregister')
+                if Receptionisttbl.objects.filter(ui_no=data.ui_no).exclude(pk=data.pk).exists():
+                    messages.error(request, 'That UI Number is already assigned to an existing staff account.')
+                    return redirect('hospitalapp:receptionistregister')
          
             data.save()
-            messages.info(request,'Receptionist Inserted Success!')
+            messages.info(request,f'Receptionist Inserted Success! User ID: {data.ui_no}')
            
         return redirect('hospitalapp:receptionistregister')
     
@@ -278,53 +297,100 @@ class ManageVaccine(View):
             'Tdap/Td': 'Tetanus, Diphtheria, Pertussis booster for older children/adolescents.',
             'COVID-19': 'COVID-19 vaccine for children.',
         }
+        from hospitalapp.services.inventory_forecast_service import generate_inventory_forecast_for_hospital
+        days_param = request.GET.get('days', '14')
+        try:
+            forecast_days = int(days_param)
+            if forecast_days not in [7, 14, 30]:
+                forecast_days = 14
+        except ValueError:
+            forecast_days = 14
+
+        forecasts = generate_inventory_forecast_for_hospital(request.session.get('Cid'), forecast_days)
+        forecast_map = {f['vaccine_id']: f for f in forecasts}
+
+        for v in vaccineData:
+            v.forecast = forecast_map.get(v.id, {})
         
         import json
+        inventory_dict = {}
+        for v in vaccineData:
+            inventory_dict[v.vaccineName] = {
+                'id': v.id,
+                'price': str(v.price),
+                'descr': v.vaccineDescr,
+                'stock': v.stock_quantity,
+                'min': v.minimum_quantity
+            }
+
         context={
             'form' : form,
             'vaccinedata' : vaccineData,
-            'vaccine_descriptions_json': json.dumps(VACCINE_DESCRIPTIONS)
+            'forecast_days': forecast_days,
+            'vaccine_descriptions_json': json.dumps(VACCINE_DESCRIPTIONS),
+            'inventory_json': json.dumps(inventory_dict)
         }
         return render(request, 'hospitalapp/managevaccine.html',context)    
 
-    def post(self, request,id=None):
+    def post(self, request, id=None):
         if 'btnreset' in request.POST and request.method == 'POST':
-            form = VaccineForm()
             return redirect('hospitalapp:vaccineregister')
 
-        vName = request.POST["vaccineName"]
         hosp_id = request.session.get('Cid')
-        name_exists = Vaccinetbl.objects.filter(vaccineName=vName, hospitalId_id=hosp_id)
-        if id is not None:
-            name_exists = name_exists.exclude(pk=id)
-        if name_exists.exists():
-            messages.info(request, 'This Vaccine Name is already taken in your inventory!')
+        vName = request.POST.get("vaccineName")
+        existing_id = request.POST.get("existing_vaccine_id") or id
+
+        if not vName and not existing_id:
+            messages.error(request, "Vaccine name is required.")
             return redirect('hospitalapp:vaccineregister')
 
-        if  id is not None:  # Update Record
-            data = Vaccinetbl.objects.get(pk = id)
-            form = VaccineForm(request.POST ,instance  = data)
-            if form.is_valid():
-                updated_data = form.save(commit=False)
-                updated_data.stock_quantity = int(request.POST.get('stock_quantity', 0))
-                updated_data.minimum_quantity = int(request.POST.get('minimum_quantity', 5))
-                updated_data.save()
-            messages.info(request,'Vaccine Updated Success!')
-        else:               # Insert Record
-            form = VaccineForm(request.POST)
-           
-            if form.is_valid():
-                data = form.save(commit=False)
-                data.vaccineName=  request.POST.get('vaccineName')
-                data.vaccineDescr = request.POST.get('vaccineDescr')
-                data.price = request.POST.get('price')
-                data.stock_quantity = int(request.POST.get('stock_quantity', 0))
-                data.minimum_quantity = int(request.POST.get('minimum_quantity', 5))
-                data.hospitalId_id = request.session['Cid']
-                data.save()
-            messages.info(request,'Vaccine Inserted Success!')
-      
-        return redirect('hospitalapp:vaccineregister')
+        # Check if vaccine already exists in hospital inventory
+        existing_vaccine = None
+        if existing_id:
+            existing_vaccine = Vaccinetbl.objects.filter(id=existing_id, hospitalId_id=hosp_id).first()
+        if not existing_vaccine and vName:
+            existing_vaccine = Vaccinetbl.objects.filter(vaccineName=vName, hospitalId_id=hosp_id).first()
+
+        added_stock = int(request.POST.get('added_stock', 0) or 0)
+        price_val = request.POST.get('price')
+        descr_val = request.POST.get('vaccineDescr')
+        min_qty = int(request.POST.get('minimum_quantity', 5) or 5)
+
+        if existing_vaccine:
+            # Restock existing vaccine or update price / description / min threshold
+            msg_parts = []
+            if added_stock > 0:
+                existing_vaccine.stock_quantity += added_stock
+                msg_parts.append(f"+{added_stock} doses added (New Total: {existing_vaccine.stock_quantity})")
+            
+            if price_val is not None and price_val != '':
+                existing_vaccine.price = price_val
+            if descr_val is not None:
+                existing_vaccine.vaccineDescr = descr_val
+            existing_vaccine.minimum_quantity = min_qty
+            existing_vaccine.save()
+
+            if msg_parts:
+                messages.info(request, f"Updated stock for '{existing_vaccine.vaccineName}'! {', '.join(msg_parts)}")
+            else:
+                messages.info(request, f"Successfully updated vaccine details for '{existing_vaccine.vaccineName}'!")
+            return redirect('hospitalapp:vaccineregister')
+        else:
+            # Insert new vaccine
+            initial_stock = int(request.POST.get('stock_quantity', 50) or 50)
+            if added_stock > 0:
+                initial_stock = added_stock
+
+            Vaccinetbl.objects.create(
+                hospitalId_id=hosp_id,
+                vaccineName=vName,
+                vaccineDescr=descr_val or '',
+                price=price_val or 0,
+                stock_quantity=initial_stock,
+                minimum_quantity=min_qty
+            )
+            messages.info(request, f"Vaccine '{vName}' added to inventory with {initial_stock} doses!")
+            return redirect('hospitalapp:vaccineregister')
 
 
 class ShowAppointments(View):
@@ -335,16 +401,167 @@ class ShowAppointments(View):
         if request.session.get('CName') is None:
             return redirect('hospitalapp:hospitallogin')
         
-        # show data
-        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),aptdate__gte=datetime.datetime.now().date()).exclude(active=2).order_by('-id')
-            #getData  =  Appointmenttbl.objects.filter(id = id).all().order_by('-id')
-           
-        context={
-                'data' : getData,
-              
-                
+        hospital_id = request.session.get('Cid')
+        from patientapp.services.queue_priority_service import get_prioritized_queue_for_hospital
+        
+        # Get all upcoming & today's appointments enriched with priority scores & reasons
+        queue_data = get_prioritized_queue_for_hospital(hospital_id)
+
+        # Summary counts
+        high_count = sum(1 for item in queue_data if item['priority'] == 'HIGH')
+        medium_count = sum(1 for item in queue_data if item['priority'] == 'MEDIUM')
+        normal_count = sum(1 for item in queue_data if item['priority'] == 'NORMAL')
+        low_count = sum(1 for item in queue_data if item['priority'] == 'LOW')
+
+        context = {
+            'data': queue_data,
+            'high_count': high_count,
+            'medium_count': medium_count,
+            'normal_count': normal_count,
+            'low_count': low_count,
+            'today': datetime.date.today(),
+            'active_tab': 'appointments'
         }
-        return render(request, 'hospitalapp/showappointment.html', context)     
+        return render(request, 'hospitalapp/showappointment.html', context)
+
+
+class AIQueueView(View):
+    """Hospital AI Vaccination Queue View (Consolidated into Appointments)"""
+    def get(self, request):
+        return redirect('hospitalapp:showappointment')
+
+
+class InventoryForecastView(View):
+    """Hospital AI Vaccine Inventory Forecast View (Consolidated into Vaccines page)"""
+    def get(self, request):
+        days = request.GET.get('days', '14')
+        from django.urls import reverse
+        return redirect(f"{reverse('hospitalapp:vaccineregister')}?days={days}")
+
+
+class RecordAlertsView(View):
+    """Hospital AI Vaccination Record Quality Alerts View (Feature 3)"""
+    def get(self, request):
+        if request.session.get('CName') is None:
+            return redirect('hospitalapp:hospitallogin')
+
+        hospital_id = request.session.get('Cid')
+        from hospitalapp.models import VaccinationRecordAlert
+        from patientapp.services.quality_checker_service import run_quality_check_for_child
+        from patientapp.models import Appointmenttbl
+
+        # Automatically run AI Quality Audit for all hospital patients
+        child_ids = Appointmenttbl.objects.filter(
+            hospitalid_id=hospital_id,
+            child__isnull=False
+        ).values_list('child_id', flat=True).distinct()
+
+        for c_id in child_ids:
+            run_quality_check_for_child(c_id)
+        
+        # Fetch alerts for patients at this hospital
+        alerts = VaccinationRecordAlert.objects.filter(
+            appointment__hospitalid_id=hospital_id
+        ).select_related('child', 'appointment', 'appointment__vaccineid').order_by('-created_at')
+
+        pending_count = alerts.filter(status='PENDING').count()
+        verified_count = alerts.filter(status='VERIFIED').count()
+
+        context = {
+            'alerts': alerts,
+            'pending_count': pending_count,
+            'verified_count': verified_count
+        }
+        return render(request, 'hospitalapp/record_alerts.html', context)
+
+
+def resolve_record_alert(request, alert_id):
+    """POST /hospital/resolve-alert/<alert_id>/"""
+    if request.method == 'POST' and request.session.get('Cid'):
+        from hospitalapp.models import VaccinationRecordAlert
+        alert = Hospitaltbl.objects.filter(id=request.session.get('Cid')).first()
+        if not alert:
+            return redirect('hospitalapp:hospitallogin')
+
+        new_status = request.POST.get('status', 'VERIFIED')
+        if new_status in ['VERIFIED', 'CORRECTED', 'PENDING']:
+            rec_alert = VaccinationRecordAlert.objects.filter(id=alert_id).first()
+            if rec_alert:
+                rec_alert.status = new_status
+                rec_alert.save(update_fields=['status'])
+                messages.success(request, f"Alert for '{rec_alert.child.childname}' marked as {new_status}.")
+
+    return redirect('hospitalapp:record_alerts')
+
+
+class ScheduleSettingsView(View):
+    """Configures hospital operating hours, breaks, and holidays (Feature 4)"""
+    def get(self, request):
+        if request.session.get('CName') is None:
+            return redirect('hospitalapp:hospitallogin')
+            
+        hospital_id = request.session.get('Cid')
+        hospital = Hospitaltbl.objects.get(id=hospital_id)
+        from hospitalapp.models import HospitalBreak, HospitalHoliday
+        breaks = HospitalBreak.objects.filter(hospital=hospital)
+        holidays = HospitalHoliday.objects.filter(hospital=hospital).order_by('date')
+
+        context = {
+            'hospital': hospital,
+            'breaks': breaks,
+            'holidays': holidays
+        }
+        return render(request, 'hospitalapp/schedule_settings.html', context)
+
+    def post(self, request):
+        if request.session.get('CName') is None:
+            return redirect('hospitalapp:hospitallogin')
+
+        hospital_id = request.session.get('Cid')
+        hospital = Hospitaltbl.objects.get(id=hospital_id)
+        action = request.POST.get('action')
+
+        from hospitalapp.models import HospitalBreak, HospitalHoliday
+
+        if action == 'update_hours':
+            opening = request.POST.get('opening_time')
+            closing = request.POST.get('closing_time')
+            duration = request.POST.get('slot_duration')
+            capacity = request.POST.get('slot_capacity')
+
+            if opening: hospital.opening_time = opening
+            if closing: hospital.closing_time = closing
+            if duration: hospital.slot_duration = int(duration)
+            if capacity: hospital.slot_capacity = int(capacity)
+
+            hospital.save()
+            messages.success(request, "Operating hours and slot parameters updated successfully.")
+
+        elif action == 'add_break':
+            start = request.POST.get('start_time')
+            end = request.POST.get('end_time')
+            if start and end:
+                HospitalBreak.objects.create(hospital=hospital, start_time=start, end_time=end)
+                messages.success(request, f"Break period ({start} - {end}) added.")
+
+        elif action == 'delete_break':
+            break_id = request.POST.get('break_id')
+            HospitalBreak.objects.filter(id=break_id, hospital=hospital).delete()
+            messages.success(request, "Break period removed.")
+
+        elif action == 'add_holiday':
+            h_date = request.POST.get('date')
+            h_desc = request.POST.get('description', '')
+            if h_date:
+                HospitalHoliday.objects.create(hospital=hospital, date=h_date, description=h_desc)
+                messages.success(request, f"Closed date ({h_date}) added.")
+
+        elif action == 'delete_holiday':
+            holiday_id = request.POST.get('holiday_id')
+            HospitalHoliday.objects.filter(id=holiday_id, hospital=hospital).delete()
+            messages.success(request, "Closed date removed.")
+
+        return redirect('hospitalapp:schedule_settings')
 
 class ShowPastAppointments(View):
     def get(self, request, id=None):
@@ -354,36 +571,217 @@ class ShowPastAppointments(View):
         if request.session.get('CName') is None:
             return redirect('hospitalapp:hospitallogin')
         
-        # show data
-        dt = datetime.datetime.now().date()
-        getData = Appointmenttbl.objects.all().filter(hospitalid=request.session.get('Cid'),active=2).order_by('-id')
-            #getData  =  Appointmenttbl.objects.filter(id = id).all().order_by('-id')
-           
-        context={
-                'data' : getData,
-              
-                
+        hospital_id = request.session.get('Cid')
+        get_data = Appointmenttbl.objects.filter(hospitalid=hospital_id, active=2).order_by('-id')
+        
+        past_data = []
+        for apt in get_data:
+            past_data.append({
+                'appointment': apt,
+                'priority': 'COMPLETED',
+                'reasons': ['Vaccination successfully administered and recorded.']
+            })
+
+        context = {
+            'data': past_data,
+            'active_tab': 'history',
+            'is_past': True
         }
-        return render(request, 'hospitalapp/showappointment.html', context)     
+        return render(request, 'hospitalapp/showappointment.html', context)
 
-       
-         
-  
-        # gethId = Receptionisttbl.objects.filter(id =  request.session.get('Cid')).values('hospitalid_id').distinct()
-        # print(gethId)
-        Status  =   Appointmenttbl.objects.filter(id = id).values('active').distinct()
-        UpdateData = Appointmenttbl.objects.get(id = id)
-       
-        print(Status[0]['active'])
-        if int(Status[0]['active']) == 0:
-            UpdateData.rfidno = request.POST.get('rfidno')
-            UpdateData.indt =  datetime.datetime.now()
-            UpdateData.active = 1
-            UpdateData.save(update_fields= ['indt','rfidno','active'])  
-        elif int(Status[0]['active']) == 1:
-            UpdateData.outdt =  datetime.datetime.now()
-            UpdateData.active = 2
-            UpdateData.save(update_fields= ['outdt','active'])  
 
-        #return render(request,'receptionistapp/booking.html')
-        return redirect('receptionist:managepatients')
+# ─── Phase 3: Hospital Patient Registration & RFID Assignment ───
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+class PatientRegistrationView(View):
+    """Hospital staff registers patients and assigns RFID devices."""
+    def get(self, request):
+        if request.session.get('CName') is None:
+            return redirect('hospitalapp:hospitallogin')
+
+        hospital_id = request.session.get('Cid')
+        search_q = request.GET.get('q', '').strip()
+
+        from patientapp.services.hospital_registration_service import find_pending_patients
+        pending_patients = find_pending_patients(search_q if search_q else None)
+
+        context = {
+            'pending_patients': pending_patients,
+            'search_query': search_q,
+            'hospital_id': hospital_id,
+        }
+        return render(request, 'hospitalapp/patient_registration.html', context)
+
+
+class RFIDManagementView(View):
+    """Hospital staff manages RFID cards assigned at their hospital."""
+    def get(self, request):
+        if request.session.get('CName') is None:
+            return redirect('hospitalapp:hospitallogin')
+
+        hospital_id = request.session.get('Cid')
+        search_q = request.GET.get('q', '').strip()
+
+        from patientapp.services.hospital_registration_service import get_hospital_rfid_cards, get_rfid_assignment_logs
+        rfid_cards = get_hospital_rfid_cards(hospital_id, search_q if search_q else None)
+        audit_logs = get_rfid_assignment_logs(hospital_id, limit=30)
+
+        context = {
+            'rfid_cards': rfid_cards,
+            'audit_logs': audit_logs,
+            'search_query': search_q,
+        }
+        return render(request, 'hospitalapp/rfid_management.html', context)
+
+
+@csrf_exempt
+def assign_rfid_api(request):
+    """POST /hospital/api/assign-rfid/ — Assigns RFID to patient."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    if request.session.get('CName') is None:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        data = request.POST
+
+    patient_id = data.get('patient_id')
+    rfid_number = data.get('rfid_number') or data.get('card_number')
+    hospital_id = request.session.get('Cid')
+    staff_name = request.session.get('CName', '')
+
+    if not patient_id or not rfid_number:
+        return JsonResponse({'success': False, 'message': 'Patient ID and RFID number are required.'})
+
+    from patientapp.services.hospital_registration_service import register_patient_at_hospital
+    result = register_patient_at_hospital(
+        patient_id=int(patient_id),
+        hospital_id=hospital_id,
+        rfid_card_number=rfid_number,
+        staff_name=staff_name,
+    )
+    return JsonResponse(result)
+
+
+@csrf_exempt
+def generate_rfid_for_hospital(request):
+    """GET/POST /hospital/api/generate-rfid/ — Generates a unique RFID number.
+
+    The UI both in the hospital registration page and the receptionist scanner page
+    reads the generated number as a JSON field. Return the canonical card_number plus
+    compatibility aliases used by the current templates.
+    """
+    from receptionistapp.services.rfid_service import generate_unique_rfid_number
+    card_number = generate_unique_rfid_number()
+    return JsonResponse({
+        'success': True,
+        'card_number': card_number,
+        'rfid': card_number,
+        'rfid_number': card_number,
+        'rfidno': card_number,
+    })
+
+
+@csrf_exempt
+def verify_patient_registration_api(request):
+    """POST /hospital/api/verify-registration/ — Verify the patient using the registered phone."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    if request.session.get('CName') is None:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        data = request.POST
+
+    patient_id = data.get('patient_id')
+    phone_number = data.get('phone_number') or data.get('contactNo') or data.get('contact')
+    staff_name = request.session.get('CName', '')
+
+    if not patient_id:
+        return JsonResponse({'success': False, 'message': 'Patient ID is required.'})
+
+    if not phone_number:
+        return JsonResponse({'success': False, 'message': 'Phone number is required.'})
+
+    from patientapp.services.hospital_registration_service import verify_patient_registration_by_phone
+    result = verify_patient_registration_by_phone(
+        patient_id=int(patient_id),
+        phone_number=phone_number,
+        staff_name=staff_name,
+    )
+    return JsonResponse(result)
+
+
+@csrf_exempt
+def search_pending_patients_api(request):
+    """GET /hospital/api/search-patients/?q=query — Search pending patients."""
+    if request.session.get('CName') is None:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    query = request.GET.get('q', '').strip()
+    from patientapp.services.hospital_registration_service import find_pending_patients
+    patients = find_pending_patients(query if query else None)
+
+    data = [
+        {
+            'id': p.id,
+            'name': p.name,
+            'contact': str(p.contactNo) if p.contactNo else '',
+            'address': p.address,
+            'city': p.cityId.cityName if p.cityId else '',
+            'area': p.areaId.areaName if p.areaId else '',
+            'status': p.account_status,
+        }
+        for p in patients[:20]
+    ]
+    return JsonResponse({'patients': data})
+
+
+@csrf_exempt
+def deactivate_rfid_api(request):
+    """POST /hospital/api/deactivate-rfid/ — Deactivates an RFID card."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    if request.session.get('CName') is None:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        data = request.POST
+
+    rfid_number = data.get('rfid_number') or data.get('card_number')
+    if not rfid_number:
+        return JsonResponse({'success': False, 'message': 'RFID number is required.'})
+
+    from patientapp.models import RFIDCard, RFIDAssignmentLog
+    rfid_card = RFIDCard.objects.filter(card_number=str(rfid_number).strip(), is_active=True).first()
+    if not rfid_card:
+        return JsonResponse({'success': False, 'message': 'Active RFID card not found.'})
+
+    rfid_card.is_active = False
+    rfid_card.save(update_fields=['is_active'])
+
+    hospital_id = request.session.get('Cid')
+    staff_name = request.session.get('CName', '')
+
+    RFIDAssignmentLog.objects.create(
+        rfid_card=rfid_card,
+        patient=rfid_card.patient,
+        action='DEACTIVATED',
+        performed_by=staff_name,
+        hospital_id=hospital_id,
+    )
+
+    return JsonResponse({
+        'success': True,
+        'message': f'RFID {rfid_number} has been deactivated.',
+    })
