@@ -129,8 +129,11 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
                         <input type="password" id="password" name="password" required 
-                               class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3.5 text-slate-800 font-mono tracking-widest focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm"
+                               class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-12 py-3.5 text-slate-800 font-mono tracking-widest focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm"
                                placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary focus:outline-none transition-colors" title="Toggle password visibility">
+                            <span class="material-symbols-outlined text-[20px] eye-icon">visibility</span>
+                        </button>
                     </div>
                 </div>
 
@@ -150,6 +153,17 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            const icon = btn.querySelector('.eye-icon');
+            if (icon) {
+                icon.textContent = isPassword ? 'visibility_off' : 'visibility';
+            }
+        }
+
         function restrictAlphabets(evt) {
             var x = (evt.which) ? evt.which : evt.keyCode;
             if (x >= 48 && x <= 57 || x == 8) return true;

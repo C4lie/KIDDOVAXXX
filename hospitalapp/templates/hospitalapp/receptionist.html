@@ -194,6 +194,7 @@
                 <table class="w-full text-left whitespace-nowrap">
                     <thead>
                         <tr class="border-b border-gray-200">
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">#</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Image</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Name</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Gender & City</th>
@@ -205,6 +206,7 @@
                     <tbody class="divide-y divide-gray-100/60">
                         {% for item in ReceptionistData %}
                         <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="py-4 px-4 text-sm font-medium text-gray-500">#{{ forloop.counter }}</td>
                             <td class="py-4 px-4">
                                 <img src="/static/{{item.staffimg}}" class="w-12 h-12 rounded-full object-cover shadow-sm border border-gray-200 group-hover:border-primary transition-colors">
                             </td>

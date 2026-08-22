@@ -85,13 +85,20 @@
             {% csrf_token %}
             <input type="hidden" name="childname" id="childname">
             
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start overflow-hidden">
-                <!-- Left Column: Booking Credentials (lg:col-span-7) -->
-                <div class="lg:col-span-7 space-y-6 min-w-0">
+            <div class="space-y-6 min-w-0">
+                <!-- Booking Form Content -->
+                <div class="space-y-6 min-w-0">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Child Profile Select -->
                         <div class="space-y-1.5 min-w-0">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select Child Profile</label>
+                            <div class="flex justify-between items-center px-1">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Select Child Profile</label>
+                                {% if not children %}
+                                <a href="{% url 'patient:profilepage' %}" class="text-[10px] font-bold text-primary hover:underline flex items-center gap-1">
+                                    + Add Child in Profile
+                                </a>
+                                {% endif %}
+                            </div>
                             <select id="child_select" name="child_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:bg-white transition-all shadow-sm text-sm cursor-pointer min-h-[48px]">
                                 <option value="">-- Choose child --</option>
                                 {% for child in children %}
@@ -102,6 +109,14 @@
                                 </option>
                                 {% endfor %}
                             </select>
+                            {% if not children %}
+                            <div class="mt-2 text-xs text-amber-800 bg-amber-50/90 border border-amber-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                                <span class="font-medium">No child profile added yet. Please register a child first.</span>
+                                <a href="{% url 'patient:profilepage' %}" class="font-bold text-xs text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg shadow-sm transition-all flex items-center gap-1">
+                                    <span>+ Add Child Now</span> &rarr;
+                                </a>
+                            </div>
+                            {% endif %}
                         </div>
 
                         <!-- Hospital Center Select -->
@@ -201,19 +216,6 @@
                         <button type="submit" class="w-full sm:w-auto sm:px-12 btn-primary-custom flex items-center justify-center gap-2 py-4 rounded-xl font-bold font-headline tracking-wide shadow-md hover:shadow-xl transition-all">
                             Schedule Appointment <span class="material-symbols-outlined text-[18px]">add_circle</span>
                         </button>
-                    </div>
-                </div>
-
-                <!-- Right Column: Smart Suggestions (lg:col-span-5) -->
-                <div class="lg:col-span-5 space-y-4 min-w-0">
-                    <!-- Smart Recommendations Card Container (Always Visible) -->
-                    <div id="recommendation-container" class="space-y-3 bg-teal-50/20 border border-teal-100/50 p-5 rounded-2xl animate__animated animate__fadeIn">
-                        <h4 class="font-headline font-bold text-xs text-primary flex items-center gap-1.5 uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-sm font-bold animate-pulse">tips_and_updates</span> Smart Suggestions
-                        </h4>
-                        <div id="rec-loading" class="hidden text-xs text-slate-400 font-semibold p-4 text-center">Identifying target doses...</div>
-                        <div id="rec-empty" class="text-xs text-slate-500 font-semibold p-4 text-center bg-slate-50 border border-slate-100 rounded-xl">No recommendations available for the selected options.</div>
-                        <div id="recommendation-cards" class="hidden grid grid-cols-1 gap-2.5 max-h-[320px] overflow-y-auto pr-1"></div>
                     </div>
                 </div>
             </div>
@@ -1152,6 +1154,7 @@
             $('#childname').val(selected.data('childname') || '');
             
             var alertPanel = $('#booking-missed-alert');
+            loadSmartSuggestions();
             if (!cid) {
                 alertPanel.addClass('hidden').empty();
                 window.lastMissedData = null;
@@ -1206,15 +1209,19 @@
             if (hid) { $('#hospitalid').trigger('change'); }
         });
 
+        $('#hospitalid').on('change', function() {
+            loadSmartSuggestions();
+        });
+
     function loadSmartSuggestions() {
         var cid = $('#child_select').val();
         var hid = $('#hospitalid').val();
         var vid = $('#vaccineid').val();
 
-        if (!cid || !hid) {
+        if (!cid) {
             $('#rec-loading').addClass('hidden');
             $('#recommendation-cards').addClass('hidden').empty();
-            $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+            $('#rec-empty').removeClass('hidden').text('Select a child profile above to view AI smart recommendations.');
             return;
         }
 
@@ -1236,29 +1243,35 @@
                 }
                 
                 if (vaccines.length === 0) {
-                    $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+                    $('#recommendation-cards').addClass('hidden').empty();
+                    $('#rec-empty').removeClass('hidden').text(res.message || 'All compulsory vaccines for this child up to current age are up to date!');
                     return;
                 }
                 
                 var cards = vaccines.map(function(v) {
-                    var badge = '<span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-800 flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px] font-bold">verified</span> Recommended</span>';
-                    var desc = v.description || 'Routine vaccination dose due for child.';
-                    return '<div data-vaccine-id="' + v.id + '" class="rec-card flex flex-col p-3 rounded-xl border border-teal-200 bg-white hover:border-secondary transition-all cursor-pointer relative overflow-hidden group shadow-sm">' +
+                    var dueBadge = v.due_stage ? '<span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest bg-amber-100 text-amber-800">' + v.due_stage + '</span>' : '';
+                    var priceBadge = (v.price > 0) ? ('<span class="text-[10px] font-bold text-slate-600">₹' + v.price + '</span>') : '<span class="text-[10px] font-bold text-emerald-600">FREE</span>';
+                    var desc = v.description || 'Compulsory routine dose due for child.';
+                    var itemVid = (v.id && v.id !== 0) ? v.id : '';
+                    return '<div data-vaccine-id="' + itemVid + '" class="rec-card flex flex-col p-3.5 rounded-xl border border-teal-200 bg-white hover:border-secondary transition-all cursor-pointer relative overflow-hidden group shadow-sm mb-2">' +
                         '<div class="absolute top-0 left-0 w-1 h-full bg-secondary scale-y-0 group-hover:scale-y-100 transition-transform"></div>' +
-                        '<div class="flex justify-between items-start mb-1">' +
+                        '<div class="flex justify-between items-start mb-1.5 gap-2">' +
                             '<h5 class="font-headline font-bold text-xs text-slate-800">' + v.name + '</h5>' +
-                            badge +
+                            '<div class="flex items-center gap-1 shrink-0">' + dueBadge + priceBadge + '</div>' +
                         '</div>' +
-                        '<p class="text-[10px] text-slate-500 leading-normal line-clamp-1">' + desc + '</p>' +
+                        '<p class="text-[10px] text-slate-500 leading-normal">' + desc + '</p>' +
                     '</div>';
                 }).join('');
                 
+                $('#rec-empty').addClass('hidden');
                 $('#recommendation-cards').html(cards).removeClass('hidden');
 
                 // Select recommendations manually by clicking cards
                 $('.rec-card').on('click', function() {
-                    var clickVid = $(this).data('vaccine-id').toString();
-                    $('#vaccineid').val(clickVid).trigger('change');
+                    var clickVid = $(this).data('vaccine-id');
+                    if (clickVid && clickVid !== '' && clickVid !== '0') {
+                        $('#vaccineid').val(clickVid.toString()).trigger('change');
+                    }
                     $('.rec-card').removeClass('ring-2 ring-secondary/60');
                     $(this).addClass('ring-2 ring-secondary/60');
                 });
@@ -1266,7 +1279,7 @@
             error: function() {
                 $('#rec-loading').addClass('hidden');
                 $('#recommendation-cards').addClass('hidden').empty();
-                $('#rec-empty').removeClass('hidden').text('No recommendations available for the selected options.');
+                $('#rec-empty').removeClass('hidden').text('Select a child profile above to view AI smart recommendations.');
             }
         });
     }
@@ -1274,6 +1287,10 @@
     $(document).ready(function() {
         // Run default initialization
         updateDashboard();
+        if ($('#child_select').val()) {
+            $('#child_select').trigger('change');
+            loadSmartSuggestions();
+        }
 
         // Bind vaccine selection change to update Smart Suggestions & time slots
         $('#vaccineid').on('change', function() {

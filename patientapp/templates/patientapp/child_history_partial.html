@@ -67,6 +67,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-4 px-6">#</th>
                             <th class="py-4 px-6">Vaccine Formulation</th>
                             <th class="py-4 px-6">Hospital Center</th>
                             <th class="py-4 px-6">Administration Date</th>
@@ -76,6 +77,7 @@
                     <tbody class="divide-y divide-slate-50">
                         {% for rec in records %}
                         <tr class="hover:bg-slate-50/50 transition-colors text-xs">
+                            <td class="py-5 px-6 font-bold text-slate-400 align-middle">#{{ forloop.counter }}</td>
                             <td class="py-5 px-6 space-y-1.5">
                                 <span class="font-bold text-slate-800 text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ rec.vaccine.vaccineName }}</span>
                                 {% if rec.vaccine.vaccineDescr %}

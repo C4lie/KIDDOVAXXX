@@ -127,6 +127,7 @@
                 <table class="w-full text-left whitespace-nowrap">
                     <thead>
                         <tr class="border-b border-gray-200">
+                            <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">#</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Urgency / Status</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Date & Time</th>
                             <th class="py-4 px-4 font-bold text-sm text-gray-400 uppercase tracking-wider">Patient Name</th>
@@ -139,8 +140,10 @@
                         {% for item in data %}
                         <tr class="apt-row hover:bg-slate-50/50 transition-colors group"
                             data-score="{{ item.score|default:0 }}"
-                            data-priority="{% if item.priority == 'HIGH' %}4{% elif item.priority == 'MEDIUM' %}3{% elif item.priority == 'NORMAL' %}2{% elif item.priority == 'LOW' %}1{% else %}0{% endif %}"
+                            data-priority="{% if item.priority == 'COMPLETED' %}4{% elif item.priority == 'HIGH' %}3{% elif item.priority == 'MEDIUM' %}2{% elif item.priority == 'NORMAL' %}1{% else %}0{% endif %}"
                             data-time="{% if item.appointment.apttime %}{{ item.appointment.apttime|time:'H:i' }}{% else %}23:59{% endif %}">
+                            
+                            <td class="py-4 px-4 text-sm font-medium text-gray-500">#{{ forloop.counter }}</td>
                             
                             <!-- Urgency Indicator Badge -->
                             <td class="py-4 px-4">

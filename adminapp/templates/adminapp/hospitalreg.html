@@ -309,6 +309,7 @@
                         <table class="w-full text-left whitespace-nowrap">
                             <thead>
                                 <tr class="border-b border-white/10">
+                                    <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">#</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Hospital</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Representative</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">City</th>
@@ -319,6 +320,7 @@
                             <tbody class="divide-y divide-white/5">
                                 {% for item in hospitalData %}
                                 <tr class="hover:bg-slate-800/40 transition-colors group">
+                                    <td class="py-4 px-4 text-sm font-medium text-slate-400">#{{ forloop.counter }}</td>
                                     <td class="py-4 px-4">
                                         <div class="flex items-center gap-3">
                                             <img src="../../../static/{{item.img}}" class="w-10 h-10 rounded-lg object-cover bg-slate-800 border border-white/10"/>

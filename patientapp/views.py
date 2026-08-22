@@ -39,8 +39,8 @@ class PatientLogin(View):
         }
         return render(request, 'patientapp/login.html',context)
     def post(self, request):
-        contact = request.POST['contactno']
-        password = request.POST['password']
+        contact = str(request.POST.get('contactno', '')).strip()
+        password = str(request.POST.get('password', '')).strip()
 
         try:
             patient = Patienttbl.objects.get(contactNo=contact)
@@ -412,32 +412,34 @@ def load_vaccinebyhospital(request, h_id=None):
 
 
 def recommend_vaccines(request):
-    """GET /recommend-vaccines/?child_id=X&hospital_id=Y&vaccine_id=Z
-    Returns a JSON list of age-appropriate vaccines not yet booked for this child.
+    """GET /recommend-vaccines/?child_id=X&hospital_id=Y
+    Returns a JSON list of compulsory age-appropriate vaccines due from birth up to child's current age.
     """
     from patientapp.vaccine_recommender import get_recommended_vaccines  # type: ignore[import]  # pyre-ignore
     child_id = request.GET.get('child_id', '')
     hospital_id = request.GET.get('hospital_id', '')
-    vaccine_id = request.GET.get('vaccine_id', '')
 
-    if not child_id.isdigit() or not hospital_id.isdigit():
+    if not child_id or not child_id.isdigit():
         return JsonResponse({
             'vaccines': [],
-            'message': 'No recommendations available for the selected options.'
+            'message': 'Select a child profile above to view AI smart recommendations.'
         })
 
-    recs = get_recommended_vaccines(int(child_id), int(hospital_id))
-
-    # Optional filter if specific vaccine_id is selected
-    if vaccine_id and vaccine_id.isdigit():
-        recs = [v for v in recs if v.pk == int(vaccine_id)]
+    h_id = int(hospital_id) if (hospital_id and hospital_id.isdigit()) else None
+    recs = get_recommended_vaccines(int(child_id), h_id)
 
     data = [
-        {'id': v.pk, 'name': v.vaccineName, 'description': getattr(v, 'vaccineDescr', '') or ''}
+        {
+            'id': v.pk,
+            'name': v.vaccineName,
+            'description': getattr(v, 'schedule_desc', '') or getattr(v, 'vaccineDescr', '') or 'Compulsory dose due for child',
+            'due_stage': getattr(v, 'due_stage', 'Compulsory'),
+            'price': v.price if v.price is not None else 0
+        }
         for v in recs
     ]
 
-    msg = '' if data else 'No recommendations available for the selected options.'
+    msg = '' if data else 'All compulsory vaccines for this child up to current age are up to date!'
     return JsonResponse({'vaccines': data, 'message': msg})
 
 
@@ -580,7 +582,12 @@ class ChangeAuthentication(View):
         return render(request, 'patientapp/changepassword.html')
     
     def post(self,request):
-        patient = Patienttbl.objects.get(id=request.session.get('Cid'))
+        patient = Patienttbl.objects.filter(id=request.session.get('Cid')).first()
+        if not patient:
+            request.session.flush()
+            messages.error(request, 'Session expired or patient record not found. Please log in again.')
+            return redirect('patient:loginpage')
+
         current_pass = request.POST.get('cpass')
         new_pass = request.POST.get('password')
         confirm_pass = request.POST.get('cfpass')
@@ -621,7 +628,11 @@ class ForcePasswordChange(View):
         if request.session.get('Cid') is None:
             return redirect('patient:loginpage')
 
-        patient = Patienttbl.objects.get(id=request.session.get('Cid'))
+        patient = Patienttbl.objects.filter(id=request.session.get('Cid')).first()
+        if not patient:
+            request.session.flush()
+            messages.error(request, 'Session expired or patient record not found. Please log in again.')
+            return redirect('patient:loginpage')
         current_pass = request.POST.get('current_password') or request.POST.get('cpass')
         new_pass = request.POST.get('new_password') or request.POST.get('password')
         confirm_pass = request.POST.get('confirm_password') or request.POST.get('cfpass')
@@ -680,14 +691,20 @@ class PatientProfile(View):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
-        if request.session.get('CName') is None:
+        if request.session.get('CName') is None or request.session.get('Cid') is None:
             return redirect('patient:loginpage')
+            
+        patientData = Patienttbl.objects.filter(id=request.session.get('Cid')).first()
+        if not patientData:
+            request.session.flush()
+            messages.error(request, 'Session expired or patient account not found. Please log in again.')
+            return redirect('patient:loginpage')
+
         bindCity = City.objects.all().order_by('-id')
-        patientData = Patienttbl.objects.get(id=request.session.get('Cid'))
-        bindArea = Area.objects.filter(cityId=patientData.cityId).order_by('-id')
+        bindArea = Area.objects.filter(cityId=patientData.cityId).order_by('-id') if patientData.cityId else Area.objects.all().order_by('-id')
         form = PatientForm(instance=patientData)
         from patientapp.models import Childtbl  # type: ignore[import]  # pyre-ignore
-        children = Childtbl.objects.filter(patient_id=request.session.get('Cid')).prefetch_related(
+        children = Childtbl.objects.filter(patient_id=patientData.id).prefetch_related(
             'appointments', 
             'appointments__vaccineid', 
             'appointments__hospitalid'
@@ -704,14 +721,20 @@ class PatientProfile(View):
         return render(request, 'patientapp/profile.html', context)
     
     def post(self, request):
-        if request.session.get('CName') is None:
+        if request.session.get('CName') is None or request.session.get('Cid') is None:
+            return redirect('patient:loginpage')
+
+        patientData = Patienttbl.objects.filter(id=request.session.get('Cid')).first()
+        if not patientData:
+            request.session.flush()
+            messages.error(request, 'Session expired or patient account not found. Please log in again.')
             return redirect('patient:loginpage')
             
         action = request.POST.get('action')
         if action == 'add_child':
             from patientapp.models import Childtbl  # type: ignore[import]  # pyre-ignore
             Childtbl.objects.create(
-                patient_id=request.session.get('Cid'),
+                patient_id=patientData.id,
                 childname=request.POST.get('childname'),
                 dob=request.POST.get('dob'),
                 gender=request.POST.get('gender'),
@@ -721,12 +744,10 @@ class PatientProfile(View):
             return redirect('patient:profilepage')
         elif action == 'delete_child':
             from patientapp.models import Childtbl  # type: ignore[import]  # pyre-ignore
-            Childtbl.objects.filter(id=request.POST.get('child_id'), patient_id=request.session.get('Cid')).delete()
+            Childtbl.objects.filter(id=request.POST.get('child_id'), patient_id=patientData.id).delete()
             messages.info(request, "Child profile removed successfully!")
             return redirect('patient:profilepage')
             
-        patientData = Patienttbl.objects.get(id=request.session.get('Cid'))
-        
         # Directly update only the profile fields — always performs an UPDATE, never INSERT
         patientData.name = request.POST.get('name', patientData.name)
         patientData.contactNo = request.POST.get('contactNo', patientData.contactNo)

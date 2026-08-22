@@ -2,165 +2,205 @@
 vaccine_recommender.py
 Rule-based Smart Vaccine Recommendation Engine for KiddoVax.
 
-How it works:
-  1. Look up the child's age.
-  2. Collect the canonical vaccine names due for that age band.
-  3. Cross-reference with what the child has already been booked/completed for.
-  4. Return Vaccinetbl rows from the selected hospital whose names match the
-     remaining due vaccines (case-insensitive keyword match).
+Calculates all compulsory UIP vaccines due for a child from birth up to current age (days/weeks/months/years).
 """
-
-from django.apps import apps  # type: ignore[import]  # pyre-ignore
-from .models import Childtbl, Appointmenttbl  # type: ignore[import]  # pyre-ignore
+import datetime
+from django.apps import apps
+from .models import Childtbl, Appointmenttbl
 from hospitalapp.models import Vaccinetbl
 
 # ---------------------------------------------------------------------------
-# Vaccine Schedule
-# Each entry: (min_age_years, max_age_years_exclusive, [canonical keywords])
-# Keywords are matched case-insensitively against Vaccinetbl.vaccineName.
+# Universal Immunization Programme (UIP) Milestone Schedule
+# (min_age_days, milestone_label, [compulsory_vaccine_names])
 # ---------------------------------------------------------------------------
-VACCINE_SCHEDULE = [
-    (0,  1,  ["bcg", "hepatitis b", "hep b", "opv", "ipv", "dtap", "pcv", "rotavirus", "hib"]),
-    (1,  2,  ["measles", "mmr", "varicella", "chickenpox", "hepatitis a", "hep a", "influenza", "flu"]),
-    (2,  5,  ["dtap", "dtp", "mmr", "varicella", "chickenpox", "polio", "ipv", "opv", "pcv", "hib"]),
-    (5,  12, ["tdap", "td", "influenza", "flu", "meningococcal", "hpv"]),
-    (12, 19, ["hpv", "tdap", "td", "influenza", "flu", "meningococcal"]),
-    (0,  18, ["covid", "covid-19"]),   # universal for all children
+UIP_MILESTONES = [
+    (0, "At Birth", [
+        "BCG",
+        "Hepatitis B (Birth Dose)",
+        "OPV-0"
+    ]),
+    (42, "6 Weeks", [
+        "OPV-1",
+        "Pentavalent-1",
+        "Rotavirus-1",
+        "fIPV-1",
+        "PCV-1"
+    ]),
+    (70, "10 Weeks", [
+        "OPV-2",
+        "Pentavalent-2",
+        "Rotavirus-2"
+    ]),
+    (98, "14 Weeks", [
+        "OPV-3",
+        "Pentavalent-3",
+        "Rotavirus-3",
+        "fIPV-2",
+        "PCV-2"
+    ]),
+    (270, "9–12 Months", [
+        "MR-1",
+        "PCV Booster",
+        "fIPV-3",
+        "JE-1",
+        "Vitamin A (1st Dose)"
+    ]),
+    (480, "16–24 Months", [
+        "MR-2",
+        "DPT Booster-1",
+        "OPV Booster",
+        "JE-2",
+        "Vitamin A (Bi-annual)"
+    ]),
+    (1825, "5–6 Years", [
+        "DPT Booster-2"
+    ]),
+    (3650, "10 Years", [
+        "Td (10 Years)"
+    ]),
+    (5840, "16 Years", [
+        "Td (16 Years)"
+    ]),
 ]
 
 
-def _get_due_keywords(age_years: int) -> set:
-    """Return the set of lowercase vaccine keywords due for the given age."""
-    due = set()
-    for min_age, max_age, keywords in VACCINE_SCHEDULE:
-        if min_age <= age_years < max_age:
-            due.update(kw.lower() for kw in keywords)
-    return due
+def get_due_uip_vaccines_for_child(child):
+    """
+    Returns list of dicts:
+    [{'name': 'BCG', 'milestone': 'At Birth', 'min_days': 0}, ...]
+    for all compulsory vaccines due from birth up to child's current age in days.
+    """
+    today = datetime.date.today()
+    if not child.dob:
+        return []
+    
+    age_days = (today - child.dob).days
+    if age_days < 0:
+        age_days = 0
 
+    due_vaccines = []
+    seen_names = set()
 
-def _name_matches_any(vaccine_name: str, keywords: set) -> bool:
-    """Return True if any keyword appears inside the vaccine name string."""
-    name_lower = vaccine_name.lower()
-    return any(kw in name_lower for kw in keywords)
+    for min_days, milestone_name, vaccine_list in UIP_MILESTONES:
+        if age_days >= min_days:
+            for v_name in vaccine_list:
+                if v_name.lower() not in seen_names:
+                    seen_names.add(v_name.lower())
+                    due_vaccines.append({
+                        'name': v_name,
+                        'milestone': milestone_name,
+                        'min_days': min_days
+                    })
+                    
+    return due_vaccines
 
 
 def get_recommended_vaccines(child_id: int, hospital_id: int = None):
     """
-    Returns a Vaccinetbl queryset of recommended vaccines for the child.
+    Returns Vaccinetbl objects of compulsory due vaccines
+    that the child has NOT yet received or booked.
     """
     try:
         child = Childtbl.objects.get(pk=child_id)
-        age = child.age  # uses the @property from models.py
-
-        due_keywords = _get_due_keywords(age)
-        if not due_keywords:
+        due_uip = get_due_uip_vaccines_for_child(child)
+        if not due_uip:
             return []
 
-        # Vaccines already booked or completed by this child (any status)
-        already_booked_ids = set(
-            Appointmenttbl.objects.filter(child_id=child_id)
-            .values_list('vaccineid_id', flat=True)
+        # Vaccines already booked/completed by this child (excluding CANCELLED=5)
+        booked_apts = Appointmenttbl.objects.filter(child_id=child_id).exclude(active=Appointmenttbl.STATUS_CANCELLED)
+        already_booked_vaccine_ids = set(booked_apts.values_list('vaccineid_id', flat=True))
+        already_booked_names = set(
+            a.vaccineid.vaccineName.lower() for a in booked_apts if a.vaccineid
         )
 
-        qs = Vaccinetbl.objects.exclude(id__in=already_booked_ids)
+        # Get hospital inventory
         if hospital_id:
-            candidate_vaccines = Vaccinetbl.objects.filter(hospitalId_id=hospital_id)
+            hosp_vaccines = list(Vaccinetbl.objects.filter(hospitalId_id=hospital_id))
         else:
-            candidate_vaccines = Vaccinetbl.objects.all()
+            hosp_vaccines = list(Vaccinetbl.objects.all())
 
-        recommendations = [
-            v for v in candidate_vaccines
-            if _name_matches_any(v.vaccineName, due_keywords)
-            and v.pk not in already_booked_ids
-        ]
+        if hospital_id and not hosp_vaccines:
+            hosp_vaccines = list(Vaccinetbl.objects.all())
+
+        recommendations = []
+        seen_rec_names = set()
+
+        for due_item in due_uip:
+            d_name = due_item['name']
+            d_lower = d_name.lower()
+
+            # Skip if child already booked/received this vaccine
+            if any(d_lower == r_name or d_lower in r_name or r_name in d_lower for r_name in already_booked_names):
+                continue
+
+            if d_lower in seen_rec_names:
+                continue
+
+            # Find matching vaccine in hospital inventory
+            matched_v = None
+            for v in hosp_vaccines:
+                v_lower = v.vaccineName.lower()
+                if (d_lower == v_lower or d_lower in v_lower or v_lower in d_lower) and v.pk not in already_booked_vaccine_ids:
+                    matched_v = v
+                    break
+            
+            if matched_v and matched_v not in recommendations:
+                matched_v.due_stage = due_item['milestone']
+                matched_v.schedule_desc = f"Compulsory dose due ({due_item['milestone']})"
+                recommendations.append(matched_v)
+                seen_rec_names.add(d_lower)
+            elif not matched_v:
+                # Construct fallback item so compulsory UIP vaccine is always shown
+                fb_v = Vaccinetbl(
+                    pk=0,
+                    vaccineName=d_name,
+                    vaccineDescr=f"Compulsory dose due ({due_item['milestone']})",
+                    price=0
+                )
+                fb_v.due_stage = due_item['milestone']
+                fb_v.schedule_desc = f"Compulsory dose due ({due_item['milestone']})"
+                recommendations.append(fb_v)
+                seen_rec_names.add(d_lower)
 
         return recommendations
-
-    except Exception:
-        # Never crash the booking flow
+    except Exception as e:
         return []
-
-
-# ---------------------------------------------------------------------------
-# Missed Vaccine Detection
-# ---------------------------------------------------------------------------
-
-def _get_all_due_keywords_by_age(age_years: int) -> list:
-    """
-    Return a list of (keywords_set, label) for every age band whose
-    window has fully CLOSED before the child's current age.
-
-    Example: A child aged 4 has fully passed the 0-1 and 1-2 windows,
-    so ALL those vaccines are "should have been done" by now.
-    """
-    past_bands = []
-    for min_age, max_age, keywords in VACCINE_SCHEDULE:
-        # Band is missed if its upper bound is <= current age
-        # (i.e., the window has fully elapsed)
-        if max_age <= age_years:
-            label = f"{min_age}–{max_age} yr"
-            past_bands.append((set(kw.lower() for kw in keywords), label))
-    return past_bands
 
 
 def get_missed_vaccines(child_id: int) -> dict:
     """
-    Detect vaccines the child should have received but hasn't.
-
-    Returns a dict:
-    {
-        "missed": [
-            {
-                "name": "BCG",
-                "due_age_range": "0–1 yr",
-                "overdue_since": "Age 1 yr (now X yr old)",
-                "severity": "high"   # low / medium / high
-            },
-            ...
-        ],
-        "total_missed": N,
-        "overall_severity": "medium"
-    }
-    Returns empty result on any error.
+    Detects vaccines due for previous milestones that have passed overdue window.
     """
-    empty = {"missed": [], "total_missed": 0, "overall_severity": "low"}
+    empty = {"missed": [], "total_missed": 0, "overall_severity": "none"}
     try:
         child = Childtbl.objects.get(pk=child_id)
-        age = child.age  # int, years
+        if not child.dob:
+            return empty
 
-        past_bands = _get_all_due_keywords_by_age(age)
-        if not past_bands:
-            return empty  # child is too young to have missed anything yet
+        today = datetime.date.today()
+        age_days = (today - child.dob).days
 
-        # IDs of vaccines already received / booked by this child
-        received_ids = set(
-            Appointmenttbl.objects.filter(child_id=child_id)
-            .values_list('vaccineid_id', flat=True)
+        # Vaccines already booked/completed
+        booked_apts = Appointmenttbl.objects.filter(child_id=child_id).exclude(active=Appointmenttbl.STATUS_CANCELLED)
+        already_booked_names = set(
+            a.vaccineid.vaccineName.lower() for a in booked_apts if a.vaccineid
         )
 
-        # All vaccine names the child has received (for keyword matching)
-        Vaccinetbl = apps.get_model('hospitalapp', 'Vaccinetbl')
-        received_names = set(
-            v.vaccineName.lower()
-            for v in Vaccinetbl.objects.filter(pk__in=received_ids)
-        ) if received_ids else set()
-
         missed = []
-        for keywords, label in past_bands:
-            for kw in sorted(keywords):  # deterministic order
-                # Check if any received vaccine name contains this keyword
-                already_got = any(kw in rname for rname in received_names)
-                if not already_got:
-                    import datetime
-                    tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%d %B, %Y')
-                    missed.append({
-                        "name": kw.title(),           # e.g. "Bcg" → titlified display
-                        "due_age_range": label,
-                        "overdue_since": f"Should have been given at {label} (child is now {age} yr old)",
-                        "catch_up_date": f"Recommended Date: {tomorrow}"
-                    })
+        for min_days, milestone_name, vaccine_list in UIP_MILESTONES:
+            # Overdue if milestone passed by more than 14 days
+            if age_days >= (min_days + 14):
+                for v_name in vaccine_list:
+                    v_lower = v_name.lower()
+                    if not any(v_lower == r_name or v_lower in r_name or r_name in v_lower for r_name in already_booked_names):
+                        tomorrow_str = (today + datetime.timedelta(days=1)).strftime('%d %B, %Y')
+                        missed.append({
+                            "name": v_name,
+                            "due_age_range": milestone_name,
+                            "overdue_since": f"Overdue from {milestone_name} milestone",
+                            "catch_up_date": f"Recommended Date: {tomorrow_str}"
+                        })
 
-        # Assign per-item severity and compute overall
         total = len(missed)
         for item in missed:
             if total >= 5:
@@ -170,20 +210,11 @@ def get_missed_vaccines(child_id: int) -> dict:
             else:
                 item["severity"] = "low"
 
-        if total >= 5:
-            overall = "high"
-        elif total >= 3:
-            overall = "medium"
-        elif total >= 1:
-            overall = "low"
-        else:
-            overall = "none"
-
+        overall = "high" if total >= 5 else ("medium" if total >= 3 else ("low" if total >= 1 else "none"))
         return {
             "missed": missed,
             "total_missed": total,
             "overall_severity": overall,
         }
-
     except Exception:
         return empty

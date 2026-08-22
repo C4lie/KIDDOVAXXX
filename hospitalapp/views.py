@@ -88,8 +88,8 @@ class HospitalLogin(View):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
-        scontact = request.POST.get('contact')
-        spassword = request.POST.get('password')
+        scontact = str(request.POST.get('contact', '')).strip()
+        spassword = str(request.POST.get('password', '')).strip()
       
         try:
             checkusername = Hospitaltbl.objects.get(contactNo = scontact)
@@ -157,62 +157,66 @@ class ReceptionistRegister(View):
         return render(request, 'hospitalapp/receptionist.html', context)
     
     def post(self, request, id=None):
-       
         if 'btnreset' in request.POST and request.method == 'POST':
-            form = ReceptionistForm()
             return redirect('hospitalapp:receptionistregister')
+
         if id is not None:
-            data = Receptionisttbl.objects.get(pk = id)
-            form = ReceptionistForm(request.POST,request.FILES or None, instance  = data)
-            data = form.save(commit=False)
+            try:
+                data = Receptionisttbl.objects.get(pk=id)
+            except Receptionisttbl.DoesNotExist:
+                messages.error(request, 'Receptionist record not found.')
+                return redirect('hospitalapp:receptionistregister')
+
             data.hospitalid_id = request.session['Cid']
-             
-            data.name = request.POST.get('name')
-            data.address = request.POST.get('address')
-            data.gender = request.POST.get('gender')
-            data.contactNo = request.POST.get('contactNo')
-            data.password = request.POST.get('password')
-            if request.FILES.get('staffimg') is not None:
-                data.staffimg  = request.FILES.get('staffimg')
-                
-            data.doj = request.POST.get('doj')
-            data.areaId_id = request.POST.get('areaId')
-            data.cityId_id = request.POST.get('cityId')
-         
+            if request.POST.get('name'):
+                data.name = request.POST.get('name')
+            if request.POST.get('address'):
+                data.address = request.POST.get('address')
+            if request.POST.get('gender'):
+                data.gender = request.POST.get('gender')
+            if request.POST.get('contactNo'):
+                data.contactNo = request.POST.get('contactNo')
+            if request.POST.get('password'):
+                data.password = request.POST.get('password')
+            if request.POST.get('doj'):
+                data.doj = request.POST.get('doj')
+            if request.POST.get('areaId'):
+                data.areaId_id = request.POST.get('areaId')
+            if request.POST.get('cityId'):
+                data.cityId_id = request.POST.get('cityId')
+            if request.FILES.get('staffimg'):
+                data.staffimg = request.FILES.get('staffimg')
+
             data.save()
-            messages.info(request,'Receptionist Updated Success!')
+            messages.info(request, 'Receptionist Updated Success!')
             return redirect('hospitalapp:receptionistregister')
-        else:    
-            form = ReceptionistForm(request.POST,request.FILES or None)
-          
-            data = form.save(commit=False)
-            data.hospitalid_id = request.session['Cid']
-            data.ui_no = generate_ui_number()
-             
-            data.name = request.POST.get('name')
-            data.address = request.POST.get('address')
-            data.gender = request.POST.get('gender')
-            data.contactNo = request.POST.get('contactNo')
-            data.password = request.POST.get('password')
-            data.ui_no = request.POST.get('ui_no') or generate_ui_number()
-            data.staffimg  = request.FILES.get('staffimg')
-            data.doj = request.POST.get('doj')
-            data.areaId_id = request.POST.get('areaId')
-            data.cityId_id = request.POST.get('cityId')
-            
-            if data.ui_no:
-                data.ui_no = str(data.ui_no).strip()
-                if not data.ui_no.isdigit() or len(data.ui_no) != 5:
-                    messages.error(request, 'UI Number must be a 5-digit number.')
-                    return redirect('hospitalapp:receptionistregister')
-                if Receptionisttbl.objects.filter(ui_no=data.ui_no).exclude(pk=data.pk).exists():
-                    messages.error(request, 'That UI Number is already assigned to an existing staff account.')
-                    return redirect('hospitalapp:receptionistregister')
-         
+        else:
+            ui_no = request.POST.get('ui_no') or generate_ui_number()
+            ui_no = str(ui_no).strip()
+
+            if not ui_no.isdigit() or len(ui_no) != 5:
+                messages.error(request, 'UI Number must be a 5-digit number.')
+                return redirect('hospitalapp:receptionistregister')
+            if Receptionisttbl.objects.filter(ui_no=ui_no).exists():
+                messages.error(request, 'That UI Number is already assigned to an existing staff account.')
+                return redirect('hospitalapp:receptionistregister')
+
+            data = Receptionisttbl(
+                hospitalid_id=request.session['Cid'],
+                name=request.POST.get('name', ''),
+                address=request.POST.get('address', ''),
+                gender=request.POST.get('gender', 'Female'),
+                contactNo=request.POST.get('contactNo'),
+                password=request.POST.get('password', ''),
+                ui_no=ui_no,
+                staffimg=request.FILES.get('staffimg'),
+                doj=request.POST.get('doj'),
+                areaId_id=request.POST.get('areaId'),
+                cityId_id=request.POST.get('cityId'),
+            )
             data.save()
-            messages.info(request,f'Receptionist Inserted Success! User ID: {data.ui_no}')
-           
-        return redirect('hospitalapp:receptionistregister')
+            messages.info(request, f'Receptionist Inserted Success! User ID: {data.ui_no}')
+            return redirect('hospitalapp:receptionistregister')
     
 def load_areasbyCity(request, cityid=None):
     if cityid is not None:

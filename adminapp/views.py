@@ -59,8 +59,8 @@ class AdminLogin(View):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
-        scontact = request.POST.get('username')
-        spassword = request.POST.get('password')
+        scontact = str(request.POST.get('username', '')).strip()
+        spassword = str(request.POST.get('password', '')).strip()
       
         try:
             checkusername = Admintbl.objects.get(username = scontact)
@@ -242,29 +242,34 @@ class ManageHospitals(View):
         bindData = Hospitaltbl.objects.select_related("cityId").select_related("areaId").all().order_by('-id')
 
         if pid is not None:
-            data = Hospitaltbl.objects.get(pk = pid)
-            data.delete()
-            pid = None
-            messages.info(request,'Hospital Deleted Success!')
+            try:
+                data = Hospitaltbl.objects.get(pk = pid)
+                data.delete()
+                messages.info(request,'Hospital Deleted Success!')
+            except Hospitaltbl.DoesNotExist:
+                messages.error(request, 'Hospital not found or already deleted.')
             return redirect('adminapp:addhospitals')
 
         if id is not None:
-        
-            pimg = Hospitaltbl.objects.only('img').get(pk=id)
-            Pdata = Hospitaltbl.objects.get(pk = id)
-            form = HospitalForm(instance = Pdata)  
-            bindArea = load_areasbyCity(request,Pdata.cityId)
-            selectedArea = Pdata.areaId
-            context={
-                'form' : form,
-                'hospitalData' : bindData,
-                'imgurl' : pimg,
-                'cityData' : bindCity,
-                'areaData' : bindArea,
-                'selectedCity' : Pdata.cityId,
-                'selectedArea' : selectedArea,
-            }
-            return render(request, 'adminapp/hospitalreg.html',context)   
+            try:
+                pimg = Hospitaltbl.objects.only('img').get(pk=id)
+                Pdata = Hospitaltbl.objects.get(pk = id)
+                form = HospitalForm(instance = Pdata)  
+                bindArea = load_areasbyCity(request,Pdata.cityId)
+                selectedArea = Pdata.areaId
+                context={
+                    'form' : form,
+                    'hospitalData' : bindData,
+                    'imgurl' : pimg,
+                    'cityData' : bindCity,
+                    'areaData' : bindArea,
+                    'selectedCity' : Pdata.cityId,
+                    'selectedArea' : selectedArea,
+                }
+                return render(request, 'adminapp/hospitalreg.html',context)
+            except Hospitaltbl.DoesNotExist:
+                messages.error(request, 'Hospital not found.')
+                return redirect('adminapp:addhospitals')
     
        
         context={
@@ -279,10 +284,13 @@ class ManageHospitals(View):
             form = HospitalForm()
             return redirect('adminapp:addhospitals')
         if id is not None:
-            data = Hospitaltbl.objects.get(pk = id)
-            form = HospitalForm(request.POST,request.FILES or None, instance  = data)
-            form.save()
-            messages.info(request,'Hospital Updated Success!')
+            try:
+                data = Hospitaltbl.objects.get(pk = id)
+                form = HospitalForm(request.POST,request.FILES or None, instance  = data)
+                form.save()
+                messages.info(request,'Hospital Updated Success!')
+            except Hospitaltbl.DoesNotExist:
+                messages.error(request, 'Hospital not found or already deleted.')
         else:    
             form = HospitalForm(request.POST,request.FILES or None)
             messages.info(request,'Hospital Inserted Success!')

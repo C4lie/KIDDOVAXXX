@@ -5,7 +5,7 @@ from django.views import  View
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 from patientapp.forms import AppointmentForm
-from patientapp.models import Appointmenttbl, VaccinationRecord
+from patientapp.models import Appointmenttbl, VaccinationRecord, RFIDCard
 import datetime
 # Create your views here.
 
@@ -92,35 +92,55 @@ class ManagePatient(View):
         return render(request, 'receptionistapp/booking.html', context)
 
     def post(self, request, id=None):
-        Status = Appointmenttbl.objects.filter(id=id).values('active').distinct()
-        UpdateData = Appointmenttbl.objects.get(id=id)
-       
-        if int(Status[0]['active']) == 0:
-            rfid_val = request.POST.get('rfidno')
-            UpdateData.rfidno = rfid_val
-            UpdateData.indt = datetime.datetime.now()
-            UpdateData.active = 1
-            UpdateData.save(update_fields=['indt', 'rfidno', 'active'])  
+        UpdateData = Appointmenttbl.objects.filter(id=id).select_related('patientid', 'child').first()
+        if not UpdateData:
+            messages.error(request, "Appointment not found.")
+            return redirect('receptionist:receptionisthome')
 
-            # Permanently link RFID number to Patient & Child profile
-            if rfid_val and UpdateData.patientid_id:
+        patient = UpdateData.patientid
+        current_status = UpdateData.active or 0
+        rfid_val = str(request.POST.get('rfidno') or '').strip()
+
+        # Strict RFID Authentication Check
+        if rfid_val and patient:
+            assigned_rfids = set(RFIDCard.objects.filter(patient=patient, is_active=True).values_list('card_number', flat=True))
+            if assigned_rfids and rfid_val not in assigned_rfids:
+                messages.error(request, "Not the verified RFID users.")
+                return redirect('receptionist:showappointment', id=id)
+
+            other_owner = RFIDCard.objects.filter(card_number=rfid_val, is_active=True).exclude(patient=patient).first()
+            if other_owner:
+                messages.error(request, "Not the verified RFID users.")
+                return redirect('receptionist:showappointment', id=id)
+
+        if current_status == 0:
+            if not rfid_val:
+                messages.error(request, "RFID card number is required for check-in.")
+                return redirect('receptionist:showappointment', id=id)
+
+            if patient and not assigned_rfids:
                 from receptionistapp.services.rfid_service import link_rfid_card
-                link_rfid_card(rfid_val, patient_id=UpdateData.patientid_id, child_id=UpdateData.child_id)
+                link_rfid_card(rfid_val, patient_id=patient.id, child_id=UpdateData.child_id)
 
-        elif int(Status[0]['active']) == 1:
-            rfid_val = request.POST.get('rfidno')
-            if rfid_val:
-                try:
-                    UpdateData.rfidno = int(rfid_val)
-                except ValueError:
-                    pass
-                if UpdateData.patientid_id:
-                    from receptionistapp.services.rfid_service import link_rfid_card
-                    link_rfid_card(rfid_val, patient_id=UpdateData.patientid_id, child_id=UpdateData.child_id)
+            now = datetime.datetime.now()
+            try:
+                UpdateData.rfidno = int(rfid_val)
+            except ValueError:
+                UpdateData.rfidno = None
+            UpdateData.checkin_rfid = rfid_val
+            UpdateData.indt = now
+            UpdateData.checkin_time = now
+            UpdateData.active = 1
+            UpdateData.save(update_fields=['indt', 'checkin_time', 'checkin_rfid', 'rfidno', 'active'])
+            messages.success(request, f"Patient '{patient.name if patient else 'User'}' authenticated & checked in successfully!")
 
-            UpdateData.outdt = datetime.datetime.now()
+        elif current_status == 1:
+            now = datetime.datetime.now()
+            UpdateData.outdt = now
+            UpdateData.completion_time = now
+            UpdateData.completion_rfid = rfid_val or getattr(UpdateData, 'checkin_rfid', '')
             UpdateData.active = 2
-            UpdateData.save(update_fields=['outdt', 'active', 'rfidno'])
+            UpdateData.save(update_fields=['outdt', 'completion_time', 'completion_rfid', 'active'])
 
             # Automatically decrement vaccine stock quantity at the hospital by 1
             if UpdateData.vaccineid and UpdateData.vaccineid.stock_quantity > 0:
@@ -137,7 +157,10 @@ class ManagePatient(View):
                 from patientapp.services.quality_checker_service import run_quality_check_for_child
                 run_quality_check_for_child(UpdateData.child_id)
 
-        return redirect('receptionist:managepatients')
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        return redirect('receptionist:showappointment', id=id)
 
 class ReceptionistLogin(View):
     def get(self, request):  
@@ -148,8 +171,8 @@ class ReceptionistLogin(View):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
-        scontact = request.POST.get('contact')
-        spassword = request.POST.get('password')
+        scontact = str(request.POST.get('contact', '')).strip()
+        spassword = str(request.POST.get('password', '')).strip()
 
         checkUser = Receptionisttbl.objects.filter(
             password=spassword
@@ -217,15 +240,15 @@ def rfid_generate_api(request):
 
 @csrf_exempt
 def rfid_pending_list_api(request):
-    """GET /receptionist/api/pending-registrations/ — Pending hospital registration accounts."""
+    """GET /receptionist/api/pending-registrations/ — All registered patient accounts for RFID assignment."""
     if request.method != 'GET':
         return JsonResponse({'error': 'GET method required'}, status=405)
 
     if request.session.get('CName') is None:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
-    from patientapp.services.hospital_registration_service import find_pending_patients
-    patients = find_pending_patients()
+    from patientapp.models import Patienttbl
+    patients = Patienttbl.objects.all().order_by('-id')
 
     data = [
         {
@@ -236,8 +259,9 @@ def rfid_pending_list_api(request):
             'city': p.cityId.cityName if p.cityId else '',
             'area': p.areaId.areaName if p.areaId else '',
             'status': p.account_status,
+            'has_rfid': p.rfid_cards.filter(is_active=True).exists(),
         }
-        for p in patients[:50]
+        for p in patients[:100]
     ]
 
     return JsonResponse({'patients': data})
@@ -300,7 +324,7 @@ def rfid_link_api(request):
 
 @csrf_exempt
 def rfid_checkin_api(request):
-    """POST /receptionist/api/rfid/checkin/ — Smart Check-in Execution API"""
+    """POST /receptionist/api/rfid/checkin/ — Smart Check-in Execution API with Strict Authentication"""
     if request.method != 'POST':
         return JsonResponse({'error': 'POST method required'}, status=405)
 
@@ -310,27 +334,23 @@ def rfid_checkin_api(request):
         data = request.POST
 
     apt_id = data.get('appointment_id')
-    rfid_num = data.get('rfid_number', '')
+    rfid_num = str(data.get('rfid_number') or data.get('card_number') or '').strip()
 
-    apt = Appointmenttbl.objects.filter(id=apt_id).first()
-    if not apt:
-        return JsonResponse({'success': False, 'message': 'Appointment not found.'})
+    from receptionistapp.services.rfid_service import checkin_patient
+    receptionist_id = request.session.get('cId')
+    hospital_id = request.session.get('hId')
 
-    apt.active = 1  # Checked In
-    apt.indt = datetime.datetime.now()
-    if rfid_num:
-        try:
-            apt.rfidno = int(rfid_num)
-        except ValueError:
-            pass
-    apt.save(update_fields=['active', 'indt', 'rfidno'])
+    result = checkin_patient(
+        appointment_id=int(apt_id) if (apt_id and str(apt_id).isdigit()) else 0,
+        rfid_number=rfid_num,
+        receptionist_id=receptionist_id,
+        hospital_id=hospital_id
+    )
 
-    return JsonResponse({
-        'success': True,
-        'message': f'Patient checked in successfully for appointment #{apt.id}.',
-        'appointment_id': apt.id,
-        'active_status': 1
-    })
+    if not result.get('success'):
+        return JsonResponse({'success': False, 'message': result.get('message', 'Authentication failed for RFID card.')}, status=400)
+
+    return JsonResponse(result)
     
 
     

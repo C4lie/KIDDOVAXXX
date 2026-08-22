@@ -135,13 +135,20 @@ def scan_rfid_card(card_number: str, hospital_id: int = None) -> dict:
     # Also handle appointments without child FK (legacy data)
     orphan_apts = [a for a in today_appointments if a.child_id is None]
 
+    children_list = children_with_apts + children_without_apts
+    child_names_str = ", ".join([c['name'] for c in children_list if 'name' in c]) if children_list else "None"
+
     return {
         'found': True,
         'mode': 'CHECKIN',
         'card_number': card_number,
         'child': _serialize_child(children[0]) if children else None,
         'patient': _serialize_patient(patient),
-        'children': children_with_apts + children_without_apts,
+        'patient_name': patient.name if patient else 'N/A',
+        'patient_contact': str(patient.contactNo) if patient and patient.contactNo else 'N/A',
+        'patient_address': patient.address if patient and patient.address else 'N/A',
+        'children_names_str': child_names_str,
+        'children': children_list,
         'orphan_appointments': [_serialize_appointment(a) for a in orphan_apts],
         'total_appointments_today': len(today_appointments),
     }

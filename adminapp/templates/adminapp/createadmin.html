@@ -177,14 +177,14 @@
                         <table class="w-full text-left whitespace-nowrap">
                             <thead>
                                 <tr class="border-b border-white/10">
-                                    <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider"># ID</th>
+                                    <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">#</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Username</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5">
                                 {% for item in adminData %}
                                 <tr class="hover:bg-slate-800/40 transition-colors group">
-                                    <td class="py-4 px-4 text-sm font-medium text-slate-400">{{ item.id }}</td>
+                                    <td class="py-4 px-4 text-sm font-medium text-slate-400">#{{ forloop.counter }}</td>
                                     <td class="py-4 px-4 font-bold text-slate-200 flex items-center gap-3">
                                         <div class="w-8 h-8 bg-cyan-950/40 text-admin-primary rounded-full flex items-center justify-center font-bold text-xs">
                                             {{ item.username|make_list|first|upper }}
