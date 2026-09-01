@@ -17,7 +17,7 @@ class CityForm(forms.ModelForm):
         fields = '__all__'
         
         widgets={
-            'cityName': forms.TextInput(attrs={'required': True,'class':'form-control','onkeypress': 'return isNumberKey(event);'})
+            'cityName': forms.TextInput(attrs={'required': True,'class':'form-control'})
         }
 
 class AreaForm(forms.ModelForm):
@@ -26,6 +26,6 @@ class AreaForm(forms.ModelForm):
         fields = '__all__'
 
         widgets={
-               'areaName' : forms.TextInput(attrs={'required': True,'class':'form-control','onkeypress': 'return isNumberKey(event);'})
+               'areaName' : forms.TextInput(attrs={'required': True,'class':'form-control'})
                
         }        

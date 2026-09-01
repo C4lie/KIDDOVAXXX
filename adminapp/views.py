@@ -4,19 +4,13 @@ from django.views import  View
 from hospitalapp.models import Hospitaltbl
 from hospitalapp.forms import HospitalForm
 from django.contrib import messages
-from django.contrib.auth.models import User, auth
 from adminapp.forms import CityForm, AreaForm, AdminForm
 from django.contrib.auth import logout
-from django.contrib.sessions.models import Session
 # Create your views here.
 
 def Logout(request):
-    storage = messages.get_messages(request)
-    for message in storage:
-        message = None
-    storage.used = False
     logout(request)
-    Session.objects.all().delete()
+    request.session.flush()
   
     return redirect('adminapp:adminlogin')
     
@@ -137,7 +131,7 @@ class ManageCity(View):
         return render(request, 'adminapp/city.html',context)    
 
     def post(self, request,id=None):
-        if 'btnreset' in request.POST and request.method == 'POST':
+        if 'btnreset' in request.POST:
             form = CityForm()
             return redirect('adminapp:city')
 
@@ -206,7 +200,7 @@ class ManageArea(View):
         return render(request,'adminapp/area.html',context)
 
     def post(self, request, id=None):
-        if 'btnreset' in request.POST and request.method == 'POST':
+        if 'btnreset' in request.POST:
             form = AreaForm()
             return redirect('adminapp:area')
         if id is not None:
@@ -219,15 +213,7 @@ class ManageArea(View):
         form.save()
         return redirect('adminapp:area')
 
-def load_areasbyCity(request, cityid=None):
-    if cityid is not None:
-        city_id = cityid
-        areas = Area.objects.filter(cityId=city_id).order_by('areaName')
-        return areas
-    else:     
-        city_id = request.GET.get('city_id')
-        areas = Area.objects.filter(cityId=city_id).order_by('areaName')
-        return render(request, 'adminapp/citytoarea.html', {'arealist': areas})        
+
 
 
 class ManageHospitals(View):
@@ -252,7 +238,6 @@ class ManageHospitals(View):
 
         if id is not None:
             try:
-                pimg = Hospitaltbl.objects.only('img').get(pk=id)
                 Pdata = Hospitaltbl.objects.get(pk = id)
                 form = HospitalForm(instance = Pdata)  
                 bindArea = load_areasbyCity(request,Pdata.cityId)
@@ -260,7 +245,7 @@ class ManageHospitals(View):
                 context={
                     'form' : form,
                     'hospitalData' : bindData,
-                    'imgurl' : pimg,
+                    'imgurl' : Pdata,
                     'cityData' : bindCity,
                     'areaData' : bindArea,
                     'selectedCity' : Pdata.cityId,
@@ -280,7 +265,7 @@ class ManageHospitals(View):
         return render(request, 'adminapp/hospitalreg.html', context)
     
     def post(self, request, id=None):
-        if 'btnreset' in request.POST and request.method == 'POST':
+        if 'btnreset' in request.POST:
             form = HospitalForm()
             return redirect('adminapp:addhospitals')
         if id is not None:

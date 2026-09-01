@@ -3,20 +3,16 @@ from hospitalapp.models import Receptionisttbl
 from django.contrib import messages
 from django.views import  View
 from django.contrib.auth import logout
-from django.contrib.sessions.models import Session
+
 from patientapp.forms import AppointmentForm
 from patientapp.models import Appointmenttbl, VaccinationRecord, RFIDCard
 import datetime
 # Create your views here.
 
 def Logout(request):
-    storage = messages.get_messages(request)
-    for message in storage:
-        message = None
-    storage.used = False
     logout(request)
-    Session.objects.all().delete()
-    return render(request, 'receptionistapp/login.html')
+    request.session.flush()
+    return redirect('receptionist:receptionistlogin')
 
 def Home(request):
     storage = messages.get_messages(request)
@@ -337,7 +333,7 @@ def rfid_checkin_api(request):
     rfid_num = str(data.get('rfid_number') or data.get('card_number') or '').strip()
 
     from receptionistapp.services.rfid_service import checkin_patient
-    receptionist_id = request.session.get('cId')
+    receptionist_id = request.session.get('Cid')
     hospital_id = request.session.get('hId')
 
     result = checkin_patient(

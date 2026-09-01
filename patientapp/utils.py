@@ -16,7 +16,7 @@ def send_sms(phone_number, message):
     try:
         from twilio.rest import Client  # type: ignore[import]
     except ImportError:
-        print("⚠️  Twilio package not installed. Run: pip install twilio\n")
+        logger.warning("Twilio package not installed. Run: pip install twilio")
         return False
 
     phone_str = str(phone_number).strip()
@@ -26,17 +26,13 @@ def send_sms(phone_number, message):
         phone_str = f'+91{phone_str}'
 
     border = "=" * 60
-    print(f"\n{border}")
-    print(f"📡 OUTGOING SMS TO: {phone_str}")
-    print(f"✉️  MESSAGE: {message}")
-    print(f"{border}")
+    logger.info("\n%s\n📡 OUTGOING SMS TO: %s\n✉️  MESSAGE: %s\n%s", border, phone_str, message, border)
 
     account_sid = os.environ.get('TWILIO_ACCOUNT_SID', '')
     auth_token  = os.environ.get('TWILIO_AUTH_TOKEN', '')
     from_phone  = os.environ.get('TWILIO_PHONE', '')
 
     if not account_sid or not auth_token or not from_phone:
-        print("⚠️  Twilio credentials missing in .env — printing to console only.\n")
         logger.warning("Twilio credentials not set. SMS not sent to %s", phone_str)
         return False
 
@@ -47,12 +43,10 @@ def send_sms(phone_number, message):
             from_=from_phone,
             to=phone_str
         )
-        print(f"✅ SMS sent! Twilio SID: {msg.sid}\n")
         logger.info("Twilio SMS sent to %s — SID: %s", phone_str, msg.sid)
         return True
 
     except Exception as exc:
-        print(f"❌ Twilio error: {exc}\n")
         logger.error("Twilio failed for %s: %s", phone_str, exc)
         return False
 

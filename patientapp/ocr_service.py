@@ -68,7 +68,9 @@ def extract_vaccine_data_from_image(image_path, child_dob=None):
                 return {"vaccines": parsed, "method": "EasyOCR"}
         except Exception as e:
             # log or print error, proceed to fallback
-            print(f"EasyOCR extraction failed: {e}")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"EasyOCR extraction failed: {e}")
             
     # Fallback/Mock system when EasyOCR is unavailable or fails
     # Create realistic mock data relative to DOB

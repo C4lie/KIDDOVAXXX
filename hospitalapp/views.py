@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.views import  View
 from hospitalapp.models import Hospitaltbl, Receptionisttbl, Vaccinetbl
 from django.contrib.auth import logout
-from django.contrib.sessions.models import Session
 from hospitalapp.forms import ReceptionistForm,VaccineForm
 from adminapp.models import City,Area
 from patientapp.models import Appointmenttbl
@@ -19,13 +18,8 @@ def generate_ui_number():
     raise Exception('Unable to generate a unique 5-digit UI number for staff registration.')
 
 def Logout(request):
-    storage = messages.get_messages(request)
-    for message in storage:
-        message = None
-    storage.used = False
     logout(request)
-    Session.objects.all().delete()
-  
+    request.session.flush()
     return redirect('hospitalapp:hospitallogin')
 
 def Home(request):
@@ -130,8 +124,6 @@ class ReceptionistRegister(View):
             return redirect('hospitalapp:receptionistregister')
 
         if id is not None:
-            SelectedGender = Receptionisttbl.objects.get(pk = id)
-            pimg = Receptionisttbl.objects.only('staffimg').get(pk=id)
             Pdata = Receptionisttbl.objects.get(pk = id)
             form = ReceptionistForm(instance = Pdata)  
             bindArea = load_areasbyCity(request,Pdata.cityId)
@@ -139,12 +131,12 @@ class ReceptionistRegister(View):
             context={
                 'form' : form,
                 'ReceptionistData' : bindData,
-                'imgurl' : pimg,
+                'imgurl' : Pdata,
                 'cityData' : bindCity,
                 'areaData' : bindArea,
                 'selectedCity' : Pdata.cityId,
                 'selectedArea' : selectedArea,
-                'selGender' : SelectedGender.gender
+                'selGender' : Pdata.gender
             }
             return render(request, 'hospitalapp/receptionist.html',context)   
     

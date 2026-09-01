@@ -11,7 +11,16 @@ db.sqbpro
 
 # Logs & Generated Files
 *.log
-static/vaccine_cards/*.pdf
+
+# Data & Credentials
+*.xlsx
+*.csv
+
+# User Uploads & Generated Media
+static/profileimg/
+static/staffimages/
+static/vaccine_cards/
+media/
 
 # Environments
 .env
@@ -24,3 +33,15 @@ ENV/
 .vscode/
 .idea/
 .DS_Store
+*.DS_Store
+
+# Type Checker Configs
+.pyre_configuration
+pyrightconfig.json
+
+# Analysis & Planning Docs (not source code)
+*_analysis.md
+*_breakdown.md
+features-prd.md
+rfid_flowchart.html
+user_workflows.md

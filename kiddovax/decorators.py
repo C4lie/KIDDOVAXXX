@@ -21,16 +21,16 @@ def role_required(allowed_roles):
                 messages.error(request, "Access denied. Please log in with the appropriate account credentials.")
                 
                 # Redirect to the corresponding login page based on target role
-                if 'admin' in allowed_roles:
-                    return redirect('adminapp:adminlogin')
-                elif 'hospital' in allowed_roles:
-                    return redirect('hospitalapp:hospitallogin')
-                elif 'receptionist' in allowed_roles:
-                    return redirect('receptionist:receptionistlogin')
-                elif 'patient' in allowed_roles:
-                    return redirect('patient:loginpage')
-                else:
-                    return redirect('patient:loginpage')
+                role_redirects = {
+                    'admin': 'adminapp:adminlogin',
+                    'hospital': 'hospitalapp:hospitallogin',
+                    'receptionist': 'receptionist:receptionistlogin',
+                    'patient': 'patient:loginpage',
+                }
+                for role in allowed_roles:
+                    if role in role_redirects:
+                        return redirect(role_redirects[role])
+                return redirect('patient:loginpage')
 
             return view_func(request, *args, **kwargs)
         return _wrapped_view

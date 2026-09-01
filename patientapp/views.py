@@ -7,9 +7,7 @@ from django.contrib import messages  # type: ignore[import]  # pyre-ignore
 from adminapp.models import City,Area  # type: ignore[import]  # pyre-ignore
 from patientapp.models import Patienttbl, Appointmenttbl, Childtbl, VaccinationRecord  # type: ignore[import]  # pyre-ignore
 from hospitalapp.models import Vaccinetbl, Hospitaltbl  # type: ignore[import]  # pyre-ignore
-from django.contrib.auth.models import auth  # type: ignore[import]  # pyre-ignore
-from django.contrib.auth import logout  # type: ignore[import]  # pyre-ignore
-from django.contrib.sessions.models import Session  # type: ignore[import]  # pyre-ignore
+from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password, check_password  # type: ignore[import]  # pyre-ignore
 def Home(request):
     return render(request, 'patientapp/home.html')
@@ -23,12 +21,8 @@ def Contact(request):
 
 class PatientLogout(View):
     def get(self, request):
-        storage = messages.get_messages(request)
-        for message in storage:
-            message = None
-        storage.used = False
         logout(request)
-        Session.objects.all().delete()
+        request.session.flush()
         return render(request, 'patientapp/home.html')
 
 class PatientLogin(View):
@@ -572,6 +566,25 @@ def sms_response(request):
         }, status=400)
 
 
+def _update_patient_password(patient, current_pass, new_pass, confirm_pass):
+    current_valid = check_password(current_pass, patient.password)
+    if not current_valid:
+        current_valid = (patient.password == current_pass)
+
+    if not current_valid:
+        return False, 'Current Password is Not Valid!'
+    elif new_pass != confirm_pass:
+        return False, 'New Password and Confirm Password do not match!'
+    elif current_pass == new_pass:
+        return False, 'New Password cannot be identical to your Current Password.'
+    
+    patient.password = make_password(new_pass)
+    patient.must_change_password = False
+    if patient.account_status == 'RFID_ASSIGNED':
+        patient.account_status = 'ACTIVE'
+    patient.save(update_fields=['password', 'must_change_password', 'account_status'])
+    return True, ''
+
 class ChangeAuthentication(View):
     def get(self, request):
         storage = messages.get_messages(request)
@@ -592,29 +605,13 @@ class ChangeAuthentication(View):
         new_pass = request.POST.get('password')
         confirm_pass = request.POST.get('cfpass')
 
-        # Validate current password (support both hashed and plain text)
-        current_valid = check_password(current_pass, patient.password)
-        if not current_valid:
-            current_valid = (patient.password == current_pass)
-
-        if not current_valid:
-            messages.warning(request, 'Current Password is Not Valid!')
-            return render(request, 'patientapp/changepassword.html')
-        elif new_pass != confirm_pass:
-            messages.warning(request, 'New Password and Confirm Password do not match!')
-            return render(request, 'patientapp/changepassword.html')
-        elif current_pass == new_pass:
-            messages.warning(request, 'Security Alert: New Password cannot be identical to your Current Password.')
-            return render(request, 'patientapp/changepassword.html')
-        else:
-            patient.password = make_password(new_pass)
-            patient.must_change_password = False
-            # If account was RFID_ASSIGNED, activate it after password change
-            if patient.account_status == 'RFID_ASSIGNED':
-                patient.account_status = 'ACTIVE'
-            patient.save(update_fields=['password', 'must_change_password', 'account_status'])
+        success, msg = _update_patient_password(patient, current_pass, new_pass, confirm_pass)
+        if success:
             messages.info(request, 'Password changed successfully on next login!')
             return redirect('patient:changeauth')
+        else:
+            messages.warning(request, msg)
+            return render(request, 'patientapp/changepassword.html')
 
 
 class ForcePasswordChange(View):
@@ -637,28 +634,16 @@ class ForcePasswordChange(View):
         new_pass = request.POST.get('new_password') or request.POST.get('password')
         confirm_pass = request.POST.get('confirm_password') or request.POST.get('cfpass')
 
-        # Validate current password
-        current_valid = check_password(current_pass, patient.password)
-        if not current_valid:
-            current_valid = (patient.password == current_pass)
-
-        if not current_valid:
-            messages.warning(request, 'Current Password is Not Valid!')
-            return render(request, 'patientapp/force_password_change.html')
-        elif new_pass != confirm_pass:
-            messages.warning(request, 'New Password and Confirm Password do not match!')
-            return render(request, 'patientapp/force_password_change.html')
-        elif current_pass == new_pass:
-            messages.warning(request, 'New Password cannot be the same as your current password.')
-            return render(request, 'patientapp/force_password_change.html')
-        else:
-            patient.password = make_password(new_pass)
-            patient.must_change_password = False
-            if patient.account_status == 'RFID_ASSIGNED':
-                patient.account_status = 'ACTIVE'
-            patient.save(update_fields=['password', 'must_change_password', 'account_status'])
+        success, msg = _update_patient_password(patient, current_pass, new_pass, confirm_pass)
+        if success:
             messages.info(request, 'Password changed successfully! Welcome to KiddoVax.')
             return redirect('patient:homepage')
+        else:
+            # Overwrite the default identical error message to match original if needed
+            if msg == 'New Password cannot be identical to your Current Password.':
+                msg = 'New Password cannot be the same as your current password.'
+            messages.warning(request, msg)
+            return render(request, 'patientapp/force_password_change.html')
 
 
 class PendingRegistrationView(View):
@@ -781,8 +766,6 @@ class ViewVaccineList(View):
                 'bindData' : bindData,
         }
         return render(request,'patientapp/showvaccines.html',context)
-    def post(self, request):
-        pass   
 
 def loadVaccines(request,h_id=None):
     h_id = request.GET.get("h_id")

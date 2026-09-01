@@ -107,12 +107,7 @@ class Receptionisttbl(models.Model):
         return url   
     
     def __str__(self):
-        return f'{(self.hospitalid)(self.name)(self.address)(self.gender)(self.cityId)(self.areaId)(self.contactNo)(self.password)(self.staffimg)(self.doj)(self.pk)}'    
+        return f'{self.name} ({self.ui_no or self.pk})'    
 
-# class Vaccinetbl(models.Model):    
-#     title = models.CharField(max_length=255, verbose_name="Title")
-#     description = models.CharField(max_length=255, verbose_name="Description")
-#     price = models.IntegerField(blank=True, null=True,verbose_name="Price")
 
-# class VaccineRecordtbl (models.Model):
         
