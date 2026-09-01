@@ -15,38 +15,51 @@ def Logout(request):
     return redirect('adminapp:adminlogin')
     
 
+from django.contrib.auth.hashers import make_password, check_password
+
 class AdminCreation(View):
     def get(self, request):
         storage = messages.get_messages(request)
         for message in storage:
             message = None
         if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
-          return redirect('adminapp:adminlogin') 
+            return redirect('adminapp:adminlogin') 
         adminData = Admintbl.objects.all().order_by('-id')
         form = AdminForm()
         context={
             'form' : form,
             'adminData' : adminData
         }
-        return render(request, 'adminapp/createadmin.html',context)
+        return render(request, 'adminapp/createadmin.html', context)
     
     def post(self, request):
         if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
             return redirect('adminapp:adminlogin')
-        form = AdminForm(request.POST)
-        messages.info(request,'New Admin Inserted Success!')
-        form.save()
-        adminData = Admintbl.objects.all().order_by('-id')
-        form = AdminForm()
-        context={
-            'form' : form,
-            'adminData' : adminData
-        }
-        return render(request, 'adminapp/createadmin.html',context)
+
+        if 'btnreset' in request.POST:
+            return redirect('adminapp:admincreation')
+
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        if not username or not password:
+            messages.info(request, 'Username and Password are required!')
+            return redirect('adminapp:admincreation')
+
+        if Admintbl.objects.filter(username=username).exists():
+            messages.info(request, 'This Admin username is already taken!')
+            return redirect('adminapp:admincreation')
+
+        Admintbl.objects.create(
+            username=username,
+            password=make_password(password)
+        )
+        messages.info(request, 'New Admin Inserted Success!')
+        return redirect('adminapp:admincreation')
+
 
 class AdminLogin(View):
     def get(self, request):  
-
         return render(request, 'adminapp/login.html')
     
     def post(self, request):
@@ -56,24 +69,24 @@ class AdminLogin(View):
         scontact = str(request.POST.get('username', '')).strip()
         spassword = str(request.POST.get('password', '')).strip()
       
-        try:
-            checkusername = Admintbl.objects.get(username = scontact)
-        except:
-            checkusername = None   
+        checkusername = Admintbl.objects.filter(username=scontact).first()
                      
         if checkusername is not None:
-            checkcontactpasswordboth = Admintbl.objects.filter(username=scontact,password=spassword).exists()
-            if checkcontactpasswordboth:
-                loggedname = Admintbl.objects.filter(username=scontact).values('username')
-                request.session['CName'] = loggedname[0]['username']
+            # Validate password: check_password supports hashed passwords, fallback supports plain text passwords
+            is_valid = check_password(spassword, checkusername.password)
+            if not is_valid:
+                is_valid = (checkusername.password == spassword)
+
+            if is_valid:
+                request.session['CName'] = checkusername.username
                 request.session['user_role'] = 'admin'
                 return redirect('adminapp:adminhome')
             else:
-                messages.info(request,'Invalid Password')                
+                messages.info(request, 'Invalid Password')                
         else:
-            messages.info(request,'Invalid Username')
+            messages.info(request, 'Invalid Username')
 
-        return render(request,'adminapp/login.html') 
+        return render(request, 'adminapp/login.html') 
 
 def Home(request):
     storage = messages.get_messages(request)

@@ -215,19 +215,8 @@
             const inputs = document.querySelectorAll('input:not([type="hidden"])');
             inputs.forEach(input => {
                 input.classList.add('glass-input', 'block', 'w-full', 'pl-12', 'pr-4', 'py-3', 'rounded-xl', 'text-slate-200', 'placeholder-slate-400', 'focus:outline-none', 'font-medium', 'text-sm');
-                if (input.name !== 'password') {
-                    input.setAttribute('onkeypress', 'return isNumberKey(event)');
-                }
             });
         });
-        
-        function isNumberKey(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode;
-            if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 32) {
-                return true;
-            }
-            return false;
-        }
     </script>
 </body>
 </html>

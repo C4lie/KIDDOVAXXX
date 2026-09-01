@@ -8,7 +8,7 @@ class AdminForm(forms.ModelForm):
 
         widgets={
             'username': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'password': forms.TextInput(attrs={'required': True,'class':'form-control'})
+            'password': forms.PasswordInput(attrs={'required': True,'class':'form-control'})
         }
 
 class CityForm(forms.ModelForm):
