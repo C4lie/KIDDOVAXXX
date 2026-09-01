@@ -33,13 +33,15 @@ class PatientLogin(View):
         }
         return render(request, 'patientapp/login.html',context)
     def post(self, request):
-        contact = str(request.POST.get('contactno', '')).strip()
+        contact_raw = str(request.POST.get('contactno', '') or request.POST.get('contactNo', '')).strip()
         password = str(request.POST.get('password', '')).strip()
 
-        try:
-            patient = Patienttbl.objects.get(contactNo=contact)
-        except Patienttbl.DoesNotExist:
-            patient = None
+        patient = None
+        if contact_raw:
+            if contact_raw.isdigit():
+                patient = Patienttbl.objects.filter(contactNo=int(contact_raw)).first()
+            if not patient:
+                patient = Patienttbl.objects.filter(contactNo=contact_raw).first()
 
         if patient is not None:
             # Support both hashed and legacy plain-text passwords
@@ -60,8 +62,6 @@ class PatientLogin(View):
                 # Check account lifecycle
                 if patient.must_change_password:
                     return redirect('patient:force_password_change')
-                if patient.account_status == 'PENDING_HOSPITAL_REGISTRATION':
-                    return redirect('patient:pending_registration')
 
                 return redirect('patient:homepage')
             else:
@@ -82,23 +82,31 @@ class PatientRegistration(View):
                 'form' : form
         }
         return render(request, 'patientapp/register.html',context)
-    def post(self,request):
+    def post(self, request):
         form = PatientForm(request.POST)
-        contact  = request.POST['contactNo']
+        contact_raw = str(request.POST.get('contactNo', '') or request.POST.get('contactno', '')).strip()
 
-        if Patienttbl.objects.filter(contactNo=contact).exists():
-            messages.info(request, 'Contact Number is already taken')
-            return redirect('patient:registerpage')
+        contact_val = int(contact_raw) if contact_raw.isdigit() else contact_raw
+
+        if contact_val and (Patienttbl.objects.filter(contactNo=contact_val).exists() or Patienttbl.objects.filter(contactNo=contact_raw).exists()):
+            messages.info(request, 'Contact Number is already registered. Please log in.')
+            return redirect('patient:loginpage')
+
+        if form.is_valid():
+            patient = form.save(commit=False)
+            if contact_raw.isdigit():
+                patient.contactNo = int(contact_raw)
+            patient.password = make_password(patient.password)
+            patient.account_status = 'PENDING_HOSPITAL_REGISTRATION'
+            patient.must_change_password = False
+            patient.save()
+            messages.info(request, "Your registration is success! Please log in with your contact number and password.")
+            return redirect('patient:loginpage')
         else:
-            if form.is_valid():
-                patient = form.save(commit=False)
-                # Hash the password before saving
-                patient.password = make_password(patient.password)
-                patient.account_status = 'PENDING_HOSPITAL_REGISTRATION'
-                patient.must_change_password = True
-                patient.save()
-                messages.info(request, "Your registration is success! Please visit your nearest hospital to complete setup and receive your RFID device.")
-        return redirect('patient:loginpage')  
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            return redirect('patient:registerpage')  
     
 class BookedAppointment(View):
     def get(self, request, aid=None):
