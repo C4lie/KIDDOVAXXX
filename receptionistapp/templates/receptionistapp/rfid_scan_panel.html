@@ -106,6 +106,63 @@
   ></div>
 </div>
 
+<!-- Modern Registered Patient & RFID Lookup Card -->
+<div class="glass-card rounded-[2rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] mb-8">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </span>
+    <div>
+      <h3 class="font-headline font-black text-2xl text-slate-800">
+        Registered User & RFID Search
+      </h3>
+      <p class="text-xs font-semibold text-slate-500">
+        Search registered users by Patient Name, Contact Number, or assigned RFID Card Number.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4">
+    <div class="md:col-span-9">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="registered-user-search-input"
+          class="w-full border-2 border-indigo-200 rounded-2xl pl-12 pr-5 py-4 bg-white text-slate-700 font-medium shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500"
+          placeholder="Search by Patient Name, Phone Number, or RFID Card Number..."
+        />
+      </div>
+    </div>
+    <div class="md:col-span-3 flex gap-2">
+      <button
+        type="button"
+        id="btn-search-registered-user"
+        class="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl px-4 py-4 shadow-[0_10px_20px_-10px_rgba(79,70,229,0.6)] hover:-translate-y-0.5 transition-all"
+      >
+        Search
+      </button>
+      <button
+        type="button"
+        id="btn-clear-user-search"
+        class="px-4 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-2xl transition-all"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Results Container -->
+  <div id="registered-user-search-results" class="space-y-4 mt-6" style="display: none;">
+  </div>
+</div>
+
 <!-- Scan Results Area -->
 <div
   id="scan-results"
@@ -427,15 +484,14 @@
         const select = document.getElementById('pending-patient-select');
         if (!select) return;
         select.innerHTML =
-          '<option value="">-- Select Registered Patient Parent --</option>';
+          '<option value="">-- Select Unassigned Patient Parent --</option>';
 
         if (data.patients && data.patients.length > 0) {
           data.patients.forEach((patient) => {
             const option = document.createElement('option');
             option.value = patient.id;
-            const rfidBadge = patient.has_rfid ? ' [Has Active RFID]' : '';
             option.textContent =
-              patient.name + ' • ' + (patient.contact || 'No phone') + rfidBadge;
+              patient.name + ' • ' + (patient.contact || 'No phone');
             select.appendChild(option);
           });
           document.getElementById('pending-registration-area').style.display =
@@ -444,12 +500,12 @@
         } else {
           document.getElementById('pending-registration-area').style.display =
             'none';
-          showScanAlert('No registered patient accounts found', 'warning');
+          showScanAlert('All registered patient parents already have an active RFID card assigned.', 'info');
         }
       })
       .catch((err) => {
         console.error(err);
-        showScanAlert('Unable to load registered patients', 'danger');
+        showScanAlert('Unable to load unassigned patient list', 'danger');
       });
   }
 
@@ -654,4 +710,148 @@
         })
         .catch((err) => console.error(err));
     });
+
+  // Registered User & RFID Lookup Search Handler
+  const userSearchInput = document.getElementById('registered-user-search-input');
+  const userSearchBtn = document.getElementById('btn-search-registered-user');
+  const userClearBtn = document.getElementById('btn-clear-user-search');
+  const userSearchResultsDiv = document.getElementById('registered-user-search-results');
+
+  if (userSearchBtn && userSearchInput) {
+    userSearchBtn.addEventListener('click', performUserSearch);
+    userSearchInput.addEventListener('keyup', function (e) {
+      if (e.key === 'Enter') {
+        performUserSearch();
+      }
+    });
+
+    if (userClearBtn) {
+      userClearBtn.addEventListener('click', function () {
+        userSearchInput.value = '';
+        userSearchResultsDiv.style.display = 'none';
+        userSearchResultsDiv.innerHTML = '';
+      });
+    }
+  }
+
+  function performUserSearch() {
+    const q = userSearchInput.value.trim();
+    if (!q) {
+      userSearchResultsDiv.style.display = 'none';
+      userSearchResultsDiv.innerHTML = '';
+      return;
+    }
+
+    userSearchResultsDiv.style.display = 'block';
+    userSearchResultsDiv.innerHTML =
+      '<div class="p-4 text-sm font-semibold text-slate-500 italic">Searching registered users...</div>';
+
+    fetch('/receptionist/api/registered-users/search/?q=' + encodeURIComponent(q), {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': csrftoken,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.results || data.results.length === 0) {
+          userSearchResultsDiv.innerHTML =
+            '<div class="p-6 bg-slate-50 border border-slate-200 rounded-2xl text-center text-sm font-bold text-slate-500">No registered user found matching "' +
+            escapeHtmlStr(q) +
+            '"</div>';
+          return;
+        }
+
+        let html = '';
+        data.results.forEach((user) => {
+          const rfidBadges =
+            user.rfid_cards && user.rfid_cards.length > 0
+              ? user.rfid_cards
+                  .map(
+                    (r) =>
+                      '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">RFID #' +
+                      escapeHtmlStr(r) +
+                      '</span>',
+                  )
+                  .join(' ')
+              : '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">No RFID Assigned</span>';
+
+          let childrenHtml = '';
+          if (user.children && user.children.length > 0) {
+            childrenHtml = user.children
+              .map(
+                (c) =>
+                  '<span class="inline-block bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-lg mr-1 mb-1">👶 ' +
+                  escapeHtmlStr(c.childname) +
+                  (c.dob_str ? ' (' + c.dob_str + ')' : '') +
+                  '</span>',
+              )
+              .join('');
+          } else {
+            childrenHtml =
+              '<span class="text-xs text-slate-400 italic">No children registered</span>';
+          }
+
+          let aptsHtml = '';
+          if (user.today_appointments && user.today_appointments.length > 0) {
+            aptsHtml = user.today_appointments
+              .map(
+                (a) =>
+                  '<div class="text-xs font-semibold text-slate-700 bg-sky-50 p-2.5 rounded-xl border border-sky-100 flex items-center justify-between mt-1"><span>👶 ' +
+                  escapeHtmlStr(a.child_name) +
+                  ' — 💉 ' +
+                  escapeHtmlStr(a.vaccine_name) +
+                  '</span><span class="font-bold text-sky-700">' +
+                  escapeHtmlStr(a.status_label) +
+                  '</span></div>',
+              )
+              .join('');
+          }
+
+          html += `
+            <div class="bg-white border-2 border-indigo-100 rounded-2xl p-5 shadow-sm hover:border-indigo-300 transition-all">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <h4 class="font-headline font-black text-lg text-slate-800 flex items-center gap-2">
+                    ${escapeHtmlStr(user.name)}
+                    <span class="text-xs font-bold text-slate-500">📞 ${escapeHtmlStr(user.contact)}</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 font-medium">📍 ${escapeHtmlStr(user.address)} ${user.area ? ', ' + escapeHtmlStr(user.area) : ''} ${user.city ? ', ' + escapeHtmlStr(user.city) : ''}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  ${rfidBadges}
+                </div>
+              </div>
+              <div class="pt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <span class="block text-[11px] font-black uppercase text-slate-400 tracking-wider mb-1">Registered Children</span>
+                  <div>${childrenHtml}</div>
+                </div>
+                <div>
+                  <span class="block text-[11px] font-black uppercase text-slate-400 tracking-wider mb-1">Today's Appointments</span>
+                  <div>${aptsHtml || '<span class="text-xs text-slate-400 italic">No appointments scheduled today</span>'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        userSearchResultsDiv.innerHTML = html;
+      })
+      .catch((err) => {
+        console.error(err);
+        userSearchResultsDiv.innerHTML =
+          '<div class="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold">Search request failed. Please try again.</div>';
+      });
+  }
+
+  function escapeHtmlStr(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 </script>

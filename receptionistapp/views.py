@@ -236,7 +236,7 @@ def rfid_generate_api(request):
 
 @csrf_exempt
 def rfid_pending_list_api(request):
-    """GET /receptionist/api/pending-registrations/ — All registered patient accounts for RFID assignment."""
+    """GET /receptionist/api/pending-registrations/ — Unassigned patient accounts (no active RFID card)."""
     if request.method != 'GET':
         return JsonResponse({'error': 'GET method required'}, status=405)
 
@@ -244,7 +244,10 @@ def rfid_pending_list_api(request):
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
     from patientapp.models import Patienttbl
-    patients = Patienttbl.objects.all().order_by('-id')
+    # Only return patients who DO NOT have an active RFID card assigned yet
+    patients = Patienttbl.objects.exclude(
+        rfid_cards__is_active=True
+    ).order_by('-id')
 
     data = [
         {
@@ -255,12 +258,87 @@ def rfid_pending_list_api(request):
             'city': p.cityId.cityName if p.cityId else '',
             'area': p.areaId.areaName if p.areaId else '',
             'status': p.account_status,
-            'has_rfid': p.rfid_cards.filter(is_active=True).exists(),
+            'has_rfid': False,
         }
         for p in patients[:100]
     ]
 
     return JsonResponse({'patients': data})
+
+
+@csrf_exempt
+def registered_user_search_api(request):
+    """GET /receptionist/api/registered-users/search/?q=... — Search registered users by Name, Phone, or RFID Card Number."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET method required'}, status=405)
+
+    if request.session.get('CName') is None:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    query = str(request.GET.get('q', '')).strip()
+    if not query:
+        return JsonResponse({'success': True, 'results': [], 'count': 0})
+
+    from patientapp.models import Patienttbl, Childtbl, RFIDCard, Appointmenttbl
+    from django.db.models import Q
+    import datetime
+
+    today = datetime.date.today()
+
+    # Search RFID cards matching query
+    rfid_matches = list(RFIDCard.objects.filter(
+        card_number__icontains=query, is_active=True
+    ).values_list('patient_id', flat=True))
+
+    # Query patients by name, contact number, or matching RFID card
+    patients_qs = Patienttbl.objects.filter(
+        Q(name__icontains=query) |
+        Q(contactNo__icontains=query) |
+        Q(id__in=rfid_matches)
+    ).distinct().order_by('name')[:30]
+
+    results = []
+    for p in patients_qs:
+        rfids = list(p.rfid_cards.filter(is_active=True).values_list('card_number', flat=True))
+        children = list(Childtbl.objects.filter(patient=p).values('id', 'childname', 'gender', 'dob'))
+
+        # Format children DOB string
+        for c in children:
+            if c.get('dob'):
+                c['dob_str'] = c['dob'].strftime('%d-%m-%Y')
+
+        # Today's appointments for this family
+        today_apts = Appointmenttbl.objects.filter(
+            patientid=p, aptdate=today
+        ).select_related('vaccineid', 'hospitalid', 'child')
+
+        apt_list = [
+            {
+                'id': a.id,
+                'child_name': a.display_child_name,
+                'vaccine_name': a.vaccineid.vaccineName if a.vaccineid else '',
+                'hospital_name': a.hospitalid.title if a.hospitalid else '',
+                'time': a.apttime.strftime('%I:%M %p') if a.apttime else 'Anytime',
+                'status_label': a.status_label,
+                'active': a.active
+            }
+            for a in today_apts
+        ]
+
+        results.append({
+            'id': p.id,
+            'name': p.name,
+            'contact': str(p.contactNo) if p.contactNo else 'N/A',
+            'address': p.address or 'N/A',
+            'city': p.cityId.cityName if p.cityId else '',
+            'area': p.areaId.areaName if p.areaId else '',
+            'rfid_cards': rfids,
+            'has_rfid': len(rfids) > 0,
+            'children': children,
+            'today_appointments': apt_list,
+        })
+
+    return JsonResponse({'success': True, 'results': results, 'count': len(results)})
 
 
 @csrf_exempt

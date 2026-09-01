@@ -16,4 +16,5 @@ urlpatterns = [
     path('api/rfid/checkin/', views.rfid_checkin_api, name='rfid_checkin_api'),
     path('api/pending-registrations/', views.rfid_pending_list_api, name='pending_registrations_api'),
     path('api/rfid/assign-pending/', views.rfid_assign_pending_api, name='rfid_assign_pending_api'),
+    path('api/registered-users/search/', views.registered_user_search_api, name='registered_user_search_api'),
 ]
