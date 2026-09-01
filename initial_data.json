@@ -1,0 +1,4337 @@
+[
+{
+  "model": "adminapp.admintbl",
+  "pk": 1,
+  "fields": {
+    "username": "chandril",
+    "password": "chandril"
+  }
+},
+{
+  "model": "adminapp.admintbl",
+  "pk": 3,
+  "fields": {
+    "username": "krish",
+    "password": "krish"
+  }
+},
+{
+  "model": "adminapp.admintbl",
+  "pk": 4,
+  "fields": {
+    "username": "admin",
+    "password": "pbkdf2_sha256$1000000$OVux7kvsrmPGWIdAm2Y5Nj$g6etou93zEXgN+nvFihwRP6XdLb5av/W3A+3POfiuSE="
+  }
+},
+{
+  "model": "adminapp.admintbl",
+  "pk": 6,
+  "fields": {
+    "username": "testadmin",
+    "password": "pbkdf2_sha256$720000$QqXogzx7ytupWDoiheCCUc$HBPpauy3O+KMwPJr/ElLYB734X6gS6LJBDKfe61h5pg="
+  }
+},
+{
+  "model": "adminapp.admintbl",
+  "pk": 7,
+  "fields": {
+    "username": "newadminuser",
+    "password": "pbkdf2_sha256$720000$4ULJ3LrWaSU4BipSfYNfl6$xQK8Myii31csHISjDWno94w+We9EKFi37Q95KnjRxG0="
+  }
+},
+{
+  "model": "adminapp.city",
+  "pk": 1,
+  "fields": {
+    "cityName": "Vadodara"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 37,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Chhani"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 38,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Nizampura"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 39,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Manjalpur"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 40,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Fatehgunj"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 41,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Alkapuri"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 42,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Tarsali"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 43,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Waghodia"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 44,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Vrundavan"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 45,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Ajwa"
+  }
+},
+{
+  "model": "adminapp.area",
+  "pk": 46,
+  "fields": {
+    "cityId": 1,
+    "areaName": "Harni"
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 27,
+  "fields": {
+    "title": "Chhani U-CHC",
+    "dcrname": "Dr. Vinay Bhabhor",
+    "address": "Opp. Gurudwara, Chhani Octroi Naka, Vadodara-391740",
+    "cityId": 1,
+    "areaId": 37,
+    "contactNo": 8238022731,
+    "password": "8238022731",
+    "img": "",
+    "latitude": 22.3625714,
+    "longitude": 73.1712952,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 28,
+  "fields": {
+    "title": "Navayard UPHC",
+    "dcrname": "Dr. Soham Patel",
+    "address": "Navayard UPHC, Next to Ren Basera, D-Cabin, B/h Deep Theater, Vadodara-390024",
+    "cityId": 1,
+    "areaId": 38,
+    "contactNo": 6357977369,
+    "password": "6357977369",
+    "img": "",
+    "latitude": 22.3288592,
+    "longitude": 73.1825726,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 29,
+  "fields": {
+    "title": "Manjalpur U-CHC",
+    "dcrname": "Dr. Parth Vyas",
+    "address": "Opp. Panchal Wadi, Ranjit Petrol Pump Lane, Saraswati Cross Road, Manjalpur, Vadodara-390011",
+    "cityId": 1,
+    "areaId": 39,
+    "contactNo": 9227735372,
+    "password": "9227735372",
+    "img": "",
+    "latitude": 22.2758686,
+    "longitude": 73.1879304,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 30,
+  "fields": {
+    "title": "Fategunj UPHC",
+    "dcrname": "Dr. Rajeshri Devmurari",
+    "address": "12, Jayesh Colony, Near Navyug School, Fatehganj Main Road, Fatehganj, Vadodara",
+    "cityId": 1,
+    "areaId": 40,
+    "contactNo": 6357977379,
+    "password": "6357977379",
+    "img": "",
+    "latitude": 22.3239466,
+    "longitude": 73.1885379,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 31,
+  "fields": {
+    "title": "Gotri UPHC",
+    "dcrname": "Dr. Sashank Suthar",
+    "address": "Near Ratnakar Tenament, New Alkapuri, Laxmipura, Gotri-390021, Vadodara",
+    "cityId": 1,
+    "areaId": 41,
+    "contactNo": 6357977362,
+    "password": "6357977362",
+    "img": "",
+    "latitude": 22.3101726,
+    "longitude": 73.1756893,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 32,
+  "fields": {
+    "title": "Tarsali UPHC",
+    "dcrname": "Dr. Abhishekkumar Charel",
+    "address": "Tarsali UPHC, Vijaynagar, Beside Mahakali Temple, Tarsali, Vadodara-390009",
+    "cityId": 1,
+    "areaId": 42,
+    "contactNo": 6357977382,
+    "password": "6357977382",
+    "img": "",
+    "latitude": 22.2564756,
+    "longitude": 73.2078837,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 33,
+  "fields": {
+    "title": "Bapod UPHC",
+    "dcrname": "Dr. Sama Mansuri",
+    "address": "Opp. Radhe Ratnam Flat, Vaikunth Cross Road, Waghodiya Road, Vadodara-390019",
+    "cityId": 1,
+    "areaId": 43,
+    "contactNo": 6357977355,
+    "password": "6357977355",
+    "img": "",
+    "latitude": 22.3043328,
+    "longitude": 73.4016768,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 34,
+  "fields": {
+    "title": "Kishanwadi UPHC",
+    "dcrname": "Dr. Ashish Rathva",
+    "address": "Near Community Hall, Near Gujarat Housing Board, Kishanwadi, Ajwa Road, Vadodara-390019",
+    "cityId": 1,
+    "areaId": 44,
+    "contactNo": 6357977373,
+    "password": "6357977373",
+    "img": "",
+    "latitude": 22.3001933,
+    "longitude": 73.2384544,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 35,
+  "fields": {
+    "title": "Ramdevnagar UPHC",
+    "dcrname": "Dr. Manisha Parmar",
+    "address": "B/12, Panchal Nagar, Ajwa Road, Vadodara-390019",
+    "cityId": 1,
+    "areaId": 45,
+    "contactNo": 6357977388,
+    "password": "6357977388",
+    "img": "",
+    "latitude": 22.3587685,
+    "longitude": 73.3848865,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitaltbl",
+  "pk": 36,
+  "fields": {
+    "title": "Harni UPHC",
+    "dcrname": "Dr. Nilam Patel",
+    "address": "B/h Sashwat Flat, Nr. Gada Circle, Harni Road, Vadodara-390022",
+    "cityId": 1,
+    "areaId": 46,
+    "contactNo": 6357977378,
+    "password": "6357977378",
+    "img": "",
+    "latitude": 22.3366081,
+    "longitude": 73.2175223,
+    "opening_time": "09:00:00",
+    "closing_time": "17:00:00",
+    "slot_duration": 30,
+    "slot_capacity": 2
+  }
+},
+{
+  "model": "hospitalapp.hospitalbreak",
+  "pk": 2,
+  "fields": {
+    "hospital": 36,
+    "start_time": "01:00:00",
+    "end_time": "02:00:00"
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 477,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 99,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 478,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 99,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 479,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 480,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 481,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 482,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 483,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 484,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 49,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 485,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 486,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 487,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 488,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 489,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 490,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 491,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 492,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 493,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 494,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 495,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 496,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 497,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 498,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 499,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 500,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 501,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 502,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 503,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 504,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 505,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 506,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 507,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 508,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 509,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 510,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 511,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 512,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 513,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 514,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 515,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 516,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 517,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 518,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 519,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 520,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 521,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 522,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 523,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 524,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 525,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 526,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 527,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 528,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 529,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 530,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 531,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 532,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 533,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 534,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 535,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 536,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 537,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 538,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 539,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 540,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 541,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 542,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 543,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 544,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 545,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 546,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 547,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 548,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 549,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "BCG",
+    "vaccineDescr": "At birth — Birth dose for Tuberculosis",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 550,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Hepatitis B (Birth Dose)",
+    "vaccineDescr": "At birth — Birth dose within 24 hours for Hepatitis B",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 551,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "OPV-0",
+    "vaccineDescr": "At birth — Birth dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 100,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 552,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Pentavalent-1",
+    "vaccineDescr": "6 weeks — 1st dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 80,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 553,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Rotavirus-1",
+    "vaccineDescr": "6 weeks — 1st dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 60,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 554,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "fIPV-1",
+    "vaccineDescr": "6 weeks — 1st Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 70,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 555,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "MR-1",
+    "vaccineDescr": "9–12 months — 1st Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 556,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "DPT Booster-1",
+    "vaccineDescr": "16–24 months — 1st DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 557,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 558,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 559,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 560,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 561,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 562,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 563,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 564,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 565,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 566,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 567,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 568,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 569,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 570,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 571,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 572,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 573,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 574,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 575,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 576,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 577,
+  "fields": {
+    "hospitalId": 27,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 578,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 579,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 580,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 581,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 582,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 583,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 584,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 585,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 586,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 587,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 588,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 589,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 590,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 591,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 592,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 593,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 594,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 595,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 596,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 597,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 598,
+  "fields": {
+    "hospitalId": 28,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 599,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 600,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 601,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 602,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 603,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 604,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 605,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 606,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 607,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 608,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 609,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 610,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 611,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 612,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 613,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 614,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 615,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 616,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 617,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 618,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 619,
+  "fields": {
+    "hospitalId": 29,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 620,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 621,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 622,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 623,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 624,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 625,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 626,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 627,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 628,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 629,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 630,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 631,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 632,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 633,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 634,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 635,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 636,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 637,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 638,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 639,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 640,
+  "fields": {
+    "hospitalId": 30,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 641,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 642,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 643,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 644,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 645,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 646,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 647,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 648,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 649,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 650,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 651,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 652,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 653,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 654,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 655,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 656,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 657,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 658,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 659,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 660,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 661,
+  "fields": {
+    "hospitalId": 31,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 662,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 663,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 664,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 665,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 666,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 667,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 668,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 669,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 670,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 671,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 672,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 673,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 674,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 675,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 676,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 677,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 678,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 679,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 680,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 681,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 682,
+  "fields": {
+    "hospitalId": 32,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 683,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 684,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 685,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 686,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 687,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 688,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 689,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 690,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 691,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 692,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 693,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 694,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 695,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 696,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 697,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 698,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 699,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 700,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 701,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 702,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 703,
+  "fields": {
+    "hospitalId": 33,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 704,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 705,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 706,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 707,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 708,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 709,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 710,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 711,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 712,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 713,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 714,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 715,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 716,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 717,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 718,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 719,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 720,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 721,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 722,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 723,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 724,
+  "fields": {
+    "hospitalId": 34,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 725,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 726,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 727,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 728,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 729,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 730,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 731,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 732,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 733,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 734,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 735,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 736,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 737,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 738,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 739,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 740,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 741,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 742,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 743,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 744,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 745,
+  "fields": {
+    "hospitalId": 35,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 746,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "OPV-1",
+    "vaccineDescr": "6 weeks — 1st dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 747,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "PCV-1",
+    "vaccineDescr": "6 weeks — 1st Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 748,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "OPV-2",
+    "vaccineDescr": "10 weeks — 2nd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 749,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Pentavalent-2",
+    "vaccineDescr": "10 weeks — 2nd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 750,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Rotavirus-2",
+    "vaccineDescr": "10 weeks — 2nd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 751,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "OPV-3",
+    "vaccineDescr": "14 weeks — 3rd dose Oral Polio Vaccine",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 752,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Pentavalent-3",
+    "vaccineDescr": "14 weeks — 3rd dose (DTP + HepB + Hib)",
+    "price": 150,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 753,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Rotavirus-3",
+    "vaccineDescr": "14 weeks — 3rd dose Rotavirus Vaccine",
+    "price": 200,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 754,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "fIPV-2",
+    "vaccineDescr": "14 weeks — 2nd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 755,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "PCV-2",
+    "vaccineDescr": "14 weeks — 2nd Pneumococcal Conjugate Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 756,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "PCV Booster",
+    "vaccineDescr": "9–12 months — Pneumococcal Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 757,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "fIPV-3",
+    "vaccineDescr": "9–12 months — 3rd Fractional Inactivated Polio Vaccine",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 758,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "JE-1",
+    "vaccineDescr": "9–12 months — 1st Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 759,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Vitamin A (1st Dose)",
+    "vaccineDescr": "9 months — 1st Vitamin A Supplementation",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 760,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "MR-2",
+    "vaccineDescr": "16–24 months — 2nd Measles-Rubella Vaccine",
+    "price": 250,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 761,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "OPV Booster",
+    "vaccineDescr": "16–24 months — Oral Polio Booster",
+    "price": 0,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 762,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "JE-2",
+    "vaccineDescr": "16–24 months — 2nd Japanese Encephalitis Vaccine",
+    "price": 350,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 763,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Vitamin A (Bi-annual)",
+    "vaccineDescr": "16–24 months onward — Every 6 months up to 5 years",
+    "price": 50,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 764,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "DPT Booster-2",
+    "vaccineDescr": "5–6 years — 2nd DPT Booster",
+    "price": 300,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 765,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Td (10 Years)",
+    "vaccineDescr": "10 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.vaccinetbl",
+  "pk": 766,
+  "fields": {
+    "hospitalId": 36,
+    "vaccineName": "Td (16 Years)",
+    "vaccineDescr": "16 years — Tetanus & Adult Diphtheria",
+    "price": 100,
+    "stock_quantity": 50,
+    "minimum_quantity": 5
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 32,
+  "fields": {
+    "hospitalid": 27,
+    "name": "Staff - Chhani U-CHC (Updated)",
+    "address": "Chhani Main Road",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 37,
+    "contactNo": 8238022731,
+    "ui_no": "R027",
+    "password": "8238022731",
+    "staffimg": "",
+    "doj": "2026-08-01"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 33,
+  "fields": {
+    "hospitalid": 28,
+    "name": "Staff - Navayard UPHC",
+    "address": "Navayard UPHC, Next to Ren Basera, D-Cabin, B/h Deep Theater, Vadodara-390024",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 38,
+    "contactNo": 6357977369,
+    "ui_no": "R028",
+    "password": "6357977369",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 34,
+  "fields": {
+    "hospitalid": 29,
+    "name": "Staff - Manjalpur U-CHC",
+    "address": "Opp. Panchal Wadi, Ranjit Petrol Pump Lane, Saraswati Cross Road, Manjalpur, Vadodara-390011",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 39,
+    "contactNo": 9227735372,
+    "ui_no": "R029",
+    "password": "9227735372",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 35,
+  "fields": {
+    "hospitalid": 30,
+    "name": "Staff - Fategunj UPHC",
+    "address": "12, Jayesh Colony, Near Navyug School, Fatehganj Main Road, Fatehganj, Vadodara",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 40,
+    "contactNo": 6357977379,
+    "ui_no": "R030",
+    "password": "6357977379",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 36,
+  "fields": {
+    "hospitalid": 31,
+    "name": "Staff - Gotri UPHC",
+    "address": "Near Ratnakar Tenament, New Alkapuri, Laxmipura, Gotri-390021, Vadodara",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 41,
+    "contactNo": 6357977362,
+    "ui_no": "R031",
+    "password": "6357977362",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 37,
+  "fields": {
+    "hospitalid": 32,
+    "name": "Staff - Tarsali UPHC",
+    "address": "Tarsali UPHC, Vijaynagar, Beside Mahakali Temple, Tarsali, Vadodara-390009",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 42,
+    "contactNo": 6357977382,
+    "ui_no": "R032",
+    "password": "6357977382",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 38,
+  "fields": {
+    "hospitalid": 33,
+    "name": "Staff - Bapod UPHC",
+    "address": "Opp. Radhe Ratnam Flat, Vaikunth Cross Road, Waghodiya Road, Vadodara-390019",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 43,
+    "contactNo": 6357977355,
+    "ui_no": "R033",
+    "password": "6357977355",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 39,
+  "fields": {
+    "hospitalid": 34,
+    "name": "Staff - Kishanwadi UPHC",
+    "address": "Near Community Hall, Near Gujarat Housing Board, Kishanwadi, Ajwa Road, Vadodara-390019",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 44,
+    "contactNo": 6357977373,
+    "ui_no": "R034",
+    "password": "6357977373",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 40,
+  "fields": {
+    "hospitalid": 35,
+    "name": "Staff - Ramdevnagar UPHC",
+    "address": "B/12, Panchal Nagar, Ajwa Road, Vadodara-390019",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 45,
+    "contactNo": 6357977388,
+    "ui_no": "R035",
+    "password": "6357977388",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "hospitalapp.receptionisttbl",
+  "pk": 41,
+  "fields": {
+    "hospitalid": 36,
+    "name": "Bipasha",
+    "address": "B/h Sashwat Flat, Nr. Gada Circle, Harni Road, Vadodara-390022",
+    "gender": "Female",
+    "cityId": 1,
+    "areaId": 46,
+    "contactNo": 6357977378,
+    "ui_no": "R036",
+    "password": "6357977378",
+    "staffimg": "",
+    "doj": "2026-08-23"
+  }
+},
+{
+  "model": "patientapp.patienttbl",
+  "pk": 26,
+  "fields": {
+    "name": "Chandril Halder",
+    "address": "A3-302,  SIDDARTH SAMANVAY2,  OLD CHHANI ROAD, TP13",
+    "cityId": 1,
+    "areaId": 37,
+    "contactNo": 9662568312,
+    "password": "pbkdf2_sha256$720000$FTs4bPeiWsBrNd8JtumD2r$O8G+Y6nX7KhagS7JJMw8Z1sX8VJSAmSQUkLZYjoSOl4=",
+    "relation": "Father",
+    "latitude": null,
+    "longitude": null,
+    "account_status": "RFID_ASSIGNED",
+    "must_change_password": false,
+    "registered_hospital": 36
+  }
+},
+{
+  "model": "patientapp.patienttbl",
+  "pk": 31,
+  "fields": {
+    "name": "Anuj",
+    "address": "A-23 Pratab Nagar",
+    "cityId": 1,
+    "areaId": 44,
+    "contactNo": 8523697410,
+    "password": "pbkdf2_sha256$1000000$alfbqcYRETKkOcRHTD2uew$3yX7wYopDFm1QPlM1Z4JtfU81wHsPlmnF6ItV80sXZQ=",
+    "relation": null,
+    "latitude": null,
+    "longitude": null,
+    "account_status": "RFID_ASSIGNED",
+    "must_change_password": false,
+    "registered_hospital": 36
+  }
+},
+{
+  "model": "patientapp.patienttbl",
+  "pk": 34,
+  "fields": {
+    "name": "Test Parent",
+    "address": "Test Address Vadodara",
+    "cityId": 1,
+    "areaId": 37,
+    "contactNo": 91987654321,
+    "password": "pbkdf2_sha256$720000$tIO2UbyqYoDSDuflLR9KYx$sZpbLVVXB/m1fAE/vM0h4kuJB91nebDzJb2U5tIgNYk=",
+    "relation": null,
+    "latitude": null,
+    "longitude": null,
+    "account_status": "PENDING_HOSPITAL_REGISTRATION",
+    "must_change_password": false,
+    "registered_hospital": null
+  }
+},
+{
+  "model": "patientapp.appointmenttbl",
+  "pk": 69,
+  "fields": {
+    "hospitalid": 36,
+    "vaccineid": 477,
+    "patientid": 26,
+    "childname": "",
+    "child": 19,
+    "aptdate": "2026-08-23",
+    "apttime": "09:30:00",
+    "indt": "2026-08-23T01:36:39.327Z",
+    "outdt": "2026-08-23T01:36:45.886Z",
+    "active": 2,
+    "rfidno": 9632585,
+    "reminder_sent": false,
+    "is_confirmed": false,
+    "checkin_rfid": null,
+    "checkin_receptionist": null,
+    "checkin_time": null,
+    "completion_rfid": null,
+    "completion_receptionist": null,
+    "completion_time": null,
+    "queue_position": null
+  }
+},
+{
+  "model": "patientapp.appointmenttbl",
+  "pk": 71,
+  "fields": {
+    "hospitalid": 36,
+    "vaccineid": 478,
+    "patientid": 26,
+    "childname": "",
+    "child": 18,
+    "aptdate": "2026-08-23",
+    "apttime": "10:00:00",
+    "indt": "2026-08-23T01:43:28.932Z",
+    "outdt": "2026-08-23T01:43:40.968Z",
+    "active": 2,
+    "rfidno": 963258,
+    "reminder_sent": false,
+    "is_confirmed": false,
+    "checkin_rfid": "963258",
+    "checkin_receptionist": null,
+    "checkin_time": "2026-08-23T01:43:28.932Z",
+    "completion_rfid": "963258",
+    "completion_receptionist": null,
+    "completion_time": "2026-08-23T01:43:40.968Z",
+    "queue_position": null
+  }
+},
+{
+  "model": "patientapp.appointmenttbl",
+  "pk": 72,
+  "fields": {
+    "hospitalid": 36,
+    "vaccineid": 484,
+    "patientid": 26,
+    "childname": "",
+    "child": 19,
+    "aptdate": "2026-08-23",
+    "apttime": "09:00:00",
+    "indt": "2026-08-23T01:45:50.944Z",
+    "outdt": "2026-08-23T01:45:58.976Z",
+    "active": 2,
+    "rfidno": 963258,
+    "reminder_sent": false,
+    "is_confirmed": false,
+    "checkin_rfid": "963258",
+    "checkin_receptionist": null,
+    "checkin_time": "2026-08-23T01:45:50.944Z",
+    "completion_rfid": "963258",
+    "completion_receptionist": null,
+    "completion_time": "2026-08-23T01:45:58.976Z",
+    "queue_position": null
+  }
+},
+{
+  "model": "patientapp.appointmenttbl",
+  "pk": 73,
+  "fields": {
+    "hospitalid": 36,
+    "vaccineid": 533,
+    "patientid": 31,
+    "childname": "",
+    "child": 25,
+    "aptdate": "2026-09-02",
+    "apttime": "09:30:00",
+    "indt": null,
+    "outdt": null,
+    "active": 0,
+    "rfidno": null,
+    "reminder_sent": false,
+    "is_confirmed": false,
+    "checkin_rfid": null,
+    "checkin_receptionist": null,
+    "checkin_time": null,
+    "completion_rfid": null,
+    "completion_receptionist": null,
+    "completion_time": null,
+    "queue_position": null
+  }
+},
+{
+  "model": "patientapp.appointmenttbl",
+  "pk": 74,
+  "fields": {
+    "hospitalid": 36,
+    "vaccineid": 478,
+    "patientid": 31,
+    "childname": "",
+    "child": 25,
+    "aptdate": "2026-09-01",
+    "apttime": "16:30:00",
+    "indt": null,
+    "outdt": null,
+    "active": 0,
+    "rfidno": null,
+    "reminder_sent": false,
+    "is_confirmed": false,
+    "checkin_rfid": null,
+    "checkin_receptionist": null,
+    "checkin_time": null,
+    "completion_rfid": null,
+    "completion_receptionist": null,
+    "completion_time": null,
+    "queue_position": null
+  }
+},
+{
+  "model": "patientapp.childtbl",
+  "pk": 18,
+  "fields": {
+    "patient": 26,
+    "childname": "Ananya",
+    "dob": "2026-08-16",
+    "gender": "Girl",
+    "blood_group": "B+"
+  }
+},
+{
+  "model": "patientapp.childtbl",
+  "pk": 19,
+  "fields": {
+    "patient": 26,
+    "childname": "Arohi",
+    "dob": "2025-08-21",
+    "gender": "Girl",
+    "blood_group": "B+"
+  }
+},
+{
+  "model": "patientapp.childtbl",
+  "pk": 25,
+  "fields": {
+    "patient": 31,
+    "childname": "Anujulika",
+    "dob": "2026-01-09",
+    "gender": "Girl",
+    "blood_group": "A+"
+  }
+},
+{
+  "model": "patientapp.vaccinationrecord",
+  "pk": 22,
+  "fields": {
+    "child": 19,
+    "vaccine": 477,
+    "appointment": 69,
+    "created_at": "2026-08-22T20:06:46.011Z"
+  }
+},
+{
+  "model": "patientapp.vaccinationrecord",
+  "pk": 23,
+  "fields": {
+    "child": 18,
+    "vaccine": 478,
+    "appointment": 71,
+    "created_at": "2026-08-22T20:13:41.120Z"
+  }
+},
+{
+  "model": "patientapp.vaccinationrecord",
+  "pk": 24,
+  "fields": {
+    "child": 19,
+    "vaccine": 484,
+    "appointment": 72,
+    "created_at": "2026-08-22T20:15:59.165Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 10,
+  "fields": {
+    "card_number": "963258",
+    "patient": 26,
+    "is_active": true,
+    "assigned_by_hospital": 36,
+    "assigned_by_staff": "Bipasha",
+    "created_at": "2026-08-22T19:36:40.453Z",
+    "updated_at": "2026-08-22T19:36:40.453Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 11,
+  "fields": {
+    "card_number": "9632585",
+    "patient": 26,
+    "is_active": true,
+    "assigned_by_hospital": null,
+    "assigned_by_staff": "",
+    "created_at": "2026-08-22T20:06:45.879Z",
+    "updated_at": "2026-08-22T20:06:45.879Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 14,
+  "fields": {
+    "card_number": "11112222",
+    "patient": 26,
+    "is_active": true,
+    "assigned_by_hospital": null,
+    "assigned_by_staff": "",
+    "created_at": "2026-08-22T20:12:51.137Z",
+    "updated_at": "2026-08-22T20:12:51.137Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 15,
+  "fields": {
+    "card_number": "12345678",
+    "patient": 26,
+    "is_active": true,
+    "assigned_by_hospital": null,
+    "assigned_by_staff": "",
+    "created_at": "2026-08-22T20:14:54.035Z",
+    "updated_at": "2026-08-22T20:14:54.035Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 16,
+  "fields": {
+    "card_number": "12918052",
+    "patient": 31,
+    "is_active": true,
+    "assigned_by_hospital": 36,
+    "assigned_by_staff": "Bipasha",
+    "created_at": "2026-09-01T17:20:18.219Z",
+    "updated_at": "2026-09-01T17:20:18.219Z"
+  }
+},
+{
+  "model": "patientapp.rfidcard",
+  "pk": 17,
+  "fields": {
+    "card_number": "8523697410",
+    "patient": 26,
+    "is_active": true,
+    "assigned_by_hospital": null,
+    "assigned_by_staff": "",
+    "created_at": "2026-09-01T17:59:01.010Z",
+    "updated_at": "2026-09-01T17:59:01.010Z"
+  }
+},
+{
+  "model": "patientapp.rfidassignmentlog",
+  "pk": 5,
+  "fields": {
+    "rfid_card": 10,
+    "patient": 26,
+    "action": "ASSIGNED",
+    "performed_by": "Bipasha",
+    "hospital": 36,
+    "created_at": "2026-08-22T19:36:40.541Z"
+  }
+},
+{
+  "model": "patientapp.rfidassignmentlog",
+  "pk": 6,
+  "fields": {
+    "rfid_card": 16,
+    "patient": 31,
+    "action": "ASSIGNED",
+    "performed_by": "Bipasha",
+    "hospital": 36,
+    "created_at": "2026-09-01T17:20:18.340Z"
+  }
+}
+]
