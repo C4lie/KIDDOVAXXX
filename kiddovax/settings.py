@@ -35,7 +35,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-fallback-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1')
+DEBUG = (os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1')) or (os.environ.get('DEBUG', 'False').lower() in ('true', '1'))
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com,.railway.app').split(',') if h.strip()]
 
