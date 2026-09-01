@@ -117,10 +117,12 @@ class BookedAppointment(View):
             return redirect('patient:loginpage')
 
         if aid is not None:
-            data = Appointmenttbl.objects.get(pk = aid)
-            data.delete()
-            aid = None
-            messages.info(request,'Appointment Deleted Success!')
+            data = Appointmenttbl.objects.filter(pk=aid, patientid_id=request.session.get('Cid')).first()
+            if data:
+                data.delete()
+                messages.info(request, 'Appointment Deleted Success!')
+            else:
+                messages.error(request, 'Unauthorized action or appointment not found.')
             return redirect('patient:vaccinebooking') 
         
         # 1. Fetch patient profile & location coordinates

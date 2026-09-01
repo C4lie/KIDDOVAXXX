@@ -117,14 +117,19 @@ class ReceptionistRegister(View):
         bindData = Receptionisttbl.objects.select_related("cityId").select_related("areaId").all().filter(hospitalid_id = request.session['Cid'] ).order_by('-id')
       
         if pid is not None:
-            data = Receptionisttbl.objects.get(pk = pid)
-            data.delete()
-            pid = None
-            messages.info(request,'Receptionist Deleted Success!')
+            data = Receptionisttbl.objects.filter(pk=pid, hospitalid_id=request.session['Cid']).first()
+            if data:
+                data.delete()
+                messages.info(request, 'Receptionist Deleted Success!')
+            else:
+                messages.error(request, 'Unauthorized action or Receptionist record not found.')
             return redirect('hospitalapp:receptionistregister')
 
         if id is not None:
-            Pdata = Receptionisttbl.objects.get(pk = id)
+            Pdata = Receptionisttbl.objects.filter(pk=id, hospitalid_id=request.session['Cid']).first()
+            if not Pdata:
+                messages.error(request, 'Unauthorized action or Receptionist record not found.')
+                return redirect('hospitalapp:receptionistregister')
             form = ReceptionistForm(instance = Pdata)  
             bindArea = load_areasbyCity(request,Pdata.cityId)
             selectedArea = Pdata.areaId
@@ -239,14 +244,19 @@ class ManageVaccine(View):
          
 
         if vid is not None:
-            data = Vaccinetbl.objects.get(pk = vid)
-            data.delete()
-            vid = None
-            messages.info(request,'Vaccine Deleted Success!')
+            data = Vaccinetbl.objects.filter(pk=vid, hospitalId_id=request.session['Cid']).first()
+            if data:
+                data.delete()
+                messages.info(request, 'Vaccine Deleted Success!')
+            else:
+                messages.error(request, 'Unauthorized action or Vaccine record not found.')
             return redirect('hospitalapp:vaccineregister') 
         if id is not None:
-            data = Vaccinetbl.objects.get(pk = id)
-            form = VaccineForm(instance  = data)   
+            data = Vaccinetbl.objects.filter(pk=id, hospitalId_id=request.session['Cid']).first()
+            if not data:
+                messages.error(request, 'Unauthorized action or Vaccine record not found.')
+                return redirect('hospitalapp:vaccineregister')
+            form = VaccineForm(instance=data)   
         else:    
             form = VaccineForm()
 
