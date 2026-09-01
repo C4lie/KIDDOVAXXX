@@ -1,3 +1,9 @@
+import os
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kiddovax.settings')
+django.setup()
+
 from adminapp.models import Admintbl, City, Area
 from hospitalapp.models import Hospitaltbl, Receptionisttbl
 import datetime
