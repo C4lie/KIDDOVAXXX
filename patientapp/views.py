@@ -694,6 +694,10 @@ class PatientProfile(View):
             'appointments__vaccineid', 
             'appointments__hospitalid'
         ).order_by('dob')
+        # Get active RFID card numbers for this patient account
+        rfid_cards = list(patientData.rfid_cards.filter(is_active=True).values_list('card_number', flat=True))
+        rfid_card_number = ", ".join(rfid_cards) if rfid_cards else None
+
         context = {
             'cityData': bindCity,
             'areaData': bindArea,
@@ -701,7 +705,9 @@ class PatientProfile(View):
             'selectedCity': patientData.cityId,
             'selectedArea': patientData.areaId,
             'patientData': patientData,
-            'children': children
+            'children': children,
+            'rfid_card_number': rfid_card_number,
+            'rfid_cards': rfid_cards,
         }
         return render(request, 'patientapp/profile.html', context)
     
