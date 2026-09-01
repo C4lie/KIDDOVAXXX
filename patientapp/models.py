@@ -15,7 +15,7 @@ class Patienttbl(models.Model):
     address = models.CharField(max_length=500, verbose_name="Address")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
-    contactNo = models.IntegerField(blank=True, null=True,verbose_name="Contact")
+    contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
     password = models.CharField(max_length=255, verbose_name="Password")
     relation = models.CharField(max_length=50, blank=True, null=True, verbose_name="Relation")
     latitude = models.FloatField(blank=True, null=True, verbose_name="Latitude")

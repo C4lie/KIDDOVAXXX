@@ -7,7 +7,7 @@ class Hospitaltbl(models.Model):
     address = models.CharField(max_length=500, verbose_name="Address")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
-    contactNo = models.IntegerField(blank=True, null=True,verbose_name="Contact")
+    contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
     password = models.CharField(max_length=255, verbose_name="Password")
     img = models.ImageField(upload_to='profileimg',blank=True, null=True, verbose_name="Profile Image")
 
@@ -93,7 +93,7 @@ class Receptionisttbl(models.Model):
     gender= models.CharField(default='Male',max_length=10, verbose_name="Gender")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
-    contactNo = models.IntegerField(blank=True, null=True,verbose_name="Contact")
+    contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
     ui_no = models.CharField(max_length=5, unique=True, blank=True, null=True, verbose_name="UI Number")
     password = models.CharField(max_length=255, verbose_name="Password")
     staffimg = models.ImageField(verbose_name="Upload Image",upload_to='staffimages')
