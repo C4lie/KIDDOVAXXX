@@ -14,8 +14,8 @@ Admintbl.objects.update_or_create(
     defaults={'password': make_password('admin')}
 )
 
-city, _ = City.objects.get_or_create(cityName='DummyCity')
-area, _ = Area.objects.get_or_create(areaName='DummyArea', cityId=city)
+city, _ = City.objects.get_or_create(cityName='Vadodara')
+area, _ = Area.objects.get_or_create(areaName='Alkapuri', cityId=city)
 
 h, _ = Hospitaltbl.objects.update_or_create(
     contactNo=1,
