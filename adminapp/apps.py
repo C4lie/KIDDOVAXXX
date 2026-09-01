@@ -4,8 +4,8 @@ from django.db.models.signals import post_migrate
 
 def auto_seed_production_db(sender, **kwargs):
     try:
-        from adminapp.models import City
-        if City.objects.count() == 0:
+        from hospitalapp.models import Hospitaltbl
+        if Hospitaltbl.objects.count() < 10:
             from django.core.management import call_command
             call_command('seed_db')
     except Exception:
