@@ -211,13 +211,22 @@ class ReceptionistRegister(View):
             return redirect('hospitalapp:receptionistregister')
     
 def load_areasbyCity(request, cityid=None):
+    city_id = cityid if cityid is not None else request.GET.get('city_id')
+    if not city_id:
+        areas = []
+    else:
+        raw_areas = Area.objects.filter(cityId=city_id).order_by('areaName')
+        seen_names = set()
+        areas = []
+        for a in raw_areas:
+            name_clean = a.areaName.strip().lower()
+            if name_clean not in seen_names:
+                seen_names.add(name_clean)
+                areas.append(a)
+
     if cityid is not None:
-        city_id = cityid
-        areas = Area.objects.filter(cityId=city_id).order_by('areaName')
         return areas
     else:     
-        city_id = request.GET.get('city_id')
-        areas = Area.objects.filter(cityId=city_id).order_by('areaName')
         return render(request, 'adminapp/citytoarea.html', {'arealist': areas})    
 
 class ManageVaccine(View):
