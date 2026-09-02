@@ -6,31 +6,29 @@ from hospitalapp.models import Hospitaltbl, Receptionisttbl, Vaccinetbl
 class HospitalForm(forms.ModelForm):
     class Meta:
         model = Hospitaltbl
-        fields ='__all__'
+        fields = ['title', 'dcrname', 'address', 'cityId', 'areaId', 'contactNo', 'password', 'img']
 
-        widgets={
-            'title': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'dcrname': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'address': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'contactNo': forms.TextInput(attrs={'required': True, 'maxlength':"10", 'class':'form-control', 'onkeypress': 'return restrictAlphabets(event);'}),
-            'password': forms.TextInput(attrs={'required': True,'class':'form-control'}),
+        widgets = {
+            'title': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Hospital Name'}),
+            'dcrname': forms.TextInput(attrs={'required': False, 'class': 'form-control', 'placeholder': 'Enter Doctor / Dean Name'}),
+            'address': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Hospital Address'}),
+            'contactNo': forms.TextInput(attrs={'required': True, 'maxlength': "10", 'class': 'form-control', 'placeholder': '10-digit Contact No'}),
+            'password': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Password'}),
         }
 
 
-
 class ReceptionistForm(forms.ModelForm):
-   
     class Meta:
         model = Receptionisttbl
-        fields = '__all__'
+        fields = ['hospitalid', 'name', 'ui_no', 'address', 'gender', 'cityId', 'areaId', 'contactNo', 'password', 'staffimg', 'doj']
      
-        widgets={
-            'name': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'ui_no': forms.TextInput(attrs={'required': False, 'maxlength': '5', 'class':'form-control'}),
-            'address': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'contactNo': forms.TextInput(attrs={'required': True, 'maxlength':"10", 'class':'form-control', 'onkeypress': 'return restrictAlphabets(event);'}),
-            'password': forms.TextInput(attrs={'required': True,'class':'form-control'}),
-            'doj' : forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)','class': 'form-control'})
+        widgets = {
+            'name': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Name'}),
+            'ui_no': forms.TextInput(attrs={'required': False, 'maxlength': '5', 'class': 'form-control', 'placeholder': '5-digit Staff UI No'}),
+            'address': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Address'}),
+            'contactNo': forms.TextInput(attrs={'required': True, 'maxlength': "10", 'class': 'form-control', 'placeholder': 'Contact Number'}),
+            'password': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Password'}),
+            'doj': forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'})
         }
 
 class VaccineForm(forms.ModelForm):

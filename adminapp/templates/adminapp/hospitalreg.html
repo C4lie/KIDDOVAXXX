@@ -64,72 +64,6 @@
       .glass-input:focus {
         background: #1e293b;
         border-color: #22D3EE;
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>KiddoVax | Manage Hospitals</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "admin-primary": "#22D3EE",    /* Cyan Accent */
-              "admin-secondary": "#06B6D4",  /* Darker Cyan */
-              "background": "#0F172A",       /* Dark Background */
-              "on-surface": "#F8FAFC",       /* Light Text */
-              "admin-card": "#1E293B",       /* Slate Card */
-              "admin-border": "rgba(255,255,255,0.08)"
-            },
-            fontFamily: {
-              "headline": ["Manrope", "sans-serif"],
-              "body": ["Inter", "sans-serif"]
-            },
-          }
-        }
-      }
-    </script>
-    <style>
-      body { -webkit-font-smoothing: antialiased; background-color: #0F172A; overflow-x: hidden; }
-      
-      .glass-nav {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(34, 211, 238, 0.1);
-      }
-      
-      .glass-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      
-      .mesh-bg {
-        background-image: 
-          radial-gradient(at 10% 20%, rgba(34, 211, 238, 0.08) 0px, transparent 50%),
-          radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
-          radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
-      }
-      
-      .glass-input {
-        background: rgba(30, 41, 59, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #F8FAFC;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .glass-input:focus {
-        background: #1e293b;
-        border-color: #22D3EE;
         box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
       }
     </style>
@@ -278,19 +212,19 @@
                         <div class="space-y-2 pt-2 border-t border-white/10">
                             <label class="block text-sm font-bold text-slate-300 ml-1">{{form.img.label}}</label>
                             <div class="flex items-center gap-4">
-                                {% if imgurl %}
+                                {% if imgurl and imgurl.img %}
                                     <img src="{{imgurl.HospitalImageUrl}}" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-white/10">
                                 {% else %}
                                     <div class="w-16 h-16 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400">
                                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                     </div>
                                 {% endif %}
-                                <input type="file" name="img" id="img" class="block w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-950/40 file:text-admin-primary hover:file:bg-cyan-950 cursor-pointer"/>
+                                <input type="file" name="img" id="img" accept="image/*" class="block w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-950/40 file:text-admin-primary hover:file:bg-cyan-950 cursor-pointer"/>
                             </div>
                         </div>
 
                         <div class="flex gap-3 pt-4 mt-2">
-                            <button type="submit" id="btnsubmit" disabled class="flex-1 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-[#0F172A] bg-admin-primary hover:bg-admin-secondary disabled:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed transition-all duration-300">
+                            <button type="submit" id="btnsubmit" class="flex-1 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-[#0F172A] bg-admin-primary hover:bg-admin-secondary transition-all duration-300 cursor-pointer">
                                 Save Entry
                             </button>
                             <button type="submit" name="btnreset" value="Reset" class="flex-1 py-3 px-4 border border-white/10 rounded-xl shadow-sm text-sm font-bold text-slate-300 bg-[#1E293B] hover:bg-slate-800 transition-all duration-300">
@@ -323,11 +257,11 @@
                                     <td class="py-4 px-4 text-sm font-medium text-slate-400">#{{ forloop.counter }}</td>
                                     <td class="py-4 px-4">
                                         <div class="flex items-center gap-3">
-                                            <img src="../../../static/{{item.img}}" class="w-10 h-10 rounded-lg object-cover bg-slate-800 border border-white/10"/>
+                                            <img src="{{ item.HospitalImageUrl }}" class="w-10 h-10 rounded-lg object-cover bg-slate-800 border border-white/10" alt="{{ item.title }}"/>
                                             <span class="font-bold text-sm text-slate-200">{{ item.title }}</span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-4 font-medium text-sm text-slate-300">{{ item.dcrname }}</td>
+                                    <td class="py-4 px-4 font-medium text-sm text-slate-300">{{ item.dcrname|default:"--" }}</td>
                                     <td class="py-4 px-4 font-medium text-sm text-slate-300">
                                         <span class="bg-cyan-950/40 text-admin-primary px-2 py-1 rounded-md text-xs font-bold uppercase">{{ item.cityId.cityName }}</span>
                                     </td>
@@ -365,40 +299,11 @@
             const inputs = document.querySelectorAll('input:not([type="hidden"]):not([type="file"]), textarea');
             inputs.forEach(input => {
                 input.classList.add('glass-input', 'block', 'w-full', 'px-3', 'py-2.5', 'rounded-xl', 'text-slate-200', 'placeholder-slate-400', 'focus:outline-none', 'font-medium', 'text-sm');
-                if(input.name !== 'password') {
-                    input.setAttribute('onkeypress', 'return isNumberKey(event)');
-                }
             });
-            // Initial check for submit button
-            checkContactLength();
         });
-        
-        function isNumberKey(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode;
-            if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97) || charCode == 8 || charCode == 32) {
-                return true;
-            }
-            return false;
-        }
-
-        // Validate Contact No Length
-        function checkContactLength() {
-            var contactVal = document.getElementById('id_contactNo')?.value || '';
-            if(contactVal !== '' && contactVal.length === 10) {
-                document.getElementById('btnsubmit').disabled = false;
-            } else {
-                document.getElementById('btnsubmit').disabled = true;
-            }
-        }
 
         // --- jQuery AJAX LOGIC ---
         $(document).ready(function(){
-            
-            // Attach contact validation
-            $('#id_contactNo').on('input change blur', function() {
-                checkContactLength();
-            });
-
             // Cascading Area dropdown
             $("#cityId").change(function () {
                 var cityid = $(this).val();  

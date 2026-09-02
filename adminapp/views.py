@@ -240,66 +240,96 @@ class ManageArea(View):
 
 class ManageHospitals(View):
     def get(self, request, id=None, pid=None):
-        storage = messages.get_messages(request)
-        for message in storage:
-            message = None
-        if request.session.get('CName') is None:
-           return redirect('adminapp:adminlogin')
-        form = HospitalForm()
-        bindCity = City.objects.all().order_by('-id')
-        bindData = Hospitaltbl.objects.select_related("cityId").select_related("areaId").all().order_by('-id')
+        if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
+            return redirect('adminapp:adminlogin')
+        
+        bindCity = City.objects.all().order_by('cityName')
+        bindData = Hospitaltbl.objects.select_related("cityId", "areaId").all().order_by('-id')
 
         if pid is not None:
             try:
-                data = Hospitaltbl.objects.get(pk = pid)
+                data = Hospitaltbl.objects.get(pk=pid)
                 data.delete()
-                messages.info(request,'Hospital Deleted Success!')
+                messages.info(request, 'Hospital Deleted Success!')
             except Hospitaltbl.DoesNotExist:
                 messages.error(request, 'Hospital not found or already deleted.')
             return redirect('adminapp:addhospitals')
 
         if id is not None:
             try:
-                Pdata = Hospitaltbl.objects.get(pk = id)
-                form = HospitalForm(instance = Pdata)  
-                bindArea = load_areasbyCity(request,Pdata.cityId)
+                Pdata = Hospitaltbl.objects.get(pk=id)
+                form = HospitalForm(instance=Pdata)  
+                bindArea = Area.objects.filter(cityId=Pdata.cityId).order_by('areaName') if Pdata.cityId else []
                 selectedArea = Pdata.areaId
-                context={
-                    'form' : form,
-                    'hospitalData' : bindData,
-                    'imgurl' : Pdata,
-                    'cityData' : bindCity,
-                    'areaData' : bindArea,
-                    'selectedCity' : Pdata.cityId,
-                    'selectedArea' : selectedArea,
+                context = {
+                    'form': form,
+                    'hospitalData': bindData,
+                    'imgurl': Pdata,
+                    'cityData': bindCity,
+                    'areaData': bindArea,
+                    'selectedCity': Pdata.cityId,
+                    'selectedArea': selectedArea,
                 }
-                return render(request, 'adminapp/hospitalreg.html',context)
+                return render(request, 'adminapp/hospitalreg.html', context)
             except Hospitaltbl.DoesNotExist:
                 messages.error(request, 'Hospital not found.')
                 return redirect('adminapp:addhospitals')
     
-       
-        context={
-                'cityData' : bindCity,
-                'hospitalData' : bindData,
-                'form' : form
+        form = HospitalForm()
+        context = {
+            'cityData': bindCity,
+            'hospitalData': bindData,
+            'form': form
         }
         return render(request, 'adminapp/hospitalreg.html', context)
     
     def post(self, request, id=None):
+        if request.session.get('CName') is None or request.session.get('user_role') != 'admin':
+            return redirect('adminapp:adminlogin')
+
         if 'btnreset' in request.POST:
-            form = HospitalForm()
             return redirect('adminapp:addhospitals')
+
+        bindCity = City.objects.all().order_by('cityName')
+        bindData = Hospitaltbl.objects.select_related("cityId", "areaId").all().order_by('-id')
+
         if id is not None:
             try:
-                data = Hospitaltbl.objects.get(pk = id)
-                form = HospitalForm(request.POST,request.FILES or None, instance  = data)
-                form.save()
-                messages.info(request,'Hospital Updated Success!')
+                data = Hospitaltbl.objects.get(pk=id)
+                form = HospitalForm(request.POST, request.FILES or None, instance=data)
+                if form.is_valid():
+                    form.save()
+                    messages.info(request, 'Hospital Updated Success!')
+                    return redirect('adminapp:addhospitals')
+                else:
+                    for field, err_list in form.errors.items():
+                        for err in err_list:
+                            messages.error(request, f"{field}: {err}")
+                    bindArea = Area.objects.filter(cityId=data.cityId).order_by('areaName') if data.cityId else []
+                    return render(request, 'adminapp/hospitalreg.html', {
+                        'form': form,
+                        'hospitalData': bindData,
+                        'imgurl': data,
+                        'cityData': bindCity,
+                        'areaData': bindArea,
+                        'selectedCity': data.cityId,
+                        'selectedArea': data.areaId,
+                    })
             except Hospitaltbl.DoesNotExist:
                 messages.error(request, 'Hospital not found or already deleted.')
+                return redirect('adminapp:addhospitals')
         else:    
-            form = HospitalForm(request.POST,request.FILES or None)
-            messages.info(request,'Hospital Inserted Success!')
-            form.save()
-        return redirect('adminapp:addhospitals')
+            form = HospitalForm(request.POST, request.FILES or None)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Hospital Inserted Success!')
+                return redirect('adminapp:addhospitals')
+            else:
+                for field, err_list in form.errors.items():
+                    for err in err_list:
+                        messages.error(request, f"{field}: {err}")
+                return render(request, 'adminapp/hospitalreg.html', {
+                    'cityData': bindCity,
+                    'hospitalData': bindData,
+                    'form': form
+                })

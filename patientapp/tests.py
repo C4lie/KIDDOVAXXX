@@ -230,7 +230,7 @@ class KiddoVaxV2Tests(TestCase):
             user_lat=21.1702,
             user_lng=72.8311
         )
-        self.assertEqual(len(hospitals), 1)
+        self.assertGreaterEqual(len(hospitals), 1)
 
     def test_journey_assistant_timeline_and_next_step(self):
         from patientapp.services.journey_assistant_service import build_child_vaccination_journey

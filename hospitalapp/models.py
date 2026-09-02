@@ -7,23 +7,24 @@ class Hospitaltbl(models.Model):
     address = models.CharField(max_length=500, verbose_name="Address")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
-    contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
+    contactNo = models.IntegerField(blank=True, null=True, verbose_name="Contact")
     password = models.CharField(max_length=255, verbose_name="Password")
-    img = models.ImageField(upload_to='profileimg',blank=True, null=True, verbose_name="Profile Image")
+    img = models.ImageField(upload_to='profileimg', blank=True, null=True, verbose_name="Profile Image")
 
     latitude = models.FloatField(blank=True, null=True, verbose_name="Latitude")
     longitude = models.FloatField(blank=True, null=True, verbose_name="Longitude")
-    opening_time = models.TimeField(default="09:00:00", verbose_name="Opening Time")
-    closing_time = models.TimeField(default="17:00:00", verbose_name="Closing Time")
-    slot_duration = models.IntegerField(default=30, verbose_name="Slot Duration (mins)")
-    slot_capacity = models.IntegerField(default=2, verbose_name="Slot Capacity")
+    opening_time = models.TimeField(default="09:00:00", blank=True, null=True, verbose_name="Opening Time")
+    closing_time = models.TimeField(default="17:00:00", blank=True, null=True, verbose_name="Closing Time")
+    slot_duration = models.IntegerField(default=30, blank=True, null=True, verbose_name="Slot Duration (mins)")
+    slot_capacity = models.IntegerField(default=2, blank=True, null=True, verbose_name="Slot Capacity")
 
     def HospitalImageUrl(self):
         try:
-            url = '../../../static' + self.img.url
-        except:
-            url ='../../../static/profileimg/noimg.png'            
-        return url   
+            if self.img and hasattr(self.img, 'url'):
+                return self.img.url
+        except Exception:
+            pass
+        return '/static/profileimg/noimg.png'
      
     def __str__(self):
         return f'{self.title} ({self.pk})'
@@ -93,21 +94,19 @@ class Receptionisttbl(models.Model):
     gender= models.CharField(default='Male',max_length=10, verbose_name="Gender")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
-    contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
+    contactNo = models.IntegerField(blank=True, null=True,verbose_name="Contact")
     ui_no = models.CharField(max_length=5, unique=True, blank=True, null=True, verbose_name="UI Number")
     password = models.CharField(max_length=255, verbose_name="Password")
-    staffimg = models.ImageField(verbose_name="Upload Image",upload_to='staffimages')
-    doj = models.DateField(null=True,verbose_name="DateofJoining")
+    staffimg = models.ImageField(verbose_name="Upload Image", upload_to='staffimages', blank=True, null=True)
+    doj = models.DateField(null=True, blank=True, verbose_name="DateofJoining")
 
     def StaffImageUrl(self):
         try:
-            url = '../../../static' + self.staffimg.url
-        except:
-            url ='../../../static/staffimages/noimg.png'            
-        return url   
+            if self.staffimg and hasattr(self.staffimg, 'url'):
+                return self.staffimg.url
+        except Exception:
+            pass
+        return '/static/staffimages/noimg.png'
     
     def __str__(self):
-        return f'{self.name} ({self.ui_no or self.pk})'    
-
-
-        
+        return f'{self.name} ({self.ui_no or self.pk})'
