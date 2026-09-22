@@ -1,0 +1,352 @@
+<!-- KiddoVax AI Assistant Floating Widget -->
+<div id="kiddovax-ai-assistant" class="fixed bottom-6 right-6 z-50 font-body">
+
+  <!-- Floating Launcher Button -->
+  <button id="ai-assistant-toggle" type="button" aria-label="Open KiddoVax AI Assistant"
+          class="relative flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-primary to-modern-cyan text-white rounded-full shadow-2xl hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 group border-2 border-white/20">
+    <div class="relative w-7 h-7 flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm">
+      <span class="material-symbols-outlined text-[20px] animate-pulse">smart_toy</span>
+      <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-primary"></span>
+    </div>
+    <span class="font-headline font-bold text-sm tracking-tight hidden sm:inline">KiddoVax AI</span>
+  </button>
+
+  <!-- Chat Dialog Window -->
+  <div id="ai-chat-window" class="hidden absolute bottom-16 right-0 w-[92vw] sm:w-[420px] h-[580px] max-h-[82vh] bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden transition-all duration-300 transform origin-bottom-right scale-95 opacity-0">
+    
+    <!-- Header -->
+    <div class="px-5 py-4 bg-gradient-to-r from-primary via-teal-700 to-soft-teal text-white flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20 shadow-inner">
+          <span class="material-symbols-outlined text-white text-[20px]">vaccines</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h3 class="font-headline font-black text-sm tracking-tight text-white">KiddoVax AI Assistant</h3>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          </div>
+          <p class="text-[11px] text-teal-100/90 font-medium">Vaccination & Booking Guide</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button id="ai-reset-btn" title="Reset Conversation" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-teal-100 hover:text-white transition-all">
+          <span class="material-symbols-outlined text-[17px]">restart_alt</span>
+        </button>
+        <button id="ai-close-btn" title="Close Assistant" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-teal-100 hover:text-white transition-all">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Action Chips Bar -->
+    <div class="px-3.5 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <button onclick="window.sendAIMessage('What is MMR vaccine?')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
+        💉 Vaccine Info
+      </button>
+      <button onclick="window.sendAIMessage('What vaccines are upcoming for my child?')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
+        📋 Upcoming Due
+      </button>
+      <button onclick="window.sendAIMessage('Book a vaccination appointment')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
+        📅 Book Appointment
+      </button>
+      <button onclick="window.sendAIMessage('Check my appointments')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
+        🔖 My Bookings
+      </button>
+    </div>
+
+    <!-- Message Stream -->
+    <div id="ai-messages-container" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-gradient-to-b from-slate-50/50 to-white text-xs leading-relaxed">
+      <!-- Default Welcome Message -->
+      <div class="flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-xl bg-teal-100 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+          <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+        </div>
+        <div class="max-w-[85%] bg-white border border-slate-200/80 rounded-2xl rounded-tl-sm p-3.5 shadow-2xs text-slate-700">
+          <p class="font-bold text-slate-900 mb-1">👋 Welcome to KiddoVax AI Assistant!</p>
+          <p>I can help you understand vaccines, recommend age-appropriate immunization schedules, and book vaccination appointments step-by-step.</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap gap-1.5">
+            <button onclick="window.sendAIMessage('What is BCG?')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all">What is BCG?</button>
+            <button onclick="window.sendAIMessage('What vaccine is due for my child?')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all">Due Vaccines</button>
+            <button onclick="window.sendAIMessage('Book a vaccination appointment')" class="text-[11px] bg-primary text-white font-medium px-2.5 py-1 rounded-lg hover:bg-primary-hover transition-all">Book Appointment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div id="ai-typing-indicator" class="hidden px-5 py-2 text-xs text-slate-400 flex items-center gap-2 bg-white">
+      <div class="flex space-x-1">
+        <div class="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce"></div>
+        <div class="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+        <div class="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+      </div>
+      <span class="text-[11px] font-medium text-slate-400">KiddoVax Assistant is typing...</span>
+    </div>
+
+    <!-- Chat Input Area -->
+    <form id="ai-chat-form" class="p-3 bg-white border-t border-slate-100 flex items-center gap-2" onsubmit="window.handleAISubmit(event)">
+      {% csrf_token %}
+      <input type="text" id="ai-user-input" autocomplete="off" placeholder="Ask about vaccines, schedules, or book..."
+             class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+      <button type="submit" id="ai-send-btn" aria-label="Send Message"
+              class="w-9 h-9 rounded-2xl bg-primary hover:bg-primary-hover active:scale-95 text-white flex items-center justify-center shadow-md transition-all shrink-0">
+        <span class="material-symbols-outlined text-[18px]">send</span>
+      </button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const toggleBtn = document.getElementById('ai-assistant-toggle');
+  const chatWindow = document.getElementById('ai-chat-window');
+  const closeBtn = document.getElementById('ai-close-btn');
+  const resetBtn = document.getElementById('ai-reset-btn');
+  const container = document.getElementById('ai-messages-container');
+  const input = document.getElementById('ai-user-input');
+  const typingIndicator = document.getElementById('ai-typing-indicator');
+
+  let conversationContext = {};
+
+  // Toggle Dialog
+  function toggleChat(show) {
+    if (show === undefined) {
+      show = chatWindow.classList.contains('hidden');
+    }
+    if (show) {
+      chatWindow.classList.remove('hidden');
+      setTimeout(() => {
+        chatWindow.classList.remove('scale-95', 'opacity-0');
+        chatWindow.classList.add('scale-100', 'opacity-100');
+        input.focus();
+      }, 10);
+    } else {
+      chatWindow.classList.remove('scale-100', 'opacity-100');
+      chatWindow.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        chatWindow.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  toggleBtn.addEventListener('click', () => toggleChat());
+  closeBtn.addEventListener('click', () => toggleChat(false));
+
+  resetBtn.addEventListener('click', () => {
+    conversationContext = {};
+    container.innerHTML = `
+      <div class="flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-xl bg-teal-100 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+          <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+        </div>
+        <div class="max-w-[85%] bg-white border border-slate-200/80 rounded-2xl rounded-tl-sm p-3.5 shadow-2xs text-slate-700">
+          <p class="font-bold text-slate-900 mb-1">🔄 Conversation Reset</p>
+          <p>How can I assist you today? You can ask vaccine questions or start booking an appointment.</p>
+        </div>
+      </div>
+    `;
+  });
+
+  // Safe HTML Formatter for Assistant Responses
+  function formatMarkdown(text) {
+    if (!text) return '';
+    let formatted = text
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-slate-100 rounded text-teal-700 text-[11px] font-mono">$1</code>')
+      .replace(/\n/g, '<br/>');
+    return formatted;
+  }
+
+  function appendUserMessage(text) {
+    const el = document.createElement('div');
+    el.className = 'flex justify-end';
+    el.innerHTML = `
+      <div class="max-w-[82%] bg-gradient-to-r from-primary to-teal-700 text-white rounded-2xl rounded-tr-sm px-3.5 py-2.5 shadow-sm text-xs">
+        <p>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>
+    `;
+    container.appendChild(el);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function appendAssistantMessage(data) {
+    const el = document.createElement('div');
+    el.className = 'flex items-start gap-2.5 animate__animated animate__fadeIn';
+
+    let actionHTML = '';
+    const actionType = data.action_type;
+    const actionData = data.action_data || {};
+
+    if (actionType === 'SHOW_CHILDREN' && actionData.children) {
+      actionHTML = `<div class="mt-3 space-y-1.5">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Child</p>
+        <div class="flex flex-col gap-1">
+          ${actionData.children.map(c => `
+            <button onclick="window.sendAIMessage('${c.name}')" class="text-left px-3 py-2 bg-teal-50/70 hover:bg-teal-100/80 border border-teal-200/80 rounded-xl font-medium text-slate-800 flex items-center justify-between transition-all">
+              <span class="font-bold text-primary">${c.name}</span>
+              <span class="text-[10px] text-slate-500">${c.dob || ''}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (actionType === 'SHOW_HOSPITALS' && actionData.hospitals) {
+      actionHTML = `<div class="mt-3 space-y-1.5">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Hospital</p>
+        <div class="flex flex-col gap-1">
+          ${actionData.hospitals.map(h => `
+            <button onclick="window.sendAIMessage('${h.title}')" class="text-left px-3 py-2 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-primary/40 rounded-xl transition-all">
+              <div class="font-bold text-slate-800 text-xs">${h.title}</div>
+              <div class="text-[10px] text-slate-400 truncate">${h.address || ''}</div>
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (actionType === 'SHOW_VACCINES' && actionData.vaccines) {
+      actionHTML = `<div class="mt-3 space-y-1.5">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Vaccines</p>
+        <div class="flex flex-wrap gap-1.5">
+          ${actionData.vaccines.map(v => `
+            <button onclick="window.sendAIMessage('${v.name}')" class="px-2.5 py-1.5 bg-white hover:bg-primary hover:text-white border border-slate-200 rounded-xl font-semibold text-slate-700 text-[11px] transition-all shadow-2xs">
+              💉 ${v.name}
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (actionType === 'SHOW_DATE_PICKER') {
+      const dates = actionData.suggested_dates || [];
+      actionHTML = `<div class="mt-3 space-y-2">
+        <div class="flex flex-wrap gap-1.5">
+          ${dates.map(d => `
+            <button onclick="window.sendAIMessage('${d.date}')" class="px-3 py-1.5 bg-teal-50 border border-teal-200 text-primary font-bold rounded-xl text-[11px] hover:bg-teal-100 transition-all">
+              📅 ${d.label}
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (actionType === 'SHOW_SLOTS' && actionData.slots) {
+      actionHTML = `<div class="mt-3 space-y-1.5">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Time Slots</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+          ${actionData.slots.map(s => `
+            <button onclick="window.sendAIMessage('${s.time_str}')" class="px-2 py-1.5 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-200 text-emerald-700 font-bold rounded-xl text-center text-[11px] transition-all">
+              ⏰ ${s.time_str}
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (actionType === 'SHOW_CONFIRMATION') {
+      actionHTML = `<div class="mt-3 flex gap-2">
+        <button onclick="window.sendAIMessage('Confirm')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-sm transition-all flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">check_circle</span> Confirm Appointment
+        </button>
+        <button onclick="window.sendAIMessage('Cancel')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-xl text-xs transition-all">
+          Cancel
+        </button>
+      </div>`;
+    } else if (actionType === 'SHOW_QUICK_ACTIONS' && actionData.quick_replies) {
+      actionHTML = `<div class="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
+        ${actionData.quick_replies.map(qr => `
+          <button onclick="window.sendAIMessage('${qr.action}')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all border border-slate-200/60">
+            ${qr.label}
+          </button>
+        `).join('')}
+      </div>`;
+    }
+
+    const disclaimerBox = data.is_safety_disclaimer ? 'border-amber-200 bg-amber-50/50' : 'border-slate-200/80 bg-white';
+
+    el.innerHTML = `
+      <div class="w-7 h-7 rounded-xl bg-teal-100 text-primary flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+        <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+      </div>
+      <div class="max-w-[85%] ${disclaimerBox} border rounded-2xl rounded-tl-sm p-3.5 shadow-2xs text-slate-700">
+        <div>${formatMarkdown(data.text)}</div>
+        ${actionHTML}
+      </div>
+    `;
+    container.appendChild(el);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // Send message to backend
+  window.sendAIMessage = async function(text) {
+    if (!text || !text.trim()) return;
+    text = text.trim();
+
+    // Make sure chat window is visible when quick action clicked
+    toggleChat(true);
+
+    appendUserMessage(text);
+    input.value = '';
+    typingIndicator.classList.remove('hidden');
+    container.scrollTop = container.scrollHeight;
+
+    // Get CSRF Token
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    try {
+      const res = await fetch("{% url 'patient:ai_assistant_chat' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: JSON.stringify({
+          message: text,
+          context: conversationContext
+        })
+      });
+
+      typingIndicator.classList.add('hidden');
+
+      if (!res.ok) {
+        appendAssistantMessage({
+          text: "I encountered an issue connecting to the server. Please try again shortly.",
+          action_type: 'NONE',
+          action_data: {},
+          is_safety_disclaimer: false
+        });
+        return;
+      }
+
+      const data = await res.json();
+      if (data.context) {
+        conversationContext = data.context;
+      }
+      appendAssistantMessage(data);
+
+    } catch (err) {
+      typingIndicator.classList.add('hidden');
+      appendAssistantMessage({
+        text: "Network error. Please check your connection and try again.",
+        action_type: 'NONE',
+        action_data: {},
+        is_safety_disclaimer: false
+      });
+    }
+  };
+
+  window.handleAISubmit = function(e) {
+    e.preventDefault();
+    const val = input.value;
+    window.sendAIMessage(val);
+  };
+
+})();
+</script>

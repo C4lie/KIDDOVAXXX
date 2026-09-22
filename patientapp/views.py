@@ -978,3 +978,50 @@ class VaccineEducationView(View):
         from patientapp.services.education_explainer_service import answer_vaccine_education_query
         result = answer_vaccine_education_query(query)
         return JsonResponse(result)
+
+
+def ai_assistant_chat(request):
+    """
+    POST /ai-assistant/chat/
+    Endpoint for the KiddoVax AI Vaccination Assistant.
+    Processes natural language vaccine queries, schedule recommendations, and appointment bookings.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required.'}, status=405)
+
+    import json
+    message = ''
+    context = {}
+
+    if request.content_type == 'application/json':
+        try:
+            body = json.loads(request.body)
+            message = body.get('message', '').strip()
+            context = body.get('context', {})
+        except Exception:
+            return JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+    else:
+        message = request.POST.get('message', '').strip()
+        context_str = request.POST.get('context', '{}')
+        try:
+            context = json.loads(context_str) if isinstance(context_str, str) else (context_str or {})
+        except Exception:
+            context = {}
+
+    # Read and synchronize context from session
+    session_ctx = request.session.get('ai_assistant_context', {})
+    if not context:
+        context = session_ctx
+    else:
+        session_ctx.update(context)
+        context = session_ctx
+
+    patient_id = request.session.get('Cid')
+    from patientapp.services.ai_assistant_service import process_ai_message
+    response_data = process_ai_message(patient_id=patient_id, message=message, context=context)
+
+    # Persist updated context in session
+    request.session['ai_assistant_context'] = response_data.get('context', {})
+
+    return JsonResponse(response_data)
+

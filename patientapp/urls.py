@@ -37,5 +37,7 @@ urlpatterns = [
     path('get-slots/', views.get_available_slots, name='get_available_slots'),
     path('get-hospitals-for-date/', views.get_hospitals_for_date, name='get_hospitals_for_date'),
     path('update-location/', views.update_location, name='update_location'),
+    path('ai-assistant/chat/', views.ai_assistant_chat, name='ai_assistant_chat'),
 ]
+
 
