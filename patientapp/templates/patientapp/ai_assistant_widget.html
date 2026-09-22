@@ -197,7 +197,7 @@
         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Hospital</p>
         <div class="flex flex-col gap-1">
           ${actionData.hospitals.map(h => `
-            <button onclick="window.sendAIMessage('${h.title}')" class="text-left px-3 py-2 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-primary/40 rounded-xl transition-all">
+            <button onclick="window.sendAIMessage('${(h.title || '').replace(/'/g, "\\'")}')" class="text-left px-3 py-2 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-primary/40 rounded-xl transition-all">
               <div class="font-bold text-slate-800 text-xs">${h.title}</div>
               <div class="text-[10px] text-slate-400 truncate">${h.address || ''}</div>
             </button>
@@ -209,7 +209,7 @@
         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Vaccines</p>
         <div class="flex flex-wrap gap-1.5">
           ${actionData.vaccines.map(v => `
-            <button onclick="window.sendAIMessage('${v.name}')" class="px-2.5 py-1.5 bg-white hover:bg-primary hover:text-white border border-slate-200 rounded-xl font-semibold text-slate-700 text-[11px] transition-all shadow-2xs">
+            <button onclick="window.sendAIMessage('${(v.name || '').replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 bg-white hover:bg-primary hover:text-white border border-slate-200 rounded-xl font-semibold text-slate-700 text-[11px] transition-all shadow-2xs">
               💉 ${v.name}
             </button>
           `).join('')}

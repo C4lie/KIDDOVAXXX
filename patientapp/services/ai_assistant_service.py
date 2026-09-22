@@ -312,28 +312,86 @@ def extract_matched_vaccine_key(text: str) -> str | None:
 
 
 def extract_matched_hospital(text: str, hospital_qs) -> Hospitaltbl | None:
-    """Matches text against existing hospitals in the database."""
-    text_clean = text.lower().strip()
+    """
+    Precisely matches user text against existing hospitals in the database.
+    Prioritizes:
+    1. Direct numeric ID match
+    2. Exact title match (case-insensitive & whitespace trimmed)
+    3. Normalized punctuation-stripped title match
+    4. Exact Substring match (ranked by highest length/overlap similarity)
+    5. Highest distinctive token overlap (generic facility words excluded)
+    """
+    if not text:
+        return None
+
+    text_clean = text.strip().lower()
     
-    # Try exact match or ID match first
+    # Generic facility and stop words that should NOT trigger false positive matches
+    GENERIC_STOP_WORDS = {
+        'hospital', 'hospitals', 'clinic', 'clinics', 'center', 'centers', 'centre', 'centres',
+        'uphc', 'phc', 'chc', 'urban', 'primary', 'health', 'community', 'care', 'medical',
+        'the', 'at', 'in', 'and', 'of', 'for', 'dr', 'doctor', 'trust', 'general', 'city',
+        'sub', 'dispensary', 'maternity', 'nursing', 'home', 'shree', 'sri', 'govt', 'government'
+    }
+
+    # Pass 1: Numeric ID match
     if text_clean.isdigit():
         h = hospital_qs.filter(id=int(text_clean)).first()
         if h:
             return h
 
-    for h in hospital_qs:
-        title_lower = h.title.lower()
-        if title_lower == text_clean or title_lower in text_clean or text_clean in title_lower:
+    hospitals = list(hospital_qs)
+    if not hospitals:
+        return None
+
+    # Pass 2: Exact title match (case-insensitive)
+    for h in hospitals:
+        if h.title.strip().lower() == text_clean:
             return h
-        
-        # Word overlap
-        title_words = set(title_lower.split())
-        text_words = set(text_clean.split())
-        common = title_words.intersection(text_words)
-        # Exclude common stop words
-        common_meaningful = [w for w in common if w not in {'hospital', 'clinic', 'center', 'the', 'at', 'in', 'and'}]
-        if common_meaningful:
+
+    # Pass 3: Normalized title match (remove special characters/punctuation)
+    norm_text = re.sub(r'[^a-z0-9\s]', '', text_clean).strip()
+    for h in hospitals:
+        norm_title = re.sub(r'[^a-z0-9\s]', '', h.title.lower()).strip()
+        if norm_title == norm_text:
             return h
+
+    # Pass 4: Substring match with candidate ranking
+    substring_candidates = []
+    for h in hospitals:
+        norm_title = re.sub(r'[^a-z0-9\s]', '', h.title.lower()).strip()
+        if norm_text and (norm_text in norm_title or norm_title in norm_text):
+            overlap_score = min(len(norm_text), len(norm_title)) / max(len(norm_text), len(norm_title))
+            substring_candidates.append((overlap_score, h))
+
+    if substring_candidates:
+        substring_candidates.sort(key=lambda x: x[0], reverse=True)
+        return substring_candidates[0][1]
+
+    # Pass 5: Distinctive token match & scoring
+    user_tokens = set(re.findall(r'\b[a-z0-9]+\b', norm_text))
+    user_distinctive = {w for w in user_tokens if w not in GENERIC_STOP_WORDS and len(w) > 2}
+
+    if user_distinctive:
+        best_hospital = None
+        best_score = 0
+
+        for h in hospitals:
+            h_tokens = set(re.findall(r'\b[a-z0-9]+\b', h.title.lower()))
+            h_distinctive = {w for w in h_tokens if w not in GENERIC_STOP_WORDS and len(w) > 2}
+
+            matched_distinctive = user_distinctive.intersection(h_distinctive)
+            if matched_distinctive:
+                coverage = len(matched_distinctive) / len(user_distinctive)
+                jaccard = len(matched_distinctive) / len(user_distinctive.union(h_distinctive))
+                score = (len(matched_distinctive) * 10) + (coverage * 5) + jaccard
+
+                if score > best_score:
+                    best_score = score
+                    best_hospital = h
+
+        if best_hospital and best_score >= 10:
+            return best_hospital
 
     return None
 
@@ -981,18 +1039,33 @@ def handle_conversational_booking(message: str, intent: str, patient: Patienttbl
             avail_vaccines = Vaccinetbl.objects.all().order_by('vaccineName')
 
         if intent == 'select_vaccine' or current_step == 'AWAITING_VACCINE' or booking_ctx.get('vaccine_key'):
-            v_key = booking_ctx.get('vaccine_key') or extract_matched_vaccine_key(message)
             matched_v = None
-            if v_key:
-                matched_v = avail_vaccines.filter(vaccineName__icontains=v_key).first()
+            clean_msg = message.strip().lower()
+
+            # 1. Exact name match (case-insensitive)
+            matched_v = avail_vaccines.filter(vaccineName__iexact=message.strip()).first()
+
+            # 2. Numeric ID match
             if not matched_v and message.isdigit():
                 matched_v = avail_vaccines.filter(id=int(message)).first()
+
+            # 3. Exact Substring match (ranked by closest length ratio)
             if not matched_v:
-                # Substring match on vaccine name
+                v_candidates = []
                 for v in avail_vaccines:
-                    if v.vaccineName.lower() in message.lower() or message.lower() in v.vaccineName.lower():
-                        matched_v = v
-                        break
+                    v_name_clean = v.vaccineName.strip().lower()
+                    if clean_msg in v_name_clean or v_name_clean in clean_msg:
+                        ratio = min(len(clean_msg), len(v_name_clean)) / max(len(clean_msg), len(v_name_clean))
+                        v_candidates.append((ratio, v))
+                if v_candidates:
+                    v_candidates.sort(key=lambda x: x[0], reverse=True)
+                    matched_v = v_candidates[0][1]
+
+            # 4. Alias key match (if not already matched)
+            if not matched_v:
+                v_key = booking_ctx.get('vaccine_key') or extract_matched_vaccine_key(message)
+                if v_key:
+                    matched_v = avail_vaccines.filter(vaccineName__icontains=v_key).first()
 
             if matched_v:
                 booking_ctx['vaccine_id'] = matched_v.id
