@@ -330,29 +330,21 @@ class AIAssistantTests(TestCase):
     # TEST 12: Precise Hospital Selection with Similar Names (e.g. UPHC facilities)
     # -----------------------------------------------------------------------
     def test_12_precise_hospital_selection_with_common_names(self):
-        # Create multiple hospitals sharing common terms like "UPHC"
-        hosp_navayard = Hospitaltbl.objects.create(
-            title="Navayard UPHC",
-            address="Navayard, Vadodara",
+        # Create multiple hospitals sharing common generic terms
+        hosp_alkapuri = Hospitaltbl.objects.create(
+            title="Alkapuri UPHC Clinic",
+            address="Alkapuri, Vadodara",
             cityId=self.city,
             areaId=self.area,
             contactNo=9111111111,
             password="pass"
         )
-        hosp_harni = Hospitaltbl.objects.create(
-            title="Harni UPHC",
-            address="Harni Road, Vadodara",
+        hosp_tarsali = Hospitaltbl.objects.create(
+            title="Tarsali UPHC Clinic",
+            address="Tarsali, Vadodara",
             cityId=self.city,
             areaId=self.area,
             contactNo=9222222222,
-            password="pass"
-        )
-        hosp_chhani = Hospitaltbl.objects.create(
-            title="Chhani UPHC",
-            address="Chhani Octroi, Vadodara",
-            cityId=self.city,
-            areaId=self.area,
-            contactNo=9333333333,
             password="pass"
         )
 
@@ -364,24 +356,24 @@ class AIAssistantTests(TestCase):
             }
         }
 
-        # Select "Harni UPHC"
-        res = process_ai_message(patient_id=self.patient.id, message="Harni UPHC", context=context)
-        self.assertEqual(res['context']['booking_ctx']['hospital_id'], hosp_harni.id)
-        self.assertEqual(res['context']['booking_ctx']['hospital_name'], "Harni UPHC")
-        self.assertIn("Harni UPHC", res['text'])
-        self.assertNotIn("Navayard UPHC", res['text'])
+        # Select "Tarsali UPHC Clinic"
+        res = process_ai_message(patient_id=self.patient.id, message="Tarsali UPHC Clinic", context=context)
+        self.assertEqual(res['context']['booking_ctx']['hospital_id'], hosp_tarsali.id)
+        self.assertEqual(res['context']['booking_ctx']['hospital_name'], "Tarsali UPHC Clinic")
+        self.assertIn("Tarsali UPHC Clinic", res['text'])
+        self.assertNotIn("Alkapuri UPHC Clinic", res['text'])
 
-        # Select "Navayard UPHC"
-        context_nav = {
+        # Select "Alkapuri UPHC Clinic"
+        context_alk = {
             'booking_step': 'AWAITING_HOSPITAL',
             'booking_ctx': {
                 'child_id': self.child.id,
                 'child_name': self.child.childname
             }
         }
-        res_nav = process_ai_message(patient_id=self.patient.id, message="Navayard UPHC", context=context_nav)
-        self.assertEqual(res_nav['context']['booking_ctx']['hospital_id'], hosp_navayard.id)
-        self.assertEqual(res_nav['context']['booking_ctx']['hospital_name'], "Navayard UPHC")
-        self.assertIn("Navayard UPHC", res_nav['text'])
-        self.assertNotIn("Harni UPHC", res_nav['text'])
+        res_alk = process_ai_message(patient_id=self.patient.id, message="Alkapuri UPHC Clinic", context=context_alk)
+        self.assertEqual(res_alk['context']['booking_ctx']['hospital_id'], hosp_alkapuri.id)
+        self.assertEqual(res_alk['context']['booking_ctx']['hospital_name'], "Alkapuri UPHC Clinic")
+        self.assertIn("Alkapuri UPHC Clinic", res_alk['text'])
+        self.assertNotIn("Tarsali UPHC Clinic", res_alk['text'])
 
