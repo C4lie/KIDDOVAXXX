@@ -2,13 +2,13 @@
 <div id="kiddovax-ai-assistant" class="fixed bottom-6 right-6 z-50 font-body">
 
   <!-- Floating Launcher Button -->
-  <button id="ai-assistant-toggle" type="button" aria-label="Open KiddoVax AI Assistant"
+  <button id="ai-assistant-toggle" type="button" aria-label="Open VaxBot AI Assistant"
           class="relative flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-primary to-modern-cyan text-white rounded-full shadow-2xl hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 group border-2 border-white/20">
     <div class="relative w-7 h-7 flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm">
       <span class="material-symbols-outlined text-[20px] animate-pulse">smart_toy</span>
       <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-primary"></span>
     </div>
-    <span class="font-headline font-bold text-sm tracking-tight hidden sm:inline">KiddoVax AI</span>
+    <span class="font-headline font-bold text-sm tracking-tight hidden sm:inline">VaxBot</span>
   </button>
 
   <!-- Chat Dialog Window -->
@@ -22,10 +22,10 @@
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <h3 class="font-headline font-black text-sm tracking-tight text-white">KiddoVax AI Assistant</h3>
+            <h3 class="font-headline font-black text-sm tracking-tight text-white">VaxBot</h3>
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
           </div>
-          <p class="text-[11px] text-teal-100/90 font-medium">Vaccination & Booking Guide</p>
+          <p class="text-[11px] text-teal-100/90 font-medium">by KiddoVax • Pediatric Guide</p>
         </div>
       </div>
       <div class="flex items-center gap-1">
@@ -43,14 +43,14 @@
       <button onclick="window.sendAIMessage('What is MMR vaccine?')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
         💉 Vaccine Info
       </button>
+      <button onclick="window.sendAIMessage('Find hospitals near me')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
+        📍 Find Hospitals
+      </button>
       <button onclick="window.sendAIMessage('What vaccines are upcoming for my child?')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
         📋 Upcoming Due
       </button>
       <button onclick="window.sendAIMessage('Book a vaccination appointment')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
         📅 Book Appointment
-      </button>
-      <button onclick="window.sendAIMessage('Check my appointments')" class="whitespace-nowrap text-[11px] font-semibold text-slate-600 bg-white hover:bg-teal-50 hover:text-primary hover:border-primary/40 px-2.5 py-1 rounded-full border border-slate-200 transition-all shadow-2xs">
-        🔖 My Bookings
       </button>
     </div>
 
@@ -62,11 +62,11 @@
           <span class="material-symbols-outlined text-[16px]">smart_toy</span>
         </div>
         <div class="max-w-[85%] bg-white border border-slate-200/80 rounded-2xl rounded-tl-sm p-3.5 shadow-2xs text-slate-700">
-          <p class="font-bold text-slate-900 mb-1">👋 Welcome to KiddoVax AI Assistant!</p>
-          <p>I can help you understand vaccines, recommend age-appropriate immunization schedules, and book vaccination appointments step-by-step.</p>
+          <p class="font-bold text-slate-900 mb-1">👋 Welcome to VaxBot by KiddoVax!</p>
+          <p>I can help you understand vaccines, locate nearby vaccination centers, check due schedules, and book appointments step-by-step.</p>
           <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap gap-1.5">
             <button onclick="window.sendAIMessage('What is BCG?')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all">What is BCG?</button>
-            <button onclick="window.sendAIMessage('What vaccine is due for my child?')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all">Due Vaccines</button>
+            <button onclick="window.sendAIMessage('Find nearest hospitals')" class="text-[11px] bg-slate-100 hover:bg-teal-50 hover:text-primary text-slate-700 font-medium px-2.5 py-1 rounded-lg transition-all">Find Hospitals</button>
             <button onclick="window.sendAIMessage('Book a vaccination appointment')" class="text-[11px] bg-primary text-white font-medium px-2.5 py-1 rounded-lg hover:bg-primary-hover transition-all">Book Appointment</button>
           </div>
         </div>
@@ -80,7 +80,7 @@
         <div class="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
         <div class="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
       </div>
-      <span class="text-[11px] font-medium text-slate-400">KiddoVax Assistant is typing...</span>
+      <span class="text-[11px] font-medium text-slate-400">VaxBot is typing...</span>
     </div>
 
     <!-- Chat Input Area -->
@@ -245,6 +245,17 @@
         <button onclick="window.sendAIMessage('Cancel')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-xl text-xs transition-all">
           Cancel
         </button>
+      </div>`;
+    } else if (actionType === 'SHOW_AUTH_REDIRECT') {
+      const loginUrl = actionData.login_url || '/patient/login/';
+      const registerUrl = actionData.register_url || '/patient/register/';
+      actionHTML = `<div class="mt-3.5 pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
+        <a href="${loginUrl}" class="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3.5 bg-primary hover:bg-primary-hover active:scale-95 text-white font-headline font-bold rounded-xl text-xs shadow-md transition-all text-center">
+          <span class="material-symbols-outlined text-[16px]">login</span> Log In
+        </a>
+        <a href="${registerUrl}" class="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3.5 bg-slate-100 hover:bg-teal-50 hover:text-primary active:scale-95 text-slate-800 font-headline font-bold rounded-xl text-xs border border-slate-200 transition-all text-center">
+          <span class="material-symbols-outlined text-[16px]">person_add</span> Register
+        </a>
       </div>`;
     } else if (actionType === 'SHOW_QUICK_ACTIONS' && actionData.quick_replies) {
       actionHTML = `<div class="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">

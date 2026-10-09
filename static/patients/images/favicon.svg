@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="kiddovax-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#006565" />
+      <stop offset="100%" stop-color="#004F4F" />
+    </linearGradient>
+  </defs>
+  <!-- Background Badge -->
+  <rect width="64" height="64" rx="14" fill="url(#kiddovax-bg)" />
+  
+  <!-- Diagonal Cross Nodes -->
+  <line x1="18" y1="18" x2="46" y2="46" stroke="#EF4444" stroke-width="4" stroke-linecap="round"/>
+  <line x1="46" y1="18" x2="18" y2="46" stroke="#EF4444" stroke-width="4" stroke-linecap="round"/>
+  
+  <circle cx="18" cy="18" r="3.5" fill="#EF4444" />
+  <circle cx="46" cy="18" r="3.5" fill="#EF4444" />
+  <circle cx="18" cy="46" r="3.5" fill="#EF4444" />
+  <circle cx="46" cy="46" r="3.5" fill="#EF4444" />
+  
+  <!-- Center Red Ring -->
+  <circle cx="32" cy="32" r="13" fill="#006565" stroke="#EF4444" stroke-width="3.5"/>
+  
+  <!-- Crisp Center Keyhole -->
+  <circle cx="32" cy="29" r="3.8" fill="#FFFFFF"/>
+  <polygon points="30,31 34,31 35.5,37 28.5,37" fill="#FFFFFF"/>
+</svg>

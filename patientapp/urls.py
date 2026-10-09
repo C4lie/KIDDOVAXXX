@@ -6,6 +6,8 @@ urlpatterns = [
     path('', views.Home, name='homepage'),
     path('about/', views.About, name='aboutpage'),
     path('contact/', views.Contact, name='contactpage'),
+    path('privacy/', views.Privacy, name='privacy'),
+    path('terms/', views.Terms, name='terms'),
     path('login/', views.PatientLogin.as_view(), name='loginpage'),
     path('register/', views.PatientRegistration.as_view(), name='registerpage'),
     path('logout/',views.PatientLogout.as_view(), name='patientlogout'),
@@ -38,6 +40,7 @@ urlpatterns = [
     path('get-hospitals-for-date/', views.get_hospitals_for_date, name='get_hospitals_for_date'),
     path('update-location/', views.update_location, name='update_location'),
     path('ai-assistant/chat/', views.ai_assistant_chat, name='ai_assistant_chat'),
+    path('api/nearest-hospitals-by-pincode/', views.nearest_hospitals_by_pincode_api, name='api_nearest_hospitals_by_pincode'),
 ]
 
 

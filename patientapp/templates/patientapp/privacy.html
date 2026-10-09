@@ -1,0 +1,78 @@
+{% extends 'patientapp/base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-8 md:p-12 space-y-8">
+        
+        <!-- Header -->
+        <div class="border-b border-slate-100 pb-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-primary rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                <span class="material-symbols-outlined text-[15px]">security</span>
+                Data Protection & Medical Privacy
+            </div>
+            <h1 class="font-headline font-black text-3xl md:text-4xl text-slate-900 tracking-tight">Privacy Policy</h1>
+            <p class="text-sm text-slate-500 mt-2">Last Updated: October 2026 • KiddoVax Clinical Health Platform</p>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="space-y-3">
+            <h2 class="font-headline font-bold text-xl text-slate-800">1. Information We Collect</h2>
+            <p class="text-slate-600 leading-relaxed text-sm">
+                KiddoVax collects essential clinical and personal information necessary to manage pediatric immunization schedules, clinic appointment reservations, and automated reminder alerts:
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 text-sm pl-2">
+                <li><strong class="text-slate-800">Parent / Guardian Information:</strong> Full name, verified mobile contact number, residential locality, and authentication credentials.</li>
+                <li><strong class="text-slate-800">Child Immunization Profile:</strong> Child name, date of birth, blood group, gender, and historic vaccination records.</li>
+                <li><strong class="text-slate-800">Clinical Transaction Data:</strong> Appointment bookings, hospital verifications, RFID attendance logs, and authorized medical practitioner notes.</li>
+            </ul>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="space-y-3">
+            <h2 class="font-headline font-bold text-xl text-slate-800">2. How We Use Your Data</h2>
+            <p class="text-slate-600 leading-relaxed text-sm">
+                Your medical and personal information is strictly utilized for the following healthcare purposes:
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 text-sm pl-2">
+                <li>Calculating age-appropriate Universal Immunization Programme (UIP) milestone schedules.</li>
+                <li>Dispatching critical SMS and dashboard alerts for upcoming or delayed vaccination doses.</li>
+                <li>Enabling authorized hospital staff and pediatricians to record administered vaccine batches securely.</li>
+                <li>Generating digital vaccination passports and printable immunization records for school admissions.</li>
+            </ul>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="space-y-3">
+            <h2 class="font-headline font-bold text-xl text-slate-800">3. Data Security & Confidentiality</h2>
+            <p class="text-slate-600 leading-relaxed text-sm">
+                We implement industry-standard cryptographic protocols to protect electronic health records (EHR). Passwords are encrypted using cryptographic hashing algorithms, and all communication between your browser and our servers is secured with TLS/SSL encryption. We do not sell, rent, or trade patient health information to third-party advertisers.
+            </p>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="space-y-3">
+            <h2 class="font-headline font-bold text-xl text-slate-800">4. Parental Rights & Data Access</h2>
+            <p class="text-slate-600 leading-relaxed text-sm">
+                Parents and legal guardians have the right to access, review, correct, or request the export of their child's digital vaccination history at any time through the KiddoVax portal.
+            </p>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="space-y-3">
+            <h2 class="font-headline font-bold text-xl text-slate-800">5. Contact Healthcare Privacy Officer</h2>
+            <p class="text-slate-600 leading-relaxed text-sm">
+                If you have questions regarding this Privacy Policy or your healthcare data rights, please contact our clinical compliance desk:
+            </p>
+            <div class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs space-y-1.5 text-slate-700">
+                <p><strong>Email:</strong> <a href="mailto:kiddovaxhelp@gmail.com" class="text-primary hover:underline">kiddovaxhelp@gmail.com</a></p>
+                <p><strong>Phone:</strong> +91 9825237398</p>
+                <p><strong>Location:</strong> Baroda, Gujarat, India</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

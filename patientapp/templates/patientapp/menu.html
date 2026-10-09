@@ -34,27 +34,69 @@
         <a href="{% url 'patient:loginpage' %}" class="bg-gradient-to-r from-primary to-modern-cyan text-white px-6 py-2.5 rounded-full font-headline font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:-translate-y-0.5 transition-all duration-300 decoration-transparent">{{ T.login|default:"Login" }}</a>
       {% else %}
         <!-- Notification Bell -->
-        <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4 mr-1">
-          <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
-            <span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">notifications</span>
-            <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center hidden border-2 border-white transform translate-x-1 -translate-y-1">0</span>
+        <div id="notif-wrapper" class="relative dropdown inline-block pt-4 pb-4 mr-1">
+          <button id="notif-btn" aria-label="Notifications" type="button" class="relative w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center hover:shadow-md hover:border-modern-cyan/60 hover:bg-cyan-50/50 transition-all duration-300">
+            <span class="material-symbols-outlined text-gray-700 group-hover:text-primary transition-colors">notifications</span>
+            <span id="notif-badge" class="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center hidden border-2 border-white shadow-md transform translate-x-1 -translate-y-1 animate-pulse">0</span>
           </button>
           
-          <!-- Notification Dropdown Menu -->
-          <div class="dropdown-menu absolute right-0 top-full mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 p-0 z-50 overflow-hidden transition-all duration-200 transform opacity-0 scale-95 translate-y-[-10px] pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
-            <div class="p-4 border-b border-gray-100/80 flex items-center justify-between bg-teal-50/30">
-              <h4 class="font-headline font-bold text-gray-800 text-sm">Notifications</h4>
-              <button id="mark-read-btn" class="text-[10px] font-bold text-modern-cyan hover:text-primary uppercase tracking-widest hidden">Mark Read</button>
+          <!-- Notification Dropdown Menu (100% Opaque Solid White + Persistent Pinning) -->
+          <div id="notif-dropdown-menu" class="dropdown-menu notif-dropdown-box absolute right-0 top-full mt-2 w-[350px] sm:w-[440px] bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-200 p-0 z-[100] overflow-hidden transition-all duration-200 transform opacity-0 scale-95 translate-y-[-10px] pointer-events-none before:content-[''] before:absolute before:-top-3 before:left-0 before:w-full before:h-3">
+            
+            <!-- Header -->
+            <div class="p-3.5 px-4 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-teal-100/80 text-primary flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined text-[17px] font-bold">notifications_active</span>
+                </div>
+                <h4 class="font-headline font-extrabold text-slate-800 text-sm tracking-tight">Notifications</h4>
+                <span id="notif-header-count" class="hidden text-[10px] font-black bg-teal-600 text-white px-2 py-0.5 rounded-full shadow-xs">0 new</span>
+              </div>
+              <button id="mark-read-btn" type="button" class="text-[11px] font-bold text-teal-600 hover:text-teal-800 hover:bg-teal-50 px-2 py-1 rounded-lg transition-colors flex items-center gap-1 uppercase tracking-wider hidden" title="Mark all as read">
+                <span class="material-symbols-outlined text-[15px]">done_all</span> Mark Read
+              </button>
             </div>
-            <div id="notif-list" class="max-h-[300px] overflow-y-auto">
-              <div class="p-6 text-center text-gray-400 font-medium text-xs">Loading alerts...</div>
+
+            <!-- Category Filter Tabs -->
+            <div class="flex items-center gap-1.5 p-2 px-3 bg-slate-100/80 border-b border-slate-200/70 overflow-x-auto no-scrollbar text-[11px] font-bold">
+              <button data-tab="all" type="button" class="notif-tab-btn px-2.5 py-1 rounded-lg bg-teal-600 text-white shadow-xs flex items-center gap-1.5 transition-all">
+                <span>All</span> <span id="tab-cnt-all" class="text-[9px] bg-white/20 text-white font-extrabold px-1.5 py-0.2 rounded-full">0</span>
+              </button>
+              <button data-tab="upcoming" type="button" class="notif-tab-btn px-2.5 py-1 rounded-lg bg-white text-slate-600 hover:text-teal-700 border border-slate-200/60 flex items-center gap-1.5 transition-all">
+                <span>Upcoming</span> <span id="tab-cnt-upcoming" class="text-[9px] bg-cyan-100 text-cyan-800 font-extrabold px-1.5 py-0.2 rounded-full">0</span>
+              </button>
+              <button data-tab="delayed" type="button" class="notif-tab-btn px-2.5 py-1 rounded-lg bg-white text-slate-600 hover:text-red-700 border border-slate-200/60 flex items-center gap-1.5 transition-all">
+                <span>Delayed</span> <span id="tab-cnt-delayed" class="text-[9px] bg-red-100 text-red-800 font-extrabold px-1.5 py-0.2 rounded-full">0</span>
+              </button>
+              <button data-tab="completed" type="button" class="notif-tab-btn px-2.5 py-1 rounded-lg bg-white text-slate-600 hover:text-emerald-700 border border-slate-200/60 flex items-center gap-1.5 transition-all">
+                <span>Completed</span> <span id="tab-cnt-completed" class="text-[9px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.2 rounded-full">0</span>
+              </button>
+            </div>
+
+            <!-- Notifications List -->
+            <div id="notif-list" class="max-h-[360px] overflow-y-auto divide-y divide-slate-100 bg-white custom-notif-scrollbar">
+              <div class="p-8 text-center text-slate-400 font-medium text-xs flex flex-col items-center gap-2 bg-white">
+                <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <span>Checking latest appointments & updates...</span>
+              </div>
+            </div>
+
+            <!-- Footer Quick Links -->
+            <div class="p-3 px-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between text-xs">
+              <a href="{% url 'patient:vaccinebooking' %}" class="text-primary hover:text-cyan-700 font-bold flex items-center gap-1 transition-colors decoration-transparent">
+                <span>Manage Appointments</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+              <a href="{% url 'patient:journey' %}" class="text-slate-500 hover:text-primary font-semibold flex items-center gap-1 transition-colors decoration-transparent">
+                <span>View Journey</span>
+              </a>
             </div>
           </div>
         </div>
 
         <!-- User Dropdown -->
         <div class="relative dropdown group cursor-pointer inline-block pt-4 pb-4">
-          <button class="flex items-center gap-2.5 p-1.5 pr-4 rounded-full bg-white/80 backdrop-blur shadow-sm border border-gray-100 hover:shadow-md hover:border-modern-cyan/30 transition-all duration-300">
+          <button class="flex items-center gap-2.5 p-1.5 pr-4 rounded-full bg-white shadow-sm border border-gray-200 hover:shadow-md hover:border-modern-cyan/40 transition-all duration-300">
             <div class="w-8 h-8 bg-gradient-to-br from-primary to-modern-cyan text-white rounded-full flex items-center justify-center font-bold text-sm shadow-inner">
               <span class="material-symbols-outlined text-[18px]">person</span>
             </div>
@@ -62,7 +104,7 @@
             <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
           </button>
           <!-- Dropdown Menu -->
-          <div class="dropdown-menu absolute right-0 top-full mt-2 w-60 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/50 p-2.5 z-50 transition-all duration-200 transform opacity-0 scale-95 translate-y-[-10px] pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
+          <div class="dropdown-menu absolute right-0 top-full mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2.5 z-50 transition-all duration-200 transform opacity-0 scale-95 translate-y-[-10px] pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
             <a href="{% url 'patient:journey' %}" class="flex items-center gap-3.5 px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-teal-50 hover:text-primary rounded-xl transition-colors decoration-transparent group/item">
               <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><span class="material-symbols-outlined text-primary text-sm">route</span></div> Vaccination Journey
             </a>
@@ -94,6 +136,36 @@
     </div>
   </div>
 </header>
+
+<style>
+  .notif-dropdown-box {
+    background-color: #ffffff !important;
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  }
+  .notif-dropdown-box.is-open {
+    opacity: 1 !important;
+    transform: scale(1) translateY(0) !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+  }
+  .custom-notif-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-notif-scrollbar::-webkit-scrollbar-track {
+    background: #f8fafc;
+  }
+  .custom-notif-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+  .custom-notif-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+</style>
 
 <!-- Mobile Slide Drawer -->
 <div id="mobile-drawer" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
@@ -130,9 +202,9 @@
       const menuBtn = document.getElementById('mobile-menu-btn');
       const closeBtn = document.getElementById('close-drawer-btn');
       const drawer = document.getElementById('mobile-drawer');
-      const innerDrawer = drawer.querySelector('.transform');
+      const innerDrawer = drawer ? drawer.querySelector('.transform') : null;
       
-      if (menuBtn && closeBtn && drawer) {
+      if (menuBtn && closeBtn && drawer && innerDrawer) {
           menuBtn.addEventListener('click', () => {
               drawer.classList.remove('hidden');
               drawer.classList.add('flex');
@@ -161,4 +233,386 @@
           });
       }
   });
+
+  // Global Universal KiddoVax AI Notification Engine
+  (function() {
+      let cachedNotifications = [];
+      let activeFilter = 'all';
+
+      function renderNotifications(items, filter) {
+          const listContainer = document.getElementById('notif-list');
+          if (!listContainer) return;
+
+          let filtered = items || [];
+          if (filter === 'upcoming') {
+              filtered = filtered.filter(n => n.category === 'upcoming' || n.category === 'imminent');
+          } else if (filter === 'delayed') {
+              filtered = filtered.filter(n => n.category === 'delayed');
+          } else if (filter === 'completed') {
+              filtered = filtered.filter(n => n.category === 'completed');
+          }
+
+          if (filtered.length === 0) {
+              let emptyMsg = "You're all caught up!";
+              let emptyIcon = "notifications_paused";
+              if (filter === 'upcoming') {
+                  emptyMsg = "No upcoming appointments scheduled.";
+                  emptyIcon = "event_busy";
+              } else if (filter === 'delayed') {
+                  emptyMsg = "No delayed or overdue vaccinations! 🎉";
+                  emptyIcon = "verified";
+              } else if (filter === 'completed') {
+                  emptyMsg = "No completed appointments yet.";
+                  emptyIcon = "history_edu";
+              }
+
+              listContainer.innerHTML = `
+                  <div class="p-8 text-center flex flex-col items-center justify-center gap-2 bg-white">
+                      <span class="material-symbols-outlined text-slate-300 text-3xl">${emptyIcon}</span>
+                      <span class="text-slate-400 font-medium text-xs">${emptyMsg}</span>
+                  </div>
+              `;
+              return;
+          }
+
+          const badgeStyles = {
+              'amber': 'bg-amber-50 text-amber-800 border-amber-300',
+              'cyan': 'bg-cyan-50 text-cyan-800 border-cyan-300',
+              'blue': 'bg-blue-50 text-blue-800 border-blue-300',
+              'indigo': 'bg-indigo-50 text-indigo-800 border-indigo-300',
+              'red': 'bg-red-50 text-red-800 border-red-300',
+              'green': 'bg-emerald-50 text-emerald-800 border-emerald-300',
+              'teal': 'bg-teal-50 text-teal-800 border-teal-300',
+          };
+
+          const iconStyles = {
+              'upcoming': 'text-cyan-600 bg-cyan-100/70 border border-cyan-200',
+              'imminent': 'text-amber-700 bg-amber-100/70 border border-amber-200',
+              'delayed': 'text-red-700 bg-red-100/70 border border-red-200',
+              'completed': 'text-emerald-700 bg-emerald-100/70 border border-emerald-200',
+              'general': 'text-teal-700 bg-teal-100/70 border border-teal-200',
+          };
+
+          const borderAccentStyles = {
+              'upcoming': 'border-l-4 border-l-cyan-500',
+              'imminent': 'border-l-4 border-l-amber-500',
+              'delayed': 'border-l-4 border-l-red-500',
+              'completed': 'border-l-4 border-l-emerald-500',
+              'general': 'border-l-4 border-l-teal-500',
+          };
+
+          const buttonStyles = {
+              'delayed': 'bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200',
+              'upcoming': 'bg-cyan-50 text-cyan-800 hover:bg-cyan-700 hover:text-white border border-cyan-200',
+              'imminent': 'bg-amber-50 text-amber-800 hover:bg-amber-600 hover:text-white border border-amber-200',
+              'completed': 'bg-emerald-50 text-emerald-800 hover:bg-emerald-600 hover:text-white border border-emerald-200',
+              'general': 'bg-slate-100 text-slate-700 hover:bg-slate-700 hover:text-white border border-slate-200',
+          };
+
+          const html = filtered.map(n => {
+              const accentCls = borderAccentStyles[n.category] || borderAccentStyles['general'];
+              const bgClass = n.is_read ? 'bg-white' : 'bg-slate-50/80 ' + accentCls;
+              const dotClass = n.is_read ? '' : '<span class="w-2 h-2 rounded-full bg-teal-500 flex-shrink-0 mt-1 shadow-sm"></span>';
+              const badgeCls = badgeStyles[n.badge_color] || 'bg-slate-100 text-slate-800 border-slate-300';
+              const iconBoxCls = iconStyles[n.category] || iconStyles['general'];
+              const btnCls = buttonStyles[n.category] || buttonStyles['general'];
+
+              const timeInfo = n.time_str ? `<span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-slate-600 bg-white border border-slate-200/80 px-2 py-0.5 rounded-md shadow-2xs"><span class="material-symbols-outlined text-[13px] text-slate-400">schedule</span>${n.time_str}</span>` : '';
+              const dateInfo = n.date_str ? `<span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-slate-600 bg-white border border-slate-200/80 px-2 py-0.5 rounded-md shadow-2xs"><span class="material-symbols-outlined text-[13px] text-slate-400">calendar_month</span>${n.date_str}</span>` : '';
+              const hospitalInfo = n.hospital_name ? `<span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-slate-600 bg-white border border-slate-200/80 px-2 py-0.5 rounded-md shadow-2xs"><span class="material-symbols-outlined text-[13px] text-slate-400">local_hospital</span>${n.hospital_name}</span>` : '';
+
+              const aiInsightHtml = n.ai_insight ? `
+                  <div class="mt-2.5 p-2.5 bg-teal-50/70 border border-teal-200/70 rounded-xl flex items-start gap-2 shadow-2xs">
+                      <span class="material-symbols-outlined text-teal-700 text-[16px] flex-shrink-0 mt-0.5 font-bold">medical_information</span>
+                      <p class="text-[11px] text-teal-950 leading-relaxed font-semibold">${n.ai_insight}</p>
+                  </div>
+              ` : '';
+
+              const actionButton = n.action_url ? `
+                  <div class="mt-2.5 flex justify-end">
+                      <a href="${n.action_url}" class="${btnCls} px-3 py-1 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-all shadow-2xs decoration-transparent">
+                          <span>${n.action_label || 'View Details'}</span>
+                          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                      </a>
+                  </div>
+              ` : '';
+
+              return `
+                  <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3 bg-white ${bgClass}">
+                      <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBoxCls} shadow-xs mt-0.5">
+                          <span class="material-symbols-outlined text-[19px] font-bold">${n.icon || 'notifications'}</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                          <div class="flex items-center justify-between gap-1 mb-1">
+                              <span class="text-[9.5px] font-black uppercase px-2 py-0.5 rounded border ${badgeCls} tracking-wider shadow-2xs">
+                                  ${n.badge_label || 'UPDATE'}
+                              </span>
+                              ${dotClass}
+                          </div>
+                          <h5 class="text-[12.5px] font-extrabold text-slate-900 leading-snug">${n.title || n.message}</h5>
+                          <p class="text-[11.5px] text-slate-600 font-medium mt-1 leading-relaxed">${n.message}</p>
+                          
+                          <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                              ${dateInfo}
+                              ${timeInfo}
+                              ${hospitalInfo}
+                          </div>
+
+                          ${aiInsightHtml}
+                          ${actionButton}
+                      </div>
+                  </div>
+              `;
+          }).join('');
+
+          listContainer.innerHTML = html;
+      }
+
+      window.fetchKiddoVaxNotifications = function() {
+          const notifBtn = document.getElementById('notif-btn');
+          if (!notifBtn) return;
+
+          fetch("{% url 'patient:get_notifications' %}")
+              .then(response => response.json())
+              .then(res => {
+                  if (!res.success && res.notifications === undefined) return;
+                  
+                  const notifs = res.notifications || [];
+                  const unreadCount = res.unread_count || 0;
+                  const stats = res.stats || { upcoming: 0, delayed: 0, completed: 0, total: notifs.length };
+
+                  cachedNotifications = notifs;
+
+                  // Update badge
+                  const badge = document.getElementById('notif-badge');
+                  const markReadBtn = document.getElementById('mark-read-btn');
+                  const headerCount = document.getElementById('notif-header-count');
+
+                  if (badge) {
+                      if (unreadCount > 0) {
+                          badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                          badge.classList.remove('hidden');
+                      } else {
+                          badge.classList.add('hidden');
+                      }
+                  }
+
+                  if (headerCount) {
+                      if (unreadCount > 0) {
+                          headerCount.textContent = `${unreadCount} new`;
+                          headerCount.classList.remove('hidden');
+                      } else {
+                          headerCount.classList.add('hidden');
+                      }
+                  }
+
+                  if (markReadBtn) {
+                      if (unreadCount > 0) {
+                          markReadBtn.classList.remove('hidden');
+                      } else {
+                          markReadBtn.classList.add('hidden');
+                      }
+                  }
+
+                  // Update Tab counts
+                  const tabAll = document.getElementById('tab-cnt-all');
+                  const tabUpcoming = document.getElementById('tab-cnt-upcoming');
+                  const tabDelayed = document.getElementById('tab-cnt-delayed');
+                  const tabCompleted = document.getElementById('tab-cnt-completed');
+
+                  if (tabAll) tabAll.textContent = stats.total || notifs.length;
+                  if (tabUpcoming) tabUpcoming.textContent = stats.upcoming || 0;
+                  if (tabDelayed) tabDelayed.textContent = stats.delayed || 0;
+                  if (tabCompleted) tabCompleted.textContent = stats.completed || 0;
+
+                  renderNotifications(cachedNotifications, activeFilter);
+
+                  // Support modal alert on homepage if present
+                  const modalList = document.getElementById('modal-notif-list');
+                  const modal = document.getElementById('alert-modal');
+                  if (modalList && modal && unreadCount > 0 && !sessionStorage.getItem('kiddovax_modal_dismissed')) {
+                      const unread = notifs.filter(n => !n.is_read).slice(0, 2);
+                      if (unread.length > 0) {
+                          modalList.innerHTML = unread.map(n => `
+                              <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                  <div class="w-8 h-8 rounded-full bg-cyan-50 text-cyan-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <span class="material-symbols-outlined text-sm">${n.icon || 'notifications'}</span>
+                                  </div>
+                                  <div>
+                                      <p class="text-xs text-slate-800 leading-relaxed font-bold">${n.title || n.message}</p>
+                                      <p class="text-[11px] text-slate-600 mt-0.5">${n.message}</p>
+                                  </div>
+                              </div>
+                          `).join('');
+
+                          modal.classList.remove('hidden');
+                          modal.classList.add('flex');
+                          setTimeout(() => {
+                              modal.classList.remove('opacity-0');
+                              modal.classList.add('opacity-100');
+                              const innerModal = modal.querySelector('.transform');
+                              if (innerModal) {
+                                  innerModal.classList.remove('scale-95');
+                                  innerModal.classList.add('scale-100');
+                              }
+                          }, 50);
+                      }
+                  }
+              })
+              .catch(err => {
+                  console.warn("KiddoVax notifications fetch:", err);
+                  const listContainer = document.getElementById('notif-list');
+                  if (listContainer) {
+                      listContainer.innerHTML = '<div class="p-6 text-center text-gray-400 font-medium text-xs">Failed to load alerts. Retrying...</div>';
+                  }
+              });
+      };
+
+      // Set up Tab switching and action listeners
+      document.addEventListener('DOMContentLoaded', () => {
+          // Dropdown toggle & hover management with state persistence
+          const notifWrapper = document.getElementById('notif-wrapper');
+          const notifBtn = document.getElementById('notif-btn');
+          const notifMenu = document.getElementById('notif-dropdown-menu');
+
+          let isPinned = false;
+          let hoverTimer = null;
+
+          function openNotifMenu() {
+              if (hoverTimer) {
+                  clearTimeout(hoverTimer);
+                  hoverTimer = null;
+              }
+              if (notifMenu) {
+                  notifMenu.classList.add('is-open');
+              }
+          }
+
+          function closeNotifMenu(force = false) {
+              if (isPinned && !force) return;
+              if (hoverTimer) {
+                  clearTimeout(hoverTimer);
+              }
+              hoverTimer = setTimeout(() => {
+                  if (!isPinned || force) {
+                      if (notifMenu) notifMenu.classList.remove('is-open');
+                      isPinned = false;
+                  }
+              }, 350);
+          }
+
+          if (notifBtn && notifMenu && notifWrapper) {
+              // 1. Click button to toggle and pin/unpin
+              notifBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const currentlyOpen = notifMenu.classList.contains('is-open');
+                  if (currentlyOpen && isPinned) {
+                      // Close it
+                      isPinned = false;
+                      closeNotifMenu(true);
+                  } else {
+                      // Open and pin it so user can freely interact
+                      isPinned = true;
+                      openNotifMenu();
+                  }
+              });
+
+              // 2. Hover over button or wrapper to preview
+              notifWrapper.addEventListener('mouseenter', () => {
+                  openNotifMenu();
+              });
+
+              notifWrapper.addEventListener('mouseleave', () => {
+                  closeNotifMenu(false);
+              });
+
+              // 3. Prevent clicking inside the menu from closing it (pins it open)
+              notifMenu.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  isPinned = true;
+              });
+
+              // 4. Click anywhere outside closes it
+              document.addEventListener('click', (e) => {
+                  if (!notifWrapper.contains(e.target)) {
+                      isPinned = false;
+                      closeNotifMenu(true);
+                  }
+              });
+
+              // 5. ESC key closes it
+              document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape') {
+                      isPinned = false;
+                      closeNotifMenu(true);
+                  }
+              });
+          }
+
+          // Tab click handlers
+          document.querySelectorAll('.notif-tab-btn').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  isPinned = true; // keep pinned when switching tabs
+                  document.querySelectorAll('.notif-tab-btn').forEach(b => {
+                      b.classList.remove('bg-teal-600', 'text-white', 'shadow-xs');
+                      b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200/60');
+                      const pill = b.querySelector('span:last-child');
+                      if (pill) {
+                          pill.classList.remove('bg-white/20', 'text-white');
+                      }
+                  });
+                  btn.classList.add('bg-teal-600', 'text-white', 'shadow-xs');
+                  btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200/60');
+                  const activePill = btn.querySelector('span:last-child');
+                  if (activePill) {
+                      activePill.classList.add('bg-white/20', 'text-white');
+                  }
+
+                  activeFilter = btn.getAttribute('data-tab') || 'all';
+                  renderNotifications(cachedNotifications, activeFilter);
+              });
+          });
+
+          // Mark all read button
+          const markReadBtn = document.getElementById('mark-read-btn');
+          if (markReadBtn) {
+              markReadBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  isPinned = true;
+
+                  // Optimistic UI update: immediately clear unread state
+                  cachedNotifications.forEach(n => { n.is_read = true; });
+                  const badge = document.getElementById('notif-badge');
+                  const headerCount = document.getElementById('notif-header-count');
+                  if (badge) badge.classList.add('hidden');
+                  if (headerCount) headerCount.classList.add('hidden');
+                  markReadBtn.classList.add('hidden');
+                  renderNotifications(cachedNotifications, activeFilter);
+
+                  fetch("{% url 'patient:mark_notifications_read' %}", {
+                      method: 'POST',
+                      headers: {
+                          'X-CSRFToken': '{{ csrf_token }}',
+                          'Content-Type': 'application/json'
+                      }
+                  }).then(response => response.json())
+                    .then(() => {
+                        window.fetchKiddoVaxNotifications();
+                    }).catch(() => {
+                        window.fetchKiddoVaxNotifications();
+                    });
+              });
+          }
+
+          // Initial load
+          window.fetchKiddoVaxNotifications();
+
+          // Auto refresh every 45s
+          setInterval(window.fetchKiddoVaxNotifications, 45000);
+      });
+  })();
 </script>

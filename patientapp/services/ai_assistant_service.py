@@ -204,31 +204,39 @@ def detect_intent(message: str, context: dict) -> str:
     if re.search(r'\b(?:my\s+appointments?|check\s+(?:my\s+)?(?:booking|appointment)|appointment\s+status|upcoming\s+appointments?|view\s+appointments?)\b', msg):
         return 'appointment_status'
 
-    # 5. Explicit Confirmation / Cancellation outside state machine
+    # 5. Auth / Login / Register Intent
+    if re.search(r'\b(?:login|log\s+in|sign\s+in|register|sign\s+up|create\s+account|how\s+to\s+register|how\s+to\s+login)\b', msg):
+        return 'auth_redirect'
+
+    # 6. Pincode / Nearest Hospital Search
+    if re.search(r'\b(?:nearest\s+hospitals?|hospitals?\s+near\s+me|find\s+hospitals?|pincode|pin\s*code|\b39\d{4}\b)\b', msg):
+        return 'pincode_hospital_search'
+
+    # 7. Explicit Confirmation / Cancellation outside state machine
     if re.search(r'^(?:confirm|confirm\s+appointment|yes\s+confirm|proceed)$', msg):
         return 'confirm_booking'
     if re.search(r'^(?:cancel|cancel\s+booking|abort)$', msg):
         return 'cancel_booking'
 
-    # 6. Natural Language Booking Intent
+    # 8. Natural Language Booking Intent
     if re.search(r'\b(?:book\s+(?:an?\s+)?appointment|book\s+(?:a\s+)?vaccin|schedule\s+(?:an?\s+)?appointment|want\s+(?:an?\s+)?appointment|book\s+slot|make\s+an?\s+appointment)\b', msg) or \
        re.search(r'\bbook\s+(?:my|the)?\s*(?:child|baby|kid|upcoming|mmr|bcg|polio|opv|hepb|pcv|pentavalent|rotavirus|dpt|td|vaccine)', msg):
         return 'book_appointment'
 
-    # 7. Upcoming / Due Vaccines / Schedule Analysis
+    # 9. Upcoming / Due Vaccines / Schedule Analysis
     if re.search(r'\b(?:what\s+vaccines?\s+(?:is|are)\s+(?:due|upcoming)|upcoming\s+vaccines?|due\s+vaccines?|vaccines?\s+(?:is|are)\s+due|vaccines?\s+upcoming|next\s+vaccine|schedule\s+for\s+child|what\s+is\s+coming\s+next|immunization\s+schedule|vaccine\s+schedule)\b', msg) or \
        re.search(r'\b(?:\d+\s*(?:month|year|week|day)s?\s*old.*(?:vaccine|due|next)|vaccine.*(?:for\s*\d+\s*(?:month|year|week)))', msg):
         return 'upcoming_vaccine'
 
-    # 8. Vaccine Information / Education Intent
+    # 10. Vaccine Information / Education Intent
     if re.search(r'\b(?:what\s+is|tell\s+me\s+about|why\s+(?:is|do\s+we\s+give)|purpose\s+of|what\s+does.*prevent|what\s+type\s+of\s+vaccine|information\s+on|details\s+about|info\s+about|side\s+effects\s+of)\b', msg) or \
        any(v_key in msg for v_key in ['bcg', 'mmr', 'opv', 'ipv', 'polio', 'pentavalent', 'rotavirus', 'pcv', 'hepb', 'hepatitis', 'dpt', 'td', 'varicella', 'typhoid']):
         # If user explicitly asked "book MMR" that is caught in booking step, otherwise vaccine info
         if not re.search(r'\b(?:book|schedule)\b', msg):
             return 'vaccine_information'
 
-    # 9. Greetings & Help
-    if re.search(r'\b(?:hi|hello|hey|greetings|help|how\s+to\s+use|what\s+can\s+you\s+do|menu)\b', msg):
+    # 11. Greetings & Help
+    if re.search(r'\b(?:hi|hello|hey|greetings|help|how\s+to\s+use|what\s+can\s+you\s+do|menu|who\s+are\s+you|what\s+is\s+your\s+name)\b', msg):
         return 'general_help'
 
     # 10. Fallback: If currently in booking flow, treat message as selection input
@@ -522,6 +530,19 @@ def process_ai_message(patient_id: int | None, message: str, context: dict | Non
 
     intent = detect_intent(msg, context)
 
+    # 0. Auth redirect intent — user explicitly asked to login or register
+    if intent == 'auth_redirect':
+        return handle_auth_redirect(context, prompted=False)
+
+    # 0b. Booking or personal records require authenticated session
+    REQUIRES_LOGIN = {'book_appointment', 'appointment_status', 'select_child', 'select_hospital', 'select_vaccine', 'select_date', 'select_slot', 'confirm_booking'}
+    if (intent in REQUIRES_LOGIN or context.get('booking_step')) and not patient_id:
+        return handle_auth_redirect(context, prompted=True)
+
+    # 0c. Pincode / Nearest Hospital Search
+    if intent == 'pincode_hospital_search':
+        return handle_pincode_hospital_search(msg, context)
+
     # 1. Handle Medical Symptom / Emergency Safety Warning
     if intent == 'medical_symptom_safety':
         return handle_symptom_safety(msg, context)
@@ -549,6 +570,90 @@ def process_ai_message(patient_id: int | None, message: str, context: dict | Non
 # ---------------------------------------------------------------------------
 # Intent Handlers
 # ---------------------------------------------------------------------------
+
+def handle_auth_redirect(context: dict, prompted: bool = False) -> dict:
+    """Prompts or redirects the user to log in or register before accessing account actions."""
+    if prompted:
+        message_body = (
+            "🔐 **Login Required**\n\n"
+            "To book vaccination appointments, view your child's records, or check appointments, "
+            "please **log in** to your account or **register** for free on KiddoVax.\n\n"
+            "Click below to continue:"
+        )
+    else:
+        message_body = (
+            "👋 **KiddoVax Account Access**\n\n"
+            "You can sign in to your existing account or create a new parent profile in just a minute. "
+            "Click an option below to proceed:"
+        )
+
+    return {
+        'text': message_body,
+        'action_type': 'SHOW_AUTH_REDIRECT',
+        'action_data': {
+            'login_url': '/patient/login/',
+            'register_url': '/patient/register/'
+        },
+        'context': context,
+        'is_safety_disclaimer': False
+    }
+
+
+def handle_pincode_hospital_search(message: str, context: dict) -> dict:
+    """Finds nearest hospitals based on pincode mentioned in chat."""
+    pin_match = re.search(r'\b(39\d{4}|\d{6})\b', message)
+    if not pin_match:
+        return {
+            'text': (
+                "📍 **Find Nearest Hospitals by PIN Code**\n\n"
+                "Please tell me your 6-digit PIN code (for example: *'hospitals near 390019'* or *'find hospitals 390001'*), "
+                "and I will locate the nearest vaccination centers for you!"
+            ),
+            'action_type': 'SHOW_QUICK_ACTIONS',
+            'action_data': {
+                'quick_replies': [
+                    {'label': 'PIN 390019 (Chhani)', 'action': 'find hospitals near 390019'},
+                    {'label': 'PIN 390001 (Raopura)', 'action': 'find hospitals near 390001'},
+                    {'label': 'PIN 390020 (Manjalpur)', 'action': 'find hospitals near 390020'},
+                ]
+            },
+            'context': context,
+            'is_safety_disclaimer': False
+        }
+
+    pincode = pin_match.group(1)
+    from patientapp.services.hospital_pincode_service import find_nearest_hospitals_by_pincode
+    result = find_nearest_hospitals_by_pincode(pincode=pincode, limit=4)
+    hospitals = result.get('hospitals', [])
+
+    if not hospitals:
+        return {
+            'text': f"🔍 No registered vaccination centers found for PIN code **{pincode}**. You can also explore all hospitals on our registration or booking pages.",
+            'action_type': 'NONE',
+            'action_data': {},
+            'context': context,
+            'is_safety_disclaimer': False
+        }
+
+    lines = [f"📍 **Vaccination Centers near PIN code {pincode}** ({result.get('total_found', 0)} found):\n"]
+    for h in hospitals:
+        badge = f" `{h.get('badge')}`" if h.get('badge') else ""
+        pin_info = f" (PIN: {h.get('pincode')})" if h.get('pincode') else ""
+        lines.append(f"• **{h.get('title')}**{badge}\n  🏢 {h.get('address')}{pin_info}\n  📞 {h.get('contactNo') or 'N/A'}")
+
+    return {
+        'text': "\n\n".join(lines),
+        'action_type': 'SHOW_HOSPITALS',
+        'action_data': {
+            'hospitals': [
+                {'id': h.get('id'), 'title': h.get('title'), 'address': h.get('address')}
+                for h in hospitals
+            ]
+        },
+        'context': context,
+        'is_safety_disclaimer': False
+    }
+
 
 def handle_symptom_safety(message: str, context: dict) -> dict:
     """Provides medical safety boundary response when acute symptoms are mentioned."""
@@ -836,22 +941,22 @@ def handle_general_help(patient: Patienttbl | None, children_qs, context: dict) 
     """Friendly greeting and capabilities summary."""
     name_str = f" {patient.name}" if patient else ""
     help_text = (
-        f"👋 **Hello{name_str}! Welcome to the KiddoVax AI Assistant.**\n\n"
-        "I am your pediatric vaccination and immunization appointment assistant. Here is what I can do for you:\n\n"
+        f"👋 **Hello{name_str}! I'm VaxBot, your KiddoVax AI Assistant.**\n\n"
+        "I am your pediatric vaccination and immunization guide. Here is what I can do for you:\n\n"
         "1. 📖 **Vaccine Information**: Ask me about any childhood vaccine (e.g. *'What is MMR?'*, *'Why Hepatitis B?'*, *'What does Polio vaccine prevent?'*).\n"
-        "2. 👶 **Personalized Recommendations**: Ask *'What vaccine is due for my child?'* or *'My child is 9 months old'*, and I'll analyze the immunization schedule.\n"
-        "3. 📅 **Conversational Booking**: Say *'Book an appointment'* or *'Book MMR for my child'* to book step-by-step through conversation!\n"
-        "4. 🔍 **Appointment Status**: Check your upcoming vaccination visits and queue statuses."
+        "2. 📍 **Find Hospitals**: Tell me your PIN code (e.g. *'hospitals near 390019'*) to locate nearby vaccination centers.\n"
+        "3. 👶 **Due Vaccines & Schedules**: Ask *'What vaccine is due for my child?'* or *'My child is 9 months old'* for immunization guidance.\n"
+        "4. 📅 **Appointment Booking & Status**: Logged-in parents can book appointments or check upcoming visits directly with me!"
     )
     return {
         'text': help_text,
         'action_type': 'SHOW_QUICK_ACTIONS',
         'action_data': {
             'quick_replies': [
-                {'label': 'Book Appointment', 'action': 'Book a vaccination appointment'},
+                {'label': 'Vaccine Info', 'action': 'What is MMR?'},
+                {'label': 'Find Nearest Hospitals', 'action': 'find hospitals near me'},
                 {'label': 'Upcoming Vaccines', 'action': 'What vaccine is due for my child?'},
-                {'label': 'What is MMR?', 'action': 'What is MMR?'},
-                {'label': 'My Appointments', 'action': 'Check my appointments'}
+                {'label': 'Book Appointment', 'action': 'Book a vaccination appointment'}
             ]
         },
         'context': context,

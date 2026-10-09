@@ -134,6 +134,17 @@
                     </div>
                 </div>
 
+                <!-- Pincode Field (6 Digits) -->
+                <div class="space-y-1.5 md:col-span-2">
+                    <label for="id_pincode" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Pincode / Postal Area</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">pin_drop</span>
+                        <input type="text" name="pincode" id="id_pincode" maxlength="6" 
+                               class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3 text-slate-800 font-bold focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm font-mono text-sm tracking-widest"
+                               onkeypress="return restrictAlphabets(event)" placeholder="e.g. 390019">
+                    </div>
+                </div>
+
                 <!-- City Dropdown -->
                 <div class="space-y-1.5">
                     <label for="cityId" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Select City</label>
@@ -167,8 +178,8 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">phone_iphone</span>
                         <input type="text" name="contactNo" id="id_contactNo" maxlength="10" required 
-                               class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3 text-slate-800 font-bold focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm font-mono text-sm tracking-widest"
-                               onkeypress="return restrictAlphabets(event)" placeholder="10 digits">
+                                class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3 text-slate-800 font-bold focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm font-mono text-sm tracking-widest"
+                                onkeypress="return restrictAlphabets(event)" placeholder="10 digits">
                     </div>
                 </div>
 
@@ -178,8 +189,8 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
                         <input type="password" name="password" id="id_password" required 
-                               class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3 text-slate-800 font-mono tracking-widest focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm text-sm"
-                               placeholder="••••••••">
+                                class="w-full bg-slate-50 border border-slate-205 rounded-xl pl-12 pr-4 py-3 text-slate-800 font-mono tracking-widest focus:ring-2 focus:ring-modern-cyan/30 focus:border-modern-cyan focus:bg-white transition-all shadow-sm text-sm"
+                                placeholder="••••••••">
                     </div>
                 </div>
 

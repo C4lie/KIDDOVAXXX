@@ -5,6 +5,7 @@ class Hospitaltbl(models.Model):
     title = models.CharField(max_length=500, verbose_name="Title")
     dcrname = models.CharField(max_length=255, blank=True, null=True, default='', verbose_name="Doctor Name")
     address = models.CharField(max_length=500, verbose_name="Address")
+    pincode = models.CharField(max_length=6, blank=True, null=True, verbose_name="Pincode")
     cityId = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="City")
     areaId = models.ForeignKey(Area, on_delete=models.CASCADE, verbose_name="Area")
     contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")

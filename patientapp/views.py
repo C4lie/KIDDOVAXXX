@@ -18,6 +18,12 @@ def About(request):
 def Contact(request):
     return render(request, 'patientapp/contact.html')
 
+def Privacy(request):
+    return render(request, 'patientapp/privacy.html')
+
+def Terms(request):
+    return render(request, 'patientapp/terms.html')
+
 
 class PatientLogout(View):
     def get(self, request):
@@ -96,6 +102,9 @@ class PatientRegistration(View):
             patient = form.save(commit=False)
             if contact_raw.isdigit():
                 patient.contactNo = int(contact_raw)
+            pincode_raw = str(request.POST.get('pincode', '')).strip()
+            if pincode_raw:
+                patient.pincode = pincode_raw
             patient.password = make_password(patient.password)
             patient.account_status = 'PENDING_HOSPITAL_REGISTRATION'
             patient.must_change_password = False
@@ -463,28 +472,27 @@ def missed_vaccines(request):
 
 def get_notifications(request):
     """GET /notifications/
-    Returns the user's unread notifications.
+    Returns the user's categorized notifications including upcoming, delayed,
+    near-time bookings, completed immunizations, and AI insights.
     """
-    if request.session.get('Cid') is None:
-        return JsonResponse({'notifications': [], 'unread_count': 0})
-    
-    from patientapp.models import Notification  # type: ignore[import]  # pyre-ignore
     patient_id = request.session.get('Cid')
-    notifs = Notification.objects.filter(patient_id=patient_id).order_by('-created_at')[:10]
+    if patient_id is None:
+        return JsonResponse({
+            'success': False,
+            'notifications': [],
+            'unread_count': 0,
+            'stats': {'upcoming': 0, 'delayed': 0, 'completed': 0, 'total': 0}
+        })
     
-    data = [
-        {
-            'id': n.id,
-            'message': n.message,
-            'type': n.notification_type,
-            'is_read': n.is_read,
-            'date': n.created_at.strftime('%b %d, %Y')
-        }
-        for n in notifs
-    ]
-    unread_count = sum(1 for n in data if not n['is_read'])
+    from patientapp.services.notification_service import get_patient_notifications
+    from django.utils.dateparse import parse_datetime
     
-    return JsonResponse({'notifications': data, 'unread_count': unread_count})
+    last_read_str = request.session.get('last_notifications_read_at')
+    last_read_dt = parse_datetime(last_read_str) if last_read_str else None
+    
+    res = get_patient_notifications(int(patient_id), last_read_time=last_read_dt)
+    res['success'] = True
+    return JsonResponse(res)
 
 
 def mark_notifications_read(request):
@@ -492,10 +500,11 @@ def mark_notifications_read(request):
     Marks all notifications for the user as read.
     """
     if request.method == 'POST' and request.session.get('Cid'):
-        from patientapp.models import Notification  # type: ignore[import]  # pyre-ignore
-        Notification.objects.filter(patient_id=request.session.get('Cid'), is_read=False).update(is_read=True)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        from patientapp.services.notification_service import mark_patient_notifications_read
+        patient_id = int(request.session.get('Cid'))
+        mark_patient_notifications_read(patient_id, request=request)
+        return JsonResponse({'status': 'success', 'success': True})
+    return JsonResponse({'status': 'error', 'success': False, 'message': 'Invalid request or not logged in'}, status=400)
 
 
 def sms_response(request):
@@ -1024,4 +1033,16 @@ def ai_assistant_chat(request):
     request.session['ai_assistant_context'] = response_data.get('context', {})
 
     return JsonResponse(response_data)
+
+
+def nearest_hospitals_by_pincode_api(request):
+    """
+    API View to dynamically search and rank nearest participating hospitals
+    by 6-digit Pincode during patient registration.
+    """
+    pincode = request.GET.get('pincode', '').strip() or request.POST.get('pincode', '').strip()
+    from patientapp.services.hospital_pincode_service import find_nearest_hospitals_by_pincode
+    data = find_nearest_hospitals_by_pincode(pincode=pincode, limit=6)
+    return JsonResponse(data)
+
 

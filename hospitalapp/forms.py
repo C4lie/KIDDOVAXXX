@@ -6,12 +6,13 @@ from hospitalapp.models import Hospitaltbl, Receptionisttbl, Vaccinetbl
 class HospitalForm(forms.ModelForm):
     class Meta:
         model = Hospitaltbl
-        fields = ['title', 'dcrname', 'address', 'cityId', 'areaId', 'contactNo', 'password', 'img']
+        fields = ['title', 'dcrname', 'address', 'pincode', 'cityId', 'areaId', 'contactNo', 'password', 'img']
 
         widgets = {
             'title': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Hospital Name'}),
             'dcrname': forms.TextInput(attrs={'required': False, 'class': 'form-control', 'placeholder': 'Enter Doctor / Dean Name'}),
             'address': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Enter Hospital Address'}),
+            'pincode': forms.TextInput(attrs={'required': False, 'maxlength': '6', 'class': 'form-control', 'placeholder': '6-digit Pincode', 'onkeypress': 'return restrictAlphabets(event);'}),
             'contactNo': forms.TextInput(attrs={'required': True, 'maxlength': "10", 'class': 'form-control', 'placeholder': '10-digit Contact No'}),
             'password': forms.TextInput(attrs={'required': True, 'class': 'form-control', 'placeholder': 'Password'}),
         }

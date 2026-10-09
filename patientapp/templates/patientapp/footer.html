@@ -31,6 +31,8 @@
                     <li><a href="{% url 'patient:homepage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Home</a></li>
                     <li><a href="{% url 'patient:aboutpage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> About Us</a></li>
                     <li><a href="{% url 'patient:contactpage' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Contact us</a></li>
+                    <li><a href="{% url 'patient:privacy' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Privacy Policy</a></li>
+                    <li><a href="{% url 'patient:terms' %}" class="hover:text-cyan-400 transition-colors decoration-transparent flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Terms & Conditions</a></li>
                 </ul>
             </div>
 
@@ -67,7 +69,11 @@
         <!-- Copyright Section -->
         <div class="flex flex-col md:flex-row items-center justify-between pt-8 text-slate-500 font-medium text-xs gap-4">
             <p>© 2026 KiddoVax Clinical Hospital System. All rights reserved.</p>
-            <p>Designed for <span class="text-slate-400 font-bold">World-Class Healthcare.</span></p>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'patient:privacy' %}" class="hover:text-cyan-400 transition-colors decoration-transparent">Privacy Policy</a>
+                <span>•</span>
+                <a href="{% url 'patient:terms' %}" class="hover:text-cyan-400 transition-colors decoration-transparent">Terms of Service</a>
+            </div>
         </div>
     </div>
     

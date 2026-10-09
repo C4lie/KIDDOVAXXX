@@ -10,6 +10,13 @@ class PatientForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'required': True, 'maxlength': "10", 'class': 'form-control', 'onkeypress': 'return restrictAlphabets(event);'})
     )
 
+    pincode = forms.CharField(
+        max_length=6,
+        min_length=6,
+        required=False,
+        widget=forms.TextInput(attrs={'maxlength': '6', 'class': 'form-control', 'placeholder': '6-digit Pincode', 'onkeypress': 'return restrictAlphabets(event);'})
+    )
+
     class Meta:
         model = Patienttbl
         exclude = ['account_status', 'must_change_password', 'registered_hospital']

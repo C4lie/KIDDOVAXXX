@@ -18,6 +18,7 @@ class Patienttbl(models.Model):
     contactNo = models.BigIntegerField(blank=True, null=True, verbose_name="Contact")
     password = models.CharField(max_length=255, verbose_name="Password")
     relation = models.CharField(max_length=50, blank=True, null=True, verbose_name="Relation")
+    pincode = models.CharField(max_length=6, blank=True, null=True, verbose_name="Pincode")
     latitude = models.FloatField(blank=True, null=True, verbose_name="Latitude")
     longitude = models.FloatField(blank=True, null=True, verbose_name="Longitude")
 

@@ -194,6 +194,12 @@
                             {{ form.address }}
                         </div>
 
+                        <!-- Pincode -->
+                        <div class="space-y-1">
+                            <label class="block text-sm font-bold text-slate-300 ml-1">Pincode (6 Digits)</label>
+                            {{ form.pincode }}
+                        </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <!-- Contact Number -->
                             <div class="space-y-1">
@@ -247,6 +253,7 @@
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Hospital</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Representative</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">City</th>
+                                    <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Pincode</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider">Contact</th>
                                     <th class="py-4 px-4 font-bold text-xs text-slate-400 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
@@ -264,6 +271,9 @@
                                     <td class="py-4 px-4 font-medium text-sm text-slate-300">{{ item.dcrname|default:"--" }}</td>
                                     <td class="py-4 px-4 font-medium text-sm text-slate-300">
                                         <span class="bg-cyan-950/40 text-admin-primary px-2 py-1 rounded-md text-xs font-bold uppercase">{{ item.cityId.cityName }}</span>
+                                    </td>
+                                    <td class="py-4 px-4 font-mono text-sm text-slate-300">
+                                        <span class="bg-slate-800/80 text-teal-400 px-2 py-0.5 rounded text-xs font-semibold">{{ item.pincode|default:"--" }}</span>
                                     </td>
                                     <td class="py-4 px-4 text-sm font-medium text-slate-400">{{ item.contactNo }}</td>
                                     <td class="py-4 px-4 text-right space-x-2">

@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 _ACCOUNT_EXEMPT_PATHS = [
     '/login/', '/register/', '/logout/', '/force-change-password/',
     '/pending-registration/', '/set-lang/', '/update-location/',
-    '/ai-assistant/',
+    '/ai-assistant/', '/notifications/',
     '/admin/', '/hospital/', '/receptionist/',
 ]
 
